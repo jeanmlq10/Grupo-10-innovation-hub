@@ -10,7 +10,7 @@
 
 # Información de la iniciativa
 
-**Nombre de la iniciativa o empresa (si aplica):** Que Parche
+**Nombre de la iniciativa o empresa:** Que Parche
 
 **Persona entrevistada:** Miguel Alejandro Cortés
 

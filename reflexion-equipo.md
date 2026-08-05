@@ -179,6 +179,4 @@ Antes de realizar las entrevistas y conocer la historia de innovación, ¿qué c
 
 ## Conclusión del equipo
 
-_(Este párrafo debe ser escrito por el equipo; aquí les dejamos un borrador de referencia que pueden ajustar a su propia voz.)_
-
 La conversación con los dos usuarios potenciales y con Miguel nos mostró que el problema central no es la falta de ideas ni la falta de habilidades disponibles entre los estudiantes, sino la falta de confianza para compartir esas ideas y para comprometerse con las de otros. Tanto Dayanna como Libardo evalúan primero a las personas (su actitud, su compromiso, su cercanía) antes que el proyecto mismo, y ambos recurren a su círculo cercano en vez de a la universidad cuando necesitan ayuda o quieren compartir algo nuevo. La historia de Miguel refuerza esta misma idea desde otro ángulo: su mayor reto no fue tener una buena idea, sino ganarse la confianza de sus clientes con evidencia real, algo que solo logró con el tiempo y no con publicidad. Esto nos hace repensar el sistema que queremos construir: no basta con conectar ideas y habilidades, hace falta diseñar mecanismos que generen y hagan visible la confianza, que protejan una idea en su etapa temprana, y que den cabida a distintas formas de participar, incluyendo a quienes prefieren apoyar desde afuera en lugar de unirse formalmente a un equipo.

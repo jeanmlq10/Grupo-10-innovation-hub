@@ -12,15 +12,9 @@
 
 **Nombre o seudónimo:** Dayanna Vargas
 
-**Edad, si es relevante:** No aplica
-
 **Rol:** Estudiante de pregrado, octavo semestre de Psicología
 
 **Relación con la Universidad del Norte:** Estudiante activa. Participa en actividades extracurriculares (danza y técnica vocal) y ha hecho voluntariados con el programa Univoluntarios.
-
-> No es necesario registrar información personal que permita identificar al entrevistado.
-
----
 
 ## Objetivo de la entrevista
 
