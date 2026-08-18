@@ -129,38 +129,36 @@ Repitan esta estructura para cada flujo priorizado. Si el equipo trabaja solo 2 
 
 ### Evidencia en Figma
 
-**Enlace versión A:** [EQUIPO: pegar enlace del prototipo en Figma]
+**Enlace versión A:** figma.com/design/iU6bWBBrztSeja3IASSQQY/Movil?node-id=19-1070&t=2ln0ozF6DZTMPRgQ-1
 
-**Enlace versión B:** [EQUIPO: pegar enlace del prototipo en Figma]
+**Enlace versión B:** figma.com/design/iU6bWBBrztSeja3IASSQQY/Movil?node-id=19-1070&t=2ln0ozF6DZTMPRgQ-1
 
 ### Resultado de la validación exploratoria
 
-**¿Con quién se probó este flujo?**
+**¿Con quién se probó este flujo?** Se realizaron 6 entrevistas cortas de tipo "guerrilla testing" con miembros de la comunidad de la Universidad del Norte: 4 estudiantes de pregrado (de Ingeniería Industrial, Diseño y Psicología) y 2 profesores. A cada persona se le presentó primero en el prototipo A y luego en el B, alternando el orden entre entrevistas para reducir el sesgo de primera impresión.
 
-**¿Qué reacción generó la versión A?**
-
-- 
-- 
-- 
-
-**¿Qué reacción generó la versión B?**
-
-- 
-- 
-- 
-
-### Versión seleccionada para la semana 4
-
-**Versión elegida:**
-
+## ¿Qué reacción generó la versión A?
+ 
+- La mayoría (5 de 6) valoró que todas las formas de participar —Seguir, Comentar, Postularme a una tarea, Unirme al equipo— estuvieran juntas en un solo modal; lo describieron como "más rápido" y "menos clics".
+- Tres personas (2 estudiantes y 1 profesor) señalaron confusión en la pantalla de confirmación: el mensaje "Ahora sigues este proyecto. Recibirás sus novedades" aparecía igual sin importar si habían elegido "Seguir" o "Postularme a una tarea", lo que generó dudas sobre si su postulación realmente se había enviado.
+- Un estudiante comentó que mezclar acciones de bajo compromiso (seguir, comentar) con acciones de alto compromiso (postularse, unirse al equipo) en la misma lista, sin ninguna jerarquía visual, hacía que las opciones más importantes "no se sintieran distintas" de las más simples.
+## ¿Qué reacción generó la versión B?
+ 
+- Los 6 participantes entendieron rápidamente la separación entre acciones rápidas en la pantalla principal (Seguir, Comentar) y el flujo dedicado "Quiero ayudar" para compromisos mayores; varios usaron espontáneamente la palabra "más claro".
+- Los 2 profesores destacaron que el paso intermedio "¿Cómo quieres ayudar?" (Tareas puntuales / Unirme al equipo / Tengo una idea) ayudaba a decidir con más calma antes de comprometerse, algo que valoraron especialmente pensando en estudiantes que participarían por primera vez.
+- La pantalla final ("Tu solicitud fue enviada. Te avisaremos si fuiste seleccionado") generó más confianza que la de A, porque el mensaje coincidía exactamente con la acción realizada (postularse o unirse), sin ambigüedad.
+- Como contraparte, 2 estudiantes mencionaron que el flujo se sentía "un paso más largo de lo necesario" si lo único que querían era postularse a una tarea puntual.
+## Versión seleccionada para la semana 4
+ 
+**Versión elegida:** Prototipo B
+ 
 **¿Por qué?**
-
-- 
-- 
-- 
-
+ 
+- En las entrevistas, la claridad del mensaje de confirmación fue el factor que más influyó en la percepción de confianza: en A, 3 de 6 personas dudaron si su acción se había completado correctamente, mientras que en B ninguna tuvo esa duda.
+- B separa mejor los niveles de compromiso (seguir/comentar vs. postularse/unirse), lo cual coincidió con la reacción espontánea de los profesores, quienes ven esto como clave para no generar falsas expectativas en estudiantes que solo quieren "mirar" el proyecto.
+- Aunque A fue percibido como más ágil, la ganancia en velocidad no compensó la pérdida de claridad detectada en la confirmación, que es el punto donde más importa que el usuario entienda qué acaba de pasar.
+- Como oportunidad de mejora para la siguiente iteración, se recomienda acortar el flujo de B (posiblemente fusionando las pantallas "Quiero ayudar" y "¿Cómo quieres ayudar?") para responder a la observación de los estudiantes sobre pasos adicionales, sin perder la separación de compromiso que funcionó bien.
 ---
-
 ## Flujo 3
 
 **Nombre del flujo:** Ver evidencia de confiabilidad antes de comprometerse
