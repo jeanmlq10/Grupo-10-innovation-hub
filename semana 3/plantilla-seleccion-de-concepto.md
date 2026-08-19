@@ -64,26 +64,22 @@ Expliquen brevemente:
 
 - Estudiantes de Uninorte 
 - Profesores
-- 
 
 ¿Cuántas personas participaron en total?
 
-**Cantidad:** 6
+**Cantidad:** 10
 
-### Flujo 1: Publicar una idea con visibilidad gradual
+Flujo 1: Publicar una idea con visibilidad gradual
 
-**¿Qué aprendieron al comparar las dos versiones de este flujo?**
+¿Qué aprendieron al comparar las dos versiones de este flujo?
 
-- 
+Con 4 personas validadas (perfil general, estudiante de Psicología, profesor y estudiante de Licenciatura en Educación Infantil), 3 de 4 prefirieron la Versión A, y las tres coincidieron en la misma razón: la estructura de campos (objetivo, funciones, tiempo) importa más que decidir la audiencia primero.
+La única persona que prefirió B no rechazó la idea de estructurar el contenido — priorizó, en cambio, la sensación de control inmediato sobre quién puede ver la idea. Esto sugiere una oportunidad para la semana 4: ver si se puede dar un adelanto rápido de "quién puede verlo" sin sacrificar los campos estructurados de A.
+El profesor aportó un argumento adicional relevante: estructurar antes de publicar reduce el riesgo de compartir información sensible demasiado pronto, lo cual conecta directamente con el temor de "que alguien arruine la idea" identificado en Libardo desde la semana 2.
 
-- 
+¿Qué versión pasa a la semana 4?
 
-- 
-
-**¿Qué versión pasa a la semana 4?**
-
-- Versión A
-- Versión B
+- [x] Versión A
 
 ### Flujo 2: Explorar un proyecto ajeno y elegir nivel de participación
 
@@ -99,51 +95,44 @@ Expliquen brevemente:
 
 - [x] Versión B
 
-### Flujo 3: Ver evidencia de confiabilidad antes de comprometerse
+Flujo 3: Ver evidencia de confiabilidad antes de comprometerse
 
-**¿Qué aprendieron al comparar las dos versiones de este flujo?**
+¿Qué aprendieron al comparar las dos versiones de este flujo?
 
-- 
+Consenso total: las 4 personas validadas (perfil general, estudiante de Psicología, profesor y estudiante de Licenciatura en Educación Infantil) prefirieron la Versión A, sin excepción — el único de los tres flujos con acuerdo unánime.
+Las cuatro, sin haberse puesto de acuerdo entre sí, mencionaron el mismo tipo de evidencia como decisiva: historial de tareas cumplidas frente a asignadas, y referencias o comentarios de terceros. Esto confirma con solidez el insight central del proyecto desde la semana 2: la confianza se construye evaluando a las personas de forma individual, no viendo al equipo o al proyecto como conjunto.
+El profesor fue el más matizado: dijo que idealmente combinaría elementos de ambas versiones (evidencia individual + contexto del proyecto), pero que si debía elegir una sola, se quedaba con A. Es una pista útil para mejorar la versión ganadora en la semana 4, no para reemplazarla.
 
-- 
+¿Qué versión pasa a la semana 4?
 
-- 
-
-**¿Qué versión pasa a la semana 4?**
-
-- Versión A
-- Versión B
-
+- [x] Versión A
 ---
 
 ## Conclusión de la semana
 
 ¿Qué flujos y qué versiones pasan a la semana 4?
 
+- **Flujo 1 — Publicar una idea con visibilidad gradual:** pasa la **versión A**., con 3 de 4 personas a favor (perfil general, estudiante de Psicología y profesor). Todas coincidieron en que los campos guiados (objetivo, funciones, tiempo) importan más que decidir la audiencia primero; solo la estudiante de Licenciatura en Educación Infantil priorizó el control inmediato sobre quién ve la idea.
+
 
 - **Flujo 2 — Explorar un proyecto ajeno y elegir nivel de participación:** pasa la **versión B**. Aunque implica un paso adicional frente a la versión A, separa con claridad las acciones de bajo compromiso (seguir, comentar) de las de mayor compromiso (postularse, unirse al equipo), y su pantalla de confirmación refleja con precisión la acción realizada, lo que generó más confianza en las entrevistas realizadas.
 
+
+- **Flujo 3 — Ver evidencia de confiabilidad antes de comprometerse:** pasa la versión A, con consenso total de las 4 personas validadas. Todas necesitaban evidencia específica de cada persona (tareas cumplidas frente a asignadas, referencias) para sentirse seguras trabajando con alguien desconocido; la versión B, centrada en el proyecto y el equipo en conjunto, no dio suficiente detalle al entrar al perfil de un integrante puntual.
+  
 ---
 
 ## Razones de la decisión
 
 ¿Por qué estas decisiones parecen las mejores para avanzar después de la validación exploratoria?
 
-- 
+- Para el caso del flujo 1, porque 3 de 4 personas de perfiles distintos (general, Psicología, docencia) llegaron a la misma razón sin coordinarse entre sí: la estructura del contenido pesa más que el orden en que se pregunta la audiencia. La única disidencia (Licenciatura en Educación Infantil) no invalida la estructura de A, solo señala una mejora posible para explorar en la semana 4.
 
 - Para el caso del flujo 2, porque el costo adicional detectado en la versión B (un paso más en el flujo) es menor comparado con el beneficio de claridad y confianza que reportaron los entrevistados, y además es un aspecto que se puede optimizar en próximas iteraciones sin perder la separación de niveles de compromiso que funcionó bien.
 
--
-
-⁠⁠- **Flujo 3 — Ver evidencia de confiabilidad antes de comprometerse:** pasa la **versión A**, con consenso total de las 4 personas validadas. Todas necesitaban evidencia específica de cada persona (tareas cumplidas frente a asignadas, referencias) para sentirse seguras trabajando con alguien desconocido; la versión B, centrada en el proyecto y el equipo en conjunto, no dio suficiente detalle al entrar al perfil de un integrante puntual.
+-Para el caso del flujo 3, porque fue el único flujo con consenso total (4 de 4): tanto la estudiante de Psicología como el profesor y la estudiante de Licenciatura en Educación Infantil coincidieron, de forma independiente, en que necesitan evidencia a nivel de persona (no de proyecto) para confiar en alguien desconocido. Esto confirma que el foco individual de la versión A es indispensable, y que cualquier mejora de B (como sugirió el profesor) tendría que sumarse sobre esa base, no reemplazarla.
 
 ---
-
-## Razones de la decisión
-
-¿Por qué estas decisiones parecen las mejores para avanzar después de la validación exploratoria?
-
-•⁠  ⁠Para el caso del flujo 3, porque fue el único flujo con consenso total (4 de 4): tanto la estudiante de Psicología como el profesor y la estudiante de Licenciatura en Educación Infantil coincidieron, de forma independiente, en que necesitan evidencia a nivel de persona (no de proyecto) para confiar en alguien desconocido. Esto confirma que el foco individual de la versión A es indispensable, y que cualquier mejora de B (como sugirió el profesor) tendría que sumarse sobre esa base, no reemplazarla.
 
 ## Riesgos que siguen abiertos
 
@@ -161,8 +150,7 @@ Expliquen brevemente:
 
 Completen las frases:
 
-`Creemos que los usuarios valorarán ver evidencia concreta de compromiso (participación previa, tareas cumplidas, recomendaciones) más que una descripción de habilidades o intereses.`
+- Creemos que los usuarios valorarán ver evidencia concreta de compromiso (participación previa, tareas cumplidas, recomendaciones) más que una descripción de habilidades o intereses.
+- Creemos que los usuarios usarán esta solución porque hoy no tienen ninguna forma de evaluar a alguien fuera de su círculo cercano antes de comprometerse con un proyecto.
+- Sabremos que vamos por buen camino si, al mostrar los prototipos, las personas validadas reconocen la situación como propia (“esto es justo lo que me pasó”) y prefieren consistentemente la versión que muestra evidencia de confiabilidad sobre la que no la muestra.
 
-`Creemos que los usuarios usarán esta solución porque hoy no tienen ninguna forma de evaluar a alguien fuera de su círculo cercano antes de comprometerse con un proyecto.`
-
-`Sabremos que vamos por buen camino si, al mostrar los prototipos, las personas validadas reconocen la situación como propia (“esto es justo lo que me pasó”) y prefieren consistentemente la versión que muestra evidencia de confiabilidad sobre la que no la muestra.`
