@@ -144,6 +144,7 @@ Se realizaron 6 entrevistas cortas de tipo "guerrilla testing" con miembros de l
 - La mayoría (5 de 6) valoró que todas las formas de participar —Seguir, Comentar, Postularme a una tarea, Unirme al equipo— estuvieran juntas en un solo modal; lo describieron como "más rápido" y "menos clics".
 - Tres personas (2 estudiantes y 1 profesor) señalaron confusión en la pantalla de confirmación: el mensaje "Ahora sigues este proyecto. Recibirás sus novedades" aparecía igual sin importar si habían elegido "Seguir" o "Postularme a una tarea", lo que generó dudas sobre si su postulación realmente se había enviado.
 - Un estudiante comentó que mezclar acciones de bajo compromiso (seguir, comentar) con acciones de alto compromiso (postularse, unirse al equipo) en la misma lista, sin ninguna jerarquía visual, hacía que las opciones más importantes "no se sintieran distintas" de las más simples.
+
 **¿Qué reacción generó la versión B?**
  
 - Los 6 participantes entendieron rápidamente la separación entre acciones rápidas en la pantalla principal (Seguir, Comentar) y el flujo dedicado "Quiero ayudar" para compromisos mayores; varios usaron espontáneamente la palabra "más claro".

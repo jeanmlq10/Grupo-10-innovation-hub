@@ -68,7 +68,7 @@ Expliquen brevemente:
 
 ¿Cuántas personas participaron en total?
 
-**Cantidad:**6
+**Cantidad:** 6
 
 ### Flujo 1: Publicar una idea con visibilidad gradual
 
