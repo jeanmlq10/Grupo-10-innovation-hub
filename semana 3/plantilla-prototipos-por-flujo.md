@@ -63,19 +63,34 @@ Repitan esta estructura para cada flujo priorizado. Si el equipo trabaja solo 2 
 
 ### Resultado de la validación exploratoria
 
-**¿Con quién se probó este flujo?**
+*¿Con quién se probó este flujo?*
 
-**¿Qué reacción generó la versión A?**
+Se validó con 4 personas, en conversaciones individuales donde se les mostró y explicó primero la Versión A y luego la Versión B, pidiéndoles que describieran con sus propias palabras qué entendían que podían hacer en cada pantalla: una persona de perfil general (la primera validación realizada), una estudiante de Psicología, un profesor, y una estudiante de Licenciatura en Educación Infantil.
 
-- 
-- 
-- 
+*¿Qué reacción generó la versión A?*
 
-**¿Qué reacción generó la versión B?**
+- 3 de las 4 personas prefirieron esta versión.
+- La estudiante de Psicología lo resumió así: "Me gusta más esta opción, la A, porque primero puedo escribir bien la idea y después decidir quién quiero que la vea. Siento que es mejor desarrollar primero lo que quiero hacer y después pensar con quién compartirlo."
+- El profesor valoró que la estructura reduce el riesgo de compartir información antes de tiempo: "Preferiría la A porque permite estructurar la idea antes de hacerla visible... reduce el riesgo de compartir información demasiado pronto."
+- La persona de la primera validación coincidió en que los campos guiados (objetivo, funciones, tiempo) le permitían desarrollar mejor la idea antes de publicarla, en vez de quedarse con una descripción corta.
 
-- 
-- 
-- 
+*¿Qué reacción generó la versión B?*
+
+- La estudiante de Licenciatura en Educación Infantil fue la única que prefirió B: "Me parece más sencillo decidir primero quién va a poder ver la idea y después comenzar a escribirla... me da tranquilidad saber primero quién puede acceder a la información."
+- Ninguna de las otras tres personas mencionó la privacidad como su prioridad al comparar las dos versiones; las tres se enfocaron primero en la posibilidad de desarrollar o estructurar mejor el contenido de la idea.
+
+### Versión seleccionada para la semana 4
+
+*Versión elegida:*
+
+- [x] Versión A (3 de 4 personas)
+- [ ] Versión B (1 de 4 personas)
+
+*¿Por qué?*
+
+- Mayoría clara (3 de 4) hacia la Versión A, y las tres coincidieron en la misma razón, independientemente de su perfil: la estructura de campos (objetivo, funciones, tiempo) importa más que decidir la audiencia primero.
+- La única persona que prefirió B no rechazó la idea de estructurar el contenido — solo valoró más la sensación de control inmediato sobre quién ve la idea. Esto es una pista útil para la semana 4: explorar si se puede dar un adelanto rápido de "quién puede verlo" sin sacrificar los campos estructurados de la Versión A.
+- El profesor aportó una razón adicional relevante para el problema del equipo: estructurar antes de publicar reduce el riesgo de compartir información sensible demasiado pronto, lo cual conecta directamente con el temor de "que alguien arruine la idea" identificado en Libardo desde la semana 2.
 
 ### Versión seleccionada para la semana 4
 
