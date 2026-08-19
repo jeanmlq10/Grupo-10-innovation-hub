@@ -62,13 +62,13 @@ Expliquen brevemente:
 
 ¿Con quién validaron los prototipos de baja resolución?
 
-- Usuario potencial
-- Compañero
-- Otro:
+- Estudiantes de Uninorte 
+- Profesores
+- 
 
 ¿Cuántas personas participaron en total?
 
-**Cantidad:**
+**Cantidad:** 6
 
 ### Flujo 1: Publicar una idea con visibilidad gradual
 
@@ -89,16 +89,15 @@ Expliquen brevemente:
 
 **¿Qué aprendieron al comparar las dos versiones de este flujo?**
 
-- 
+- Agrupar todas las formas de participar en un solo modal (versión A) se percibe como más ágil, pero diluye la diferencia entre acciones de bajo compromiso (seguir, comentar) y de alto compromiso (postularse, unirse al equipo), lo que puede generar postulaciones "accidentales" o poco conscientes.
 
-- 
+- El mensaje de confirmación importa tanto como el flujo en sí: cuando no refleja con precisión la acción realizada (como pasaba en A), los usuarios dudan si su solicitud se envió correctamente, lo que reduce la confianza en la plataforma.
 
-- 
+- Separar explícitamente las acciones rápidas de las de mayor compromiso (versión B) toma un paso adicional, pero da más seguridad al usuario y es especialmente valorado quienes buscan asegurarse de que otros estudiantes entiendan bien el nivel de involucramiento antes de postularse a un proyecto.
 
 **¿Qué versión pasa a la semana 4?**
 
-- Versión A
-- Versión B
+- [x] Versión B
 
 ### Flujo 3: Ver evidencia de confiabilidad antes de comprometerse
 
@@ -121,6 +120,9 @@ Expliquen brevemente:
 
 ¿Qué flujos y qué versiones pasan a la semana 4?
 
+
+- **Flujo 2 — Explorar un proyecto ajeno y elegir nivel de participación:** pasa la **versión B**. Aunque implica un paso adicional frente a la versión A, separa con claridad las acciones de bajo compromiso (seguir, comentar) de las de mayor compromiso (postularse, unirse al equipo), y su pantalla de confirmación refleja con precisión la acción realizada, lo que generó más confianza en las entrevistas realizadas.
+
 ---
 
 ## Razones de la decisión
@@ -129,11 +131,19 @@ Expliquen brevemente:
 
 - 
 
-- 
+- Para el caso del flujo 2, porque el costo adicional detectado en la versión B (un paso más en el flujo) es menor comparado con el beneficio de claridad y confianza que reportaron los entrevistados, y además es un aspecto que se puede optimizar en próximas iteraciones sin perder la separación de niveles de compromiso que funcionó bien.
 
-- 
+-
+
+⁠⁠- **Flujo 3 — Ver evidencia de confiabilidad antes de comprometerse:** pasa la **versión A**, con consenso total de las 4 personas validadas. Todas necesitaban evidencia específica de cada persona (tareas cumplidas frente a asignadas, referencias) para sentirse seguras trabajando con alguien desconocido; la versión B, centrada en el proyecto y el equipo en conjunto, no dio suficiente detalle al entrar al perfil de un integrante puntual.
 
 ---
+
+## Razones de la decisión
+
+¿Por qué estas decisiones parecen las mejores para avanzar después de la validación exploratoria?
+
+•⁠  ⁠Para el caso del flujo 3, porque fue el único flujo con consenso total (4 de 4): tanto la estudiante de Psicología como el profesor y la estudiante de Licenciatura en Educación Infantil coincidieron, de forma independiente, en que necesitan evidencia a nivel de persona (no de proyecto) para confiar en alguien desconocido. Esto confirma que el foco individual de la versión A es indispensable, y que cualquier mejora de B (como sugirió el profesor) tendría que sumarse sobre esa base, no reemplazarla.
 
 ## Riesgos que siguen abiertos
 
@@ -143,7 +153,7 @@ Expliquen brevemente:
 
 - Cómo balancear, dentro del Flujo 3, la necesidad de Dayanna (información concreta del proyecto) con la de Libardo (información sobre la actitud de las personas).
 
-- 
+- Qué tan representativo es el perfil de "interés sin compromiso inmediato" en estudiantes de otras carreras y semestres, y si el Flujo 2 logra convertir ese interés en acciones útiles (seguir, comentar, postularse) sin sentirse demasiado largo para quienes ya quieren participar.
 
 ---
 

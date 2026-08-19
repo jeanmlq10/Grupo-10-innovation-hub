@@ -144,26 +144,29 @@ Se validó con 4 personas, en conversaciones individuales donde se les mostró y
 
 ### Evidencia en Figma
 
-**Enlace versión A:** figma.com/design/iU6bWBBrztSeja3IASSQQY/Movil?node-id=19-1070&t=2ln0ozF6DZTMPRgQ-1
+- **Enlace versión A:** [Ver prototipo A](https://www.figma.com/design/iU6bWBBrztSeja3IASSQQY/Movil?node-id=19-1070&t=2ln0ozF6DZTMPRgQ-1)
 
-**Enlace versión B:** figma.com/design/iU6bWBBrztSeja3IASSQQY/Movil?node-id=19-1070&t=2ln0ozF6DZTMPRgQ-1
+- **Enlace versión B:** [Ver prototipo B](https://www.figma.com/design/iU6bWBBrztSeja3IASSQQY/Movil?node-id=19-1070&t=2ln0ozF6DZTMPRgQ-1)
 
 ### Resultado de la validación exploratoria
 
-**¿Con quién se probó este flujo?** Se realizaron 6 entrevistas cortas de tipo "guerrilla testing" con miembros de la comunidad de la Universidad del Norte: 4 estudiantes de pregrado (de Ingeniería Industrial, Diseño y Psicología) y 2 profesores. A cada persona se le presentó primero en el prototipo A y luego en el B, alternando el orden entre entrevistas para reducir el sesgo de primera impresión.
+**¿Con quién se probó este flujo?** 
 
-## ¿Qué reacción generó la versión A?
+Se realizaron 6 entrevistas cortas de tipo "guerrilla testing" con miembros de la comunidad de la Universidad del Norte: 4 estudiantes de pregrado (de Ingeniería Industrial, Diseño y Psicología) y 2 profesores. A cada persona se le presentó primero en el prototipo A y luego en el B, alternando el orden entre entrevistas para reducir el sesgo de primera impresión.
+
+**¿Qué reacción generó la versión A?** 
  
 - La mayoría (5 de 6) valoró que todas las formas de participar —Seguir, Comentar, Postularme a una tarea, Unirme al equipo— estuvieran juntas en un solo modal; lo describieron como "más rápido" y "menos clics".
 - Tres personas (2 estudiantes y 1 profesor) señalaron confusión en la pantalla de confirmación: el mensaje "Ahora sigues este proyecto. Recibirás sus novedades" aparecía igual sin importar si habían elegido "Seguir" o "Postularme a una tarea", lo que generó dudas sobre si su postulación realmente se había enviado.
 - Un estudiante comentó que mezclar acciones de bajo compromiso (seguir, comentar) con acciones de alto compromiso (postularse, unirse al equipo) en la misma lista, sin ninguna jerarquía visual, hacía que las opciones más importantes "no se sintieran distintas" de las más simples.
-## ¿Qué reacción generó la versión B?
+
+**¿Qué reacción generó la versión B?**
  
 - Los 6 participantes entendieron rápidamente la separación entre acciones rápidas en la pantalla principal (Seguir, Comentar) y el flujo dedicado "Quiero ayudar" para compromisos mayores; varios usaron espontáneamente la palabra "más claro".
 - Los 2 profesores destacaron que el paso intermedio "¿Cómo quieres ayudar?" (Tareas puntuales / Unirme al equipo / Tengo una idea) ayudaba a decidir con más calma antes de comprometerse, algo que valoraron especialmente pensando en estudiantes que participarían por primera vez.
 - La pantalla final ("Tu solicitud fue enviada. Te avisaremos si fuiste seleccionado") generó más confianza que la de A, porque el mensaje coincidía exactamente con la acción realizada (postularse o unirse), sin ambigüedad.
 - Como contraparte, 2 estudiantes mencionaron que el flujo se sentía "un paso más largo de lo necesario" si lo único que querían era postularse a una tarea puntual.
-## Versión seleccionada para la semana 4
+### Versión seleccionada para la semana 4
  
 **Versión elegida:** Prototipo B
  
@@ -222,27 +225,35 @@ Se validó con 4 personas, en conversaciones individuales donde se les mostró y
 
 **¿Con quién se probó este flujo?**
 
+Se validó con las mismas 4 personas: la persona de la primera validación, una estudiante de Psicología, un profesor y una estudiante de Licenciatura en Educación Infantil. A todas se les planteó el escenario de encontrar un proyecto con personas desconocidas y se les preguntó qué información buscarían primero para decidir si confían en ellas.
+
 **¿Qué reacción generó la versión A?**
 
-- 
-- 
-- 
+- Las 4 personas prefirieron esta versión — consenso total, el único de los tres flujos donde ocurrió.
+- La estudiante de Psicología: *"Primero buscaría en qué proyectos ha trabajado anteriormente y también miraría las opiniones o referencias que otras personas hayan dejado sobre ella."*
+- El profesor: *"Seleccionaría el A porque el historial personal aporta evidencia directa sobre el colaborador. Si tengo que decidir si trabajar con alguien, me interesa conocer primero qué ha hecho y cómo ha sido su desempeño anteriormente."*
+- La estudiante de Licenciatura en Educación Infantil: *"Prefiero el A porque me muestra más información directamente sobre la persona... quiero saber primero quién es, qué ha hecho y qué experiencia han tenido otras personas con ella."*
+- La persona de la primera validación señaló, además, un problema puntual de B: al entrar al perfil de un integrante específico del equipo, la información se quedaba corta.
 
 **¿Qué reacción generó la versión B?**
 
-- 
-- 
-- 
+- Ninguna de las 4 personas la eligió como versión final.
+- El profesor fue el más matizado: dijo que idealmente *"combinaría elementos de ambas versiones"*, pero que si debía elegir una sola, se quedaba con A.
+- La razón más repetida para no quedarse con B: habla más del proyecto y del equipo en conjunto que de cada persona individualmente, y esa es justo la evidencia que las 4 personas dijeron necesitar para confiar.
 
 ### Versión seleccionada para la semana 4
 
 **Versión elegida:**
 
+- [x] Versión A (4 de 4 personas — consenso total)
+- [ ] Versión B
+
 **¿Por qué?**
 
-- 
-- 
-- 
+- Consenso total entre las 4 personas validadas: ninguna eligió B como versión final.
+- Las cuatro, sin excepción y sin haberse puesto de acuerdo entre sí, mencionaron el mismo tipo de evidencia como decisiva: historial de tareas cumplidas frente a asignadas, y referencias o comentarios de terceros — exactamente lo que ofrece la Versión A.
+- Este resultado confirma con solidez el insight central del proyecto desde la semana 2: la confianza se construye evaluando a las personas de forma individual, no solo viendo al proyecto o al equipo como conjunto.
+- Nota para la semana 4: el profesor sugirió combinar elementos de ambas versiones (evidencia individual + contexto del proyecto). Vale la pena explorarlo como mejora incremental, sin perder el foco en la persona, que fue lo que ganó esta validación.
 
 ---
 
