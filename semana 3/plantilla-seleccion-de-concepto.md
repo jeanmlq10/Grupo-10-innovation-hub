@@ -135,7 +135,15 @@ Expliquen brevemente:
 
 -
 
+⁠⁠- **Flujo 3 — Ver evidencia de confiabilidad antes de comprometerse:** pasa la **versión A**, con consenso total de las 4 personas validadas. Todas necesitaban evidencia específica de cada persona (tareas cumplidas frente a asignadas, referencias) para sentirse seguras trabajando con alguien desconocido; la versión B, centrada en el proyecto y el equipo en conjunto, no dio suficiente detalle al entrar al perfil de un integrante puntual.
+
 ---
+
+## Razones de la decisión
+
+¿Por qué estas decisiones parecen las mejores para avanzar después de la validación exploratoria?
+
+•⁠  ⁠Para el caso del flujo 3, porque fue el único flujo con consenso total (4 de 4): tanto la estudiante de Psicología como el profesor y la estudiante de Licenciatura en Educación Infantil coincidieron, de forma independiente, en que necesitan evidencia a nivel de persona (no de proyecto) para confiar en alguien desconocido. Esto confirma que el foco individual de la versión A es indispensable, y que cualquier mejora de B (como sugirió el profesor) tendría que sumarse sobre esa base, no reemplazarla.
 
 ## Riesgos que siguen abiertos
 

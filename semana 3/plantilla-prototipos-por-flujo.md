@@ -210,27 +210,35 @@ Se realizaron 6 entrevistas cortas de tipo "guerrilla testing" con miembros de l
 
 **¿Con quién se probó este flujo?**
 
+Se validó con las mismas 4 personas: la persona de la primera validación, una estudiante de Psicología, un profesor y una estudiante de Licenciatura en Educación Infantil. A todas se les planteó el escenario de encontrar un proyecto con personas desconocidas y se les preguntó qué información buscarían primero para decidir si confían en ellas.
+
 **¿Qué reacción generó la versión A?**
 
-- 
-- 
-- 
+- Las 4 personas prefirieron esta versión — consenso total, el único de los tres flujos donde ocurrió.
+- La estudiante de Psicología: *"Primero buscaría en qué proyectos ha trabajado anteriormente y también miraría las opiniones o referencias que otras personas hayan dejado sobre ella."*
+- El profesor: *"Seleccionaría el A porque el historial personal aporta evidencia directa sobre el colaborador. Si tengo que decidir si trabajar con alguien, me interesa conocer primero qué ha hecho y cómo ha sido su desempeño anteriormente."*
+- La estudiante de Licenciatura en Educación Infantil: *"Prefiero el A porque me muestra más información directamente sobre la persona... quiero saber primero quién es, qué ha hecho y qué experiencia han tenido otras personas con ella."*
+- La persona de la primera validación señaló, además, un problema puntual de B: al entrar al perfil de un integrante específico del equipo, la información se quedaba corta.
 
 **¿Qué reacción generó la versión B?**
 
-- 
-- 
-- 
+- Ninguna de las 4 personas la eligió como versión final.
+- El profesor fue el más matizado: dijo que idealmente *"combinaría elementos de ambas versiones"*, pero que si debía elegir una sola, se quedaba con A.
+- La razón más repetida para no quedarse con B: habla más del proyecto y del equipo en conjunto que de cada persona individualmente, y esa es justo la evidencia que las 4 personas dijeron necesitar para confiar.
 
 ### Versión seleccionada para la semana 4
 
 **Versión elegida:**
 
+- [x] Versión A (4 de 4 personas — consenso total)
+- [ ] Versión B
+
 **¿Por qué?**
 
-- 
-- 
-- 
+- Consenso total entre las 4 personas validadas: ninguna eligió B como versión final.
+- Las cuatro, sin excepción y sin haberse puesto de acuerdo entre sí, mencionaron el mismo tipo de evidencia como decisiva: historial de tareas cumplidas frente a asignadas, y referencias o comentarios de terceros — exactamente lo que ofrece la Versión A.
+- Este resultado confirma con solidez el insight central del proyecto desde la semana 2: la confianza se construye evaluando a las personas de forma individual, no solo viendo al proyecto o al equipo como conjunto.
+- Nota para la semana 4: el profesor sugirió combinar elementos de ambas versiones (evidencia individual + contexto del proyecto). Vale la pena explorarlo como mejora incremental, sin perder el foco en la persona, que fue lo que ganó esta validación.
 
 ---
 
