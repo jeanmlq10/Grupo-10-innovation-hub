@@ -129,9 +129,9 @@ Repitan esta estructura para cada flujo priorizado. Si el equipo trabaja solo 2 
 
 ### Evidencia en Figma
 
-**Enlace versión A:** figma.com/design/iU6bWBBrztSeja3IASSQQY/Movil?node-id=19-1070&t=2ln0ozF6DZTMPRgQ-1
+- **Enlace versión A:** [Ver prototipo A](https://www.figma.com/design/iU6bWBBrztSeja3IASSQQY/Movil?node-id=19-1070&t=2ln0ozF6DZTMPRgQ-1)
 
-**Enlace versión B:** figma.com/design/iU6bWBBrztSeja3IASSQQY/Movil?node-id=19-1070&t=2ln0ozF6DZTMPRgQ-1
+- **Enlace versión B:** [Ver prototipo B](https://www.figma.com/design/iU6bWBBrztSeja3IASSQQY/Movil?node-id=19-1070&t=2ln0ozF6DZTMPRgQ-1)
 
 ### Resultado de la validación exploratoria
 
