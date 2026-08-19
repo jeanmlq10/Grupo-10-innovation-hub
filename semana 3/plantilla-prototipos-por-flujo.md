@@ -57,10 +57,9 @@ Repitan esta estructura para cada flujo priorizado. Si el equipo trabaja solo 2 
 
 ### Evidencia en Figma
 
-**Enlace versión A:** [EQUIPO: pegar enlace del prototipo en Figma]
+- **Enlace versión A:** [Ver prototipo A](https://www.figma.com/design/iU6bWBBrztSeja3IASSQQY/Movil?node-id=19-1070&t=2ln0ozF6DZTMPRgQ-1)
 
-**Enlace versión B:** [EQUIPO: pegar enlace del prototipo en Figma]
-
+- **Enlace versión B:** [Ver prototipo B](https://www.figma.com/design/iU6bWBBrztSeja3IASSQQY/Movil?node-id=19-1070&t=2ln0ozF6DZTMPRgQ-1)
 ### Resultado de la validación exploratoria
 
 *¿Con quién se probó este flujo?*
@@ -91,16 +90,6 @@ Se validó con 4 personas, en conversaciones individuales donde se les mostró y
 - Mayoría clara (3 de 4) hacia la Versión A, y las tres coincidieron en la misma razón, independientemente de su perfil: la estructura de campos (objetivo, funciones, tiempo) importa más que decidir la audiencia primero.
 - La única persona que prefirió B no rechazó la idea de estructurar el contenido — solo valoró más la sensación de control inmediato sobre quién ve la idea. Esto es una pista útil para la semana 4: explorar si se puede dar un adelanto rápido de "quién puede verlo" sin sacrificar los campos estructurados de la Versión A.
 - El profesor aportó una razón adicional relevante para el problema del equipo: estructurar antes de publicar reduce el riesgo de compartir información sensible demasiado pronto, lo cual conecta directamente con el temor de "que alguien arruine la idea" identificado en Libardo desde la semana 2.
-
-### Versión seleccionada para la semana 4
-
-**Versión elegida:**
-
-**¿Por qué?**
-
-- 
-- 
-- 
 
 ---
 
@@ -217,9 +206,9 @@ Se realizaron 6 entrevistas cortas de tipo "guerrilla testing" con miembros de l
 
 ### Evidencia en Figma
 
-**Enlace versión A:** [EQUIPO: pegar enlace del prototipo en Figma]
+- **Enlace versión A:** [Ver prototipo A](https://www.figma.com/design/iU6bWBBrztSeja3IASSQQY/Movil?node-id=19-1070&t=2ln0ozF6DZTMPRgQ-1)
 
-**Enlace versión B:** [EQUIPO: pegar enlace del prototipo en Figma]
+- **Enlace versión B:** [Ver prototipo B](https://www.figma.com/design/iU6bWBBrztSeja3IASSQQY/Movil?node-id=19-1070&t=2ln0ozF6DZTMPRgQ-1)
 
 ### Resultado de la validación exploratoria
 
