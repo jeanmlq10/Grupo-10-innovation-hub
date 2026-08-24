@@ -5,29 +5,26 @@
 
 ## Información del equipo
 
-**Nombre del equipo:**
+**Nombre del equipo:** Grupo 10
 
-**Integrantes:**
+**Integrantes:** Oscar Gil, Jean Marthé, Andrea Quintero, Daniel Cruzado
 
 ---
 
 ## Flujos que vamos a integrar
 
-Escriban los flujos aprobados en la semana 3 que harán parte de este prototipo.
+1. Publicar una idea con visibilidad gradual (Versión A — "El borrador")
 
-1.
+2. Explorar un proyecto ajeno y elegir nivel de participación (Versión B — "Participación progresiva")
 
-2.
+3. Ver evidencia de confiabilidad antes de comprometerse (Versión A — "Perfil de trayectoria personal")
 
-3.
-
-4.
 
 ---
 
 ## Objetivo del prototipo
 
-¿Qué quieren mostrar o comprobar al integrar estos flujos en un solo prototipo?
+Comprobar que los tres flujos aprobados en la semana 3 funcionan como una sola experiencia coherente: que una persona pueda publicar una idea, descubrir proyectos desde un punto de entrada único ("Explorar proyectos"), decidir cómo participar y, antes de comprometerse, revisar evidencia de confiabilidad de un miembro del proyecto, todo dentro de un mismo recorrido.
 
 ---
 
@@ -35,75 +32,61 @@ Escriban los flujos aprobados en la semana 3 que harán parte de este prototipo.
 
 ¿Qué sí incluirá el prototipo?
 
-1.
+1. Punto de entrada único ("Explorar proyectos") que lleva a la página de un proyecto (EcoCampus).
 
-2.
+2. Creación y publicación de una idea, con sus pantallas de estructura, vista previa (con acciones secundarias: ver completa, estimar tiempo, actualizar vista) y elección de audiencia.
 
-3.
+3. Explorar un proyecto y elegir nivel de participación (Seguir, Comentar, Postularme, Unirme), cada uno con su propia confirmación.
+
+4. Revisar el perfil de un miembro del proyecto (historial, recomendaciones) desde la lista de miembros, y contactarlo o solicitar unirse.
 
 ¿Qué no incluirá por ahora?
 
-- 
+- Registro o autenticación real de usuarios.
 
-- 
+- Pantallas de administración o moderación de contenido.
 
-- 
+- Notificaciones push reales.
 
 ---
 
 ## Pantallas, escenas o partes principales
 
-Enumeren los elementos que van a construir y cómo se conectan entre sí.
+**A. Publicar una idea**
+1. Nueva idea / Comencemos.
+2. Completa tu idea (objetivo, funciones, tiempo estimado).
+3. Vista previa (con ramales: vista previa completa, estimar tiempo, actualizar vista).
+4. Elegir audiencia (Solo yo / Mis conocidos / Toda la comunidad).
+5. Publicar.
 
-1.
+**B. Explorar y participar en un proyecto**
+6. Explorar proyectos (punto de entrada / buscador).
+7. EcoCampus — perfil del proyecto.
+8. Elige cómo participar (Seguir, Comentar, Postularme a una tarea, Unirme al equipo).
+9. Cuatro pantallas de acción con su confirmación correspondiente.
 
-2.
-
-3.
-
-4.
-
-5.
-
-6.
+**C. Ver evidencia de confiabilidad**
+10. Miembros del proyecto (lista, accesible desde EcoCampus).
+11. Perfil de un miembro (proyectos anteriores, tareas cumplidas).
+12. Recomendaciones de terceros ("Lo que dicen de ella").
+13. Contactar / Solicitar unirme.
 
 ---
 
 ## Integración entre flujos
 
-¿Cómo se conectan entre sí los flujos aprobados?
-
-- 
-
-- 
-
-- 
-
 ---
 
 ## Herramienta de trabajo
-
-¿Cómo construirán el prototipo integrado?
 
 **Herramienta esperada:** Figma
 
 Si usan algún apoyo adicional, indíquenlo aquí:
 
-- 
-
-- 
-
 ---
 
 ## Hipótesis a validar
 
-¿Qué creen que sucederá cuando un usuario vea o use este prototipo?
-
-- 
-
-- 
-
-- 
 
 ---
 
@@ -111,12 +94,6 @@ Si usan algún apoyo adicional, indíquenlo aquí:
 
 Peguen aquí el enlace al archivo o prototipo de Figma:
 
-**Enlace:**
+**Enlace:** 
 
 ¿Qué puede recorrer o ver una persona dentro de ese prototipo?
-
-- 
-
-- 
-
-- 
