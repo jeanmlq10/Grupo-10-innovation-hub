@@ -2,9 +2,9 @@
 
 ## Información del equipo
 
-**Nombre del equipo:**
+**Nombre del equipo:** Grupo 10
 
-**Integrantes:**
+**Integrantes:** Oscar Gil, Jean Marthé, Andrea Quintero, Daniel Cruzado
 
 ---
 
@@ -12,11 +12,11 @@
 
 ¿Qué decisiones importantes tomaron al construir el prototipo?
 
-- 
+- Agregamos una pantalla "Explorar proyectos" que no existía en los flujos sueltos de la semana 3, para que el prototipo tuviera un único punto de entrada en vez de tres demos independientes.
 
-- 
+- Conectamos "Miembros del proyecto" (dentro de EcoCampus) directamente con el perfil individual de una persona, para que revisar confiabilidad quedara integrado al momento de decidir participar, en vez de ser una búsqueda aparte.
 
-- 
+- Le dimos a cada nivel de participación (Seguir, Comentar, Postularme, Unirme) su propia pantalla de confirmación con un mensaje distinto, retomando el hallazgo de la semana 3 sobre la importancia de que el mensaje coincida con la acción realizada.
 
 ---
 
@@ -24,17 +24,17 @@
 
 ¿Qué parte de la idea fue más difícil convertir en prototipo?
 
+Mostrar que la idea que alguien publica (Flujo 1) y el proyecto que otra persona explora (Flujo 2) son, en el fondo, la misma entidad vista en dos momentos distintos antes y después de publicarse sin duplicar pantallas ni romper la conexión entre ambos flujos.
+
 ---
 
 ## Lo que todavía no sabemos
 
 ¿Qué dudas esperan resolver en la prueba con usuarios?
 
-- 
+- Si las personas entienden que "Miembros del proyecto" es la puerta de entrada para revisar confiabilidad, o si esperan encontrar esa información en otro lugar.
 
-- 
-
-- 
+- Si el paso adicional del Flujo 2 (menú "Elige cómo participar") se sigue sintiendo largo ahora que está integrado con el resto del prototipo.
 
 ---
 
@@ -42,11 +42,9 @@
 
 ¿Qué podría hacer que los resultados de la prueba sean confusos o poco útiles?
 
-- 
+- Con más de 25 pantallas conectadas, existe el riesgo de que la persona se pierda o no siga el recorrido esperado durante la prueba.
 
-- 
-
-- 
+- Si no se aclara bien el punto de partida en Figma, los participantes podrían empezar por una pantalla distinta a la prevista y sesgar la validación.
 
 ---
 
