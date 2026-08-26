@@ -87,6 +87,7 @@ Regresa a la vista previa de tu idea, entra a “Estimar tiempo” y modifica el
 
 ¿Con cuántas personas aplicaron esta validación?
 
+<<<<<<< Updated upstream
 *Cantidad: 8 personas*
 
 ¿Qué ocurrió de manera general durante la prueba?
@@ -100,3 +101,18 @@ Regresa a la vista previa de tu idea, entra a “Estimar tiempo” y modifica el
 - Tarea 4 (elegir cómo participar): la mayoría entendió las cuatro opciones sin ayuda; solo Camilo no. Se observó un patrón: quienes tuvieron más dudas en la Tarea 3 (Alberto, Alejandro) terminaron eligiendo los niveles de menor compromiso (Seguir, Comentar) en vez de Postularse o Unirse.
 
 - Tarea 5 (actualizar tiempo): la de peor desempeño global. Solo Juan Diego la completó sin ayuda; Emanuel necesitó ayuda puntual con los botones +/−; Alberto y Alejandro no entendieron qué representaba el "tiempo del proyecto"; Camilo y Natalia no lograron completarla en absoluto, ni siquiera encontraron el camino de regreso a su idea.
+=======
+**Cantidad: 8 personas**
+
+¿Qué ocurrió de manera general durante la prueba?
+
+- En general, los participantes pudieron completar sin ayuda las tareas relacionadas con la creación y publicación de una idea y la búsqueda del proyecto EcoCampus. Estas fueron las partes más claras y fáciles de comprender.
+
+- La principal dificultad apareció al momento de revisar a los miembros del proyecto. Algunos participantes tuvieron problemas para encontrar esta sección o para identificar toda la información disponible en el perfil. Además, varios consideraron que la información sobre la trayectoria de una persona no era suficiente para generar confianza completa.
+
+- La tarea de actualizar el tiempo estimado fue la que presentó mayores dificultades. Algunos participantes no encontraron la opción, mientras que otros no comprendieron qué debían modificar o cómo funcionaban los botones para cambiar el tiempo.
+
+- También se identificaron pequeñas dificultades con la identificación de botones y acciones. Algunos participantes señalaron que ciertos elementos parecían botones sin serlo, y se sugirió mejorar visualmente las acciones importantes.
+
+- En cuanto a las formas de participación, los participantes mostraron diferentes preferencias entre Seguir, Comentar, Postularse a una tarea y Unirse al equipo. En algunos casos comprendieron las diferencias, mientras que en otros fue necesario explorar más las opciones antes de tomar una decisión.
+>>>>>>> Stashed changes

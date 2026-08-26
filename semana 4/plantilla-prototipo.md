@@ -99,7 +99,7 @@ Creemos que las cuatro confirmaciones distintas (Seguir, Comentar, Postularme, U
 
 Peguen aquí el enlace al archivo o prototipo de Figma:
 
-**Enlace:** 
+**Enlace:**  https://www.figma.com/proto/iU6bWBBrztSeja3IASSQQY/Movil?node-id=19-953&t=HEoCxvHtfg5HN5sz-1
 
 ¿Qué puede recorrer o ver una persona dentro de ese prototipo?
 
