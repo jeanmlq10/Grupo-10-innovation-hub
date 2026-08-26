@@ -74,6 +74,10 @@ Comprobar que los tres flujos aprobados en la semana 3 funcionan como una sola e
 ---
 
 ## Integración entre flujos
+"Explorar proyectos" es el punto de entrada único a todo el prototipo: desde ahí se llega a la página de un proyecto (EcoCampus), en vez de arrancar cada flujo por separado.
+Dentro de EcoCampus, "Miembros del proyecto" conecta directo con el perfil individual (Flujo 3): revisar confiabilidad queda integrado al momento de decidir participar, no como un flujo aparte.
+Desde el perfil de un miembro, "Contactar" o "Solicitar unirme" permite continuar la interacción y finalizar con una confirmación de la acción realizada.
+Cada nivel de participación (Seguir, Comentar, Postularme, Unirme) tiene su propia pantalla de confirmación con un mensaje distinto, para que coincida exactamente con la acción realizada — aprendizaje directo de la validación de la semana 3. 
 
 ---
 
@@ -86,8 +90,9 @@ Si usan algún apoyo adicional, indíquenlo aquí:
 ---
 
 ## Hipótesis a validar
-
-
+Creemos que los usuarios entenderán que "Miembros del proyecto" es la puerta de entrada para revisar confiabilidad, y la usarán antes de decidir participar.
+Creemos que publicar una idea en modo borrador seguirá sintiéndose seguro incluso integrado con el resto de la plataforma.
+Creemos que las cuatro confirmaciones distintas (Seguir, Comentar, Postularme, Unirme) eliminarán la duda que generó en la semana 3 una sola confirmación genérica.
 ---
 
 ## Evidencia en Figma
@@ -97,3 +102,7 @@ Peguen aquí el enlace al archivo o prototipo de Figma:
 **Enlace:** 
 
 ¿Qué puede recorrer o ver una persona dentro de ese prototipo?
+
+Crear y publicar una idea completa, de principio a fin.
+Explorar el proyecto EcoCampus desde el punto de entrada y elegir entre los cuatro niveles de participación.
+Revisar el perfil de un miembro del proyecto (historial, recomendaciones) y decidir si contactarlo o pedir unirse.
