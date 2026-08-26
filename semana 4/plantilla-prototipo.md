@@ -93,7 +93,6 @@ Si usan algún apoyo adicional, indíquenlo aquí:
 Creemos que los usuarios entenderán que "Miembros del proyecto" es la puerta de entrada para revisar confiabilidad, y la usarán antes de decidir participar.
 Creemos que publicar una idea en modo borrador seguirá sintiéndose seguro incluso integrado con el resto de la plataforma.
 Creemos que las cuatro confirmaciones distintas (Seguir, Comentar, Postularme, Unirme) eliminarán la duda que generó en la semana 3 una sola confirmación genérica.
----
 
 ## Evidencia en Figma
 
