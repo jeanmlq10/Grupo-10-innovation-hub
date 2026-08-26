@@ -87,12 +87,16 @@ Regresa a la vista previa de tu idea, entra a “Estimar tiempo” y modifica el
 
 ¿Con cuántas personas aplicaron esta validación?
 
-**Cantidad:**
+*Cantidad: 8 personas*
 
 ¿Qué ocurrió de manera general durante la prueba?
 
-- 
+- Tarea 1 (publicar idea): funcionó para las 8 personas sin ayuda del equipo — la tarea más sólida del prototipo. Natalia cuestionó espontáneamente por qué publicaría una idea valiosa si "todo el mundo" puede verla, lo que valida el motivo original de elegir la Versión A ("el borrador") desde la semana 3.
 
-- 
+- Tarea 2 (encontrar EcoCampus): funcionó sin problema para 6 de 8; Camilo y Sara no lograron identificar el botón "¿Quieres participar?" — Sara comentó que "hay cosas que parecen un botón pero no llevan a nada" y Camilo sugirió que debería estar antes en la pantalla.
 
-- 
+- Tarea 3 (revisar a un miembro / conexión con Flujo 3): fue la tarea con más dificultad. Alberto y Alejandro tardaron en encontrar "Miembros del proyecto" y ni siquiera revisaron el perfil por su cuenta — el equipo tuvo que señalárselo. Emanuel, Camilo y Natalia sí llegaron, pero consideraron la información insuficiente para confiar plenamente, y dos de ellos no encontraron la sección de recomendaciones. Solo Juan Diego y Alix sintieron que la evidencia mostrada alcanzaba.
+
+- Tarea 4 (elegir cómo participar): la mayoría entendió las cuatro opciones sin ayuda; solo Camilo no. Se observó un patrón: quienes tuvieron más dudas en la Tarea 3 (Alberto, Alejandro) terminaron eligiendo los niveles de menor compromiso (Seguir, Comentar) en vez de Postularse o Unirse.
+
+- Tarea 5 (actualizar tiempo): la de peor desempeño global. Solo Juan Diego la completó sin ayuda; Emanuel necesitó ayuda puntual con los botones +/−; Alberto y Alejandro no entendieron qué representaba el "tiempo del proyecto"; Camilo y Natalia no lograron completarla en absoluto, ni siquiera encontraron el camino de regreso a su idea.
