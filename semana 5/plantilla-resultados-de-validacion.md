@@ -24,7 +24,7 @@
 
 Se mostró el resumen integrado de navegaciones, organizado según los tres perfiles de usuario definidos desde la semana 2 (Creador/Líder de proyecto, Miembro/Colaborador y Explorador/Visitante), junto con las pantallas de baja fidelidad de cada flujo. A diferencia de la validación de la semana 4 —donde cada flujo (publicar idea, explorar proyecto, ver evidencia de confiabilidad) se probó por separado y en dos versiones (A/B)— esta vez se mostraron los flujos ya *integrados en una sola navegación por rol*, con menú inferior común (Explorar, Mis proyectos/Participaciones, Notificaciones, Perfil).
 
-**Enlace al prototipo en Figma:**
+**Enlace al prototipo en Figma:** https://www.figma.com/proto/iU6bWBBrztSeja3IASSQQY/Movil?node-id=19-952&t=4RRldTUlQCIfAYsP-1 
 
 ¿Qué cambios importantes incorporaron desde la semana 4?
 
