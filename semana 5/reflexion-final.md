@@ -44,6 +44,7 @@ La decisión más importante es mantener la estructura de navegación y los fluj
 
 Escriban un párrafo de 8 a 12 líneas respondiendo esta pregunta:
 
-`¿Qué aprendió el equipo sobre diseñar una solución real antes de empezar a implementarla con más fuerza?`
+¿Qué aprendió el equipo sobre diseñar una solución real antes de empezar a implementarla con más fuerza?
 
 A lo largo de estas cinco semanas aprendimos que diseñar una solución real empieza por dejar de lado nuestros propios supuestos y dejar que las personas entrevistadas nos digan, con sus propias palabras, cómo deciden confiar o no en alguien. Pasamos de pensar que el problema era conectar habilidades a entender que el problema es la falta de evidencia de compromiso, y ese cambio de enfoque solo fue posible porque validamos antes de construir. También aprendimos que un flujo bien diseñado por separado no garantiza una buena experiencia si no se prueba integrado con los demás: la navegación conectada terminó siendo tan importante como cada flujo individual. Validar en varias rondas, primero con prototipos exploratorios y luego con una versión integrada, nos permitió equivocarnos barato, en papel y en wireframes, en vez de descubrir esos mismos problemas después de haber invertido tiempo de desarrollo. Cerramos esta etapa con la convicción de que la estructura y los flujos ya responden a una necesidad real y validada, y que el trabajo que sigue es de refinamiento visual, no de replanteamiento del problema ni de la solución.
+
