@@ -1,9 +1,3 @@
-/// Domain entity representing a project/idea shown in the "Explorar
-/// proyectos" home feed.
-///
-/// Kept intentionally simple (no Flutter/GetX imports) so it stays a pure
-/// business-rule object, following the same pattern as
-/// `features/product/domain/models/product.dart`.
 class Project {
   Project({
     required this.id,
