@@ -6,12 +6,19 @@ import '../home_colors.dart';
 /// Bottom navigation bar for "Explorar | Mis proyectos | Notificaciones |
 /// Perfil".
 ///
-/// Only "Explorar" is a real destination in this entrega — it is the
-/// screen already shown. The other three are visual-only/pending, as the
-/// assignment explicitly scopes out those features for now; tapping them
-/// just informs the user instead of navigating or crashing.
+/// "Explorar" and "Mis proyectos" are real destinations, registered as
+/// named routes in `main.dart` ('/home' and '/mis-proyectos'). Navigating
+/// by route name — instead of importing `HomePage`/`MyProjectsPage`
+/// directly — keeps this shared widget free of a circular import with
+/// the pages that embed it. "Notificaciones" and "Perfil" stay
+/// visual-only/pending, as the assignment explicitly scopes out those
+/// features for now; tapping them just informs the user instead of
+/// navigating or crashing.
 class HomeBottomNavigation extends StatelessWidget {
-  const HomeBottomNavigation({super.key});
+  const HomeBottomNavigation({super.key, this.currentIndex = 0});
+
+  /// Which tab is currently active (0 = Explorar, 1 = Mis proyectos).
+  final int currentIndex;
 
   static const _tabs = [
     _TabData(icon: Icons.explore_outlined, label: 'Explorar'),
@@ -21,12 +28,21 @@ class HomeBottomNavigation extends StatelessWidget {
   ];
 
   void _onTabTapped(int index) {
-    if (index == 0) return;
-    Get.snackbar(
-      _tabs[index].label,
-      'Esta sección todavía no está implementada.',
-      snackPosition: SnackPosition.BOTTOM,
-    );
+    if (index == currentIndex) return;
+    switch (index) {
+      case 0:
+        Get.offNamed('/home');
+        break;
+      case 1:
+        Get.offNamed('/mis-proyectos');
+        break;
+      default:
+        Get.snackbar(
+          _tabs[index].label,
+          'Esta sección todavía no está implementada.',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+    }
   }
 
   @override
@@ -47,7 +63,7 @@ class HomeBottomNavigation extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: List.generate(_tabs.length, (index) {
-          final isSelected = index == 0;
+          final isSelected = index == currentIndex;
           return _NavIcon(
             icon: _tabs[index].icon,
             selected: isSelected,

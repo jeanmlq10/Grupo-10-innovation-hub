@@ -12,6 +12,8 @@ import 'features/auth/auth_dependencies.dart';
 import 'features/product/product_dependencies.dart';
 import 'features/home/home_dependencies.dart';
 import 'features/home/ui/views/home_page.dart';
+import 'features/my_projects/my_projects_dependencies.dart';
+import 'features/my_projects/ui/views/my_projects_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,6 +29,7 @@ void main() async {
   registerAuth();
   registerProduct();
   registerHome();
+  registerMyProjects();
   runApp(const MyApp());
 }
 
@@ -40,12 +43,19 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       debugShowCheckedModeBanner: false,
-      // For this entrega only the Home ("Explorar proyectos") is in scope,
-      // so the app opens directly on it instead of the auth-gated
-      // `Central()` widget. `Central`, login and the product feature are
-      // untouched and still compile — swap this back to `Central()` once
-      // auth is wired into a real flow.
-      home: const HomePage(),
+      // This entrega's scope is "Explorar proyectos" (Home) and now
+      // "Mis proyectos", so the app opens directly on Home instead of the
+      // auth-gated `Central()` widget. Both screens are registered as
+      // named routes so the shared bottom navigation can switch between
+      // them (`Get.offNamed`) without either page importing the other.
+      // `Central`, login and the product feature are untouched and still
+      // compile — swap `initialRoute` back to `Central()` once auth is
+      // wired into a real flow.
+      initialRoute: '/home',
+      getPages: [
+        GetPage(name: '/home', page: () => const HomePage()),
+        GetPage(name: '/mis-proyectos', page: () => const MyProjectsPage()),
+      ],
     );
   }
 }
