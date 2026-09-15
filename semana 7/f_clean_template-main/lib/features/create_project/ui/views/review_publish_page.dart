@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../home/ui/home_colors.dart';
-import '../../../my_projects/domain/repositories/i_my_projects_repository.dart';
 import '../viewmodels/create_project_controller.dart';
 import '../widgets/step_progress_bar.dart';
 import '../widgets/wizard_nav_buttons.dart';
@@ -11,10 +10,10 @@ import 'project_published_page.dart';
 /// "Revisar y publicar" — the last numbered step (still shown as 4/4,
 /// same as "Audiencia": the reference doesn't give this screen its own
 /// fraction). Summarizes everything collected so far and, on "Publicar
-/// proyecto", hands the finished draft to `IMyProjectsRepository` so it
-/// actually shows up in "Mis proyectos" — this is the one place where
-/// `create_project` reaches into `my_projects`, and it only does so
-/// through that repository interface, never its data source directly.
+/// proyecto", flips the SAME project the wizard has been editing from
+/// draft to published — see `CreateProjectController.publish()`. No new
+/// project object is created here; this screen only triggers that
+/// transition.
 class ReviewPublishPage extends StatelessWidget {
   const ReviewPublishPage({super.key});
 
@@ -232,15 +231,11 @@ class ReviewPublishPage extends StatelessWidget {
   }
 
   void _publish(CreateProjectController controller) {
-    // This is the one crossing point into "Mis proyectos" — always
-    // through its repository contract, never its data source directly.
-    Get.find<IMyProjectsRepository>().addPublishedProject(
-      name: controller.name.value,
-      description: controller.description.value,
-      membersCount: controller.totalTeamMembers,
-    );
+    // Flips the same project (by id) from draft to published — see
+    // CreateProjectController.publish(). Nothing new is created here.
+    controller.publish();
     // Clears the whole wizard stack — there's nothing to go "back" to
     // once the project is published.
-    Get.offAll(() => const ProjectPublishedPage());
+    Get.offAll(() => ProjectPublishedPage(projectId: controller.draftId));
   }
 }

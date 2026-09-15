@@ -4,11 +4,7 @@ import '../i_my_projects_source.dart';
 /// Local/mock implementation of [IMyProjectsSource].
 ///
 /// This stage is scoped to LOCAL data only: no Firebase, no Supabase, no
-/// API, no database. When creation, drafts and publishing are
-/// implemented in a later stage, this list becomes the in-memory store
-/// those flows read from and write to — the shape (`isDraft`,
-/// `isPlaceholder`, counters) is already prepared for that, it just
-/// isn't wired up yet.
+/// API, no database.
 ///
 /// - `EcoCampus` is the one fully-specified published project from the
 ///   Figma reference, with its member/task/request counters.
@@ -18,6 +14,11 @@ import '../i_my_projects_source.dart';
 ///   style as EcoCampus, but with the "Borrador" status and no stats
 ///   row yet. A second placeholder draft keeps the "Mis borradores (2)"
 ///   count from the reference accurate.
+///
+/// Projects created through "Crear proyecto" are NOT added here — they
+/// live in `ISharedProjectsRepository` and `MyProjectsController` merges
+/// them into its list at read time, so there's only ever one copy of a
+/// user-created project, never a second one duplicated into this file.
 class LocalMyProjectsSource implements IMyProjectsSource {
   final List<MyProject> _myProjects = [
     MyProject(
@@ -64,40 +65,11 @@ class LocalMyProjectsSource implements IMyProjectsSource {
     ),
   ];
 
-  // Ids 1-5 are already used by the seeded mock data above.
-  int _nextId = 6;
-
   @override
   Future<List<MyProject>> getMyProjects() async {
     // Small artificial delay so the loading state is visible, same spirit
     // as `LocalProjectSource.getProjects()` in the home feature.
     await Future.delayed(const Duration(milliseconds: 400));
     return List.unmodifiable(_myProjects);
-  }
-
-  @override
-  void addProject({
-    required String name,
-    required String description,
-    required int membersCount,
-  }) {
-    // Every project coming out of "Crear proyecto" starts the same way:
-    // published (not a draft), "En desarrollo", with no tasks or
-    // requests yet — that's a business rule about a brand-new project's
-    // initial state, so it belongs here in the data layer, not in the
-    // wizard's UI.
-    _myProjects.insert(
-      0,
-      MyProject(
-        id: '${_nextId++}',
-        name: name,
-        description: description,
-        status: 'En desarrollo',
-        isDraft: false,
-        membersCount: membersCount,
-        tasksCount: 0,
-        requestsCount: 0,
-      ),
-    );
   }
 }

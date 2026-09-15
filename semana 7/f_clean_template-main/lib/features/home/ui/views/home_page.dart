@@ -7,6 +7,7 @@ import '../widgets/create_idea_card.dart';
 import '../widgets/home_bottom_navigation.dart';
 import '../widgets/project_card.dart';
 import '../widgets/project_search_bar.dart';
+import '../../../shared_projects/ui/views/project_detail_page.dart';
 
 /// "Explorar proyectos" — the Home of Movil.
 ///
@@ -83,7 +84,11 @@ class HomePage extends StatelessWidget {
                         return const CreateIdeaCard();
                       }
                       final project = projects[index - 1];
-                      return ProjectCard(project: project);
+                      return ProjectCard(
+                        project: project,
+                        onTap: () =>
+                            Get.to(() => ProjectDetailPage(project: project)),
+                      );
                     },
                   ),
                 );

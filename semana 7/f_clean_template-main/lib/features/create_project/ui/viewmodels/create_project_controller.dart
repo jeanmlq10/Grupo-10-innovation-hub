@@ -1,16 +1,25 @@
 import 'package:get/get.dart';
 
-import '../../domain/models/new_project_draft.dart';
-import '../../domain/repositories/i_create_project_repository.dart';
+import '../../../home/domain/models/project.dart';
+import '../../../shared_projects/domain/repositories/i_shared_projects_repository.dart';
 
-/// ViewModel shared by every step of the "Crear proyecto" wizard — it
-/// holds the draft's reactive fields so all of them read/write the same
-/// state, and it's the only thing any step talks to (never the
-/// repository or data source directly).
+/// ViewModel shared by every step of the "Crear proyecto" wizard.
+///
+/// Unlike the earlier stage, this controller no longer keeps its own
+/// private draft storage — it reads and writes directly to
+/// [ISharedProjectsRepository], the single store that "Mis proyectos",
+/// "Explorar proyectos" and "Ver proyecto" all read from too. That's
+/// what makes the project the wizard is building the SAME object that
+/// later shows up everywhere else, instead of a separate copy that gets
+/// translated into a `MyProject`/`Project` at the very end.
 class CreateProjectController extends GetxController {
   CreateProjectController(this.repository);
 
-  final ICreateProjectRepository repository;
+  final ISharedProjectsRepository repository;
+
+  /// The id of the [Project] this wizard session is building. Assigned
+  /// in [onInit], when the draft is first created.
+  late final String draftId;
 
   /// The fixed set of roles offered in "Equipo necesario", in display
   /// order. A role not present in [teamRoles] simply hasn't been touched
@@ -40,9 +49,12 @@ class CreateProjectController extends GetxController {
 
   @override
   void onInit() {
-    // Every fresh attempt at "Crear proyecto" starts blank — an
-    // abandoned previous attempt should never leak into a new one.
-    repository.resetDraft();
+    // Every fresh attempt at "Crear proyecto" is a brand-new draft,
+    // stored in the shared repository from this very first instant —
+    // that's what lets it show up under "Mis borradores" even before
+    // the user finishes the wizard.
+    final draft = repository.startDraft();
+    draftId = draft.id;
     super.onInit();
   }
 
@@ -80,14 +92,22 @@ class CreateProjectController extends GetxController {
     _persist();
   }
 
+  /// Flips the draft to published. Same object, same id — nothing new
+  /// is created here.
+  void publish() => repository.publish(draftId);
+
   void _persist() {
-    repository.saveDraft(
-      NewProjectDraft(
+    repository.updateDraft(
+      Project(
+        id: draftId,
         name: name.value,
         description: description.value,
+        categories: const [],
+        canApply: true,
         teamRoles: Map<String, int>.from(teamRoles),
         duration: duration.value,
         audience: audience.value,
+        isDraft: true,
       ),
     );
   }

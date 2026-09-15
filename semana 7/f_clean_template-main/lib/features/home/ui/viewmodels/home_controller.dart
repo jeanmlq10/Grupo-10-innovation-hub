@@ -1,16 +1,25 @@
 import 'package:get/get.dart';
 import 'package:loggy/loggy.dart';
 
+import '../../../shared_projects/domain/repositories/i_shared_projects_repository.dart';
 import '../../domain/models/project.dart';
 import '../../domain/repositories/i_project_repository.dart';
 
 /// ViewModel for the Home ("Explorar proyectos"). Owns the reactive state
 /// the View observes with [Obx] — it never talks to a data source
-/// directly, only to [IProjectRepository].
+/// directly, only to [IProjectRepository] (for the example projects) and
+/// [ISharedProjectsRepository] (for anything published through "Crear
+/// proyecto").
+///
+/// Only PUBLISHED shared projects (`isDraft == false`) join this feed —
+/// a project still being drafted has no business showing up in public
+/// "Explorar proyectos". They're merged in as the exact same [Project]
+/// object the wizard was editing, never a converted copy.
 class HomeController extends GetxController with UiLoggy {
-  HomeController(this.repository);
+  HomeController(this.repository, this.sharedRepository);
 
   final IProjectRepository repository;
+  final ISharedProjectsRepository sharedRepository;
 
   final RxList<Project> _projects = <Project>[].obs;
   final RxBool isLoading = false.obs;
@@ -36,7 +45,12 @@ class HomeController extends GetxController with UiLoggy {
   Future<void> getProjects() async {
     loggy.debug('HomeController: Getting projects');
     isLoading.value = true;
-    _projects.value = await repository.getProjects();
+    final examples = await repository.getProjects();
+    final published = sharedRepository
+        .getAll()
+        .where((project) => !project.isDraft)
+        .toList();
+    _projects.value = [...examples, ...published];
     isLoading.value = false;
   }
 
