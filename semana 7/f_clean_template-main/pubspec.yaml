@@ -40,6 +40,9 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.9
   flutter_launcher_icons: ^0.14.4
+  # Renders the exact "Comencemos" cloud illustration exported from
+  # Figma as raw SVG, instead of approximating it with icons/shapes.
+  flutter_svg: ^2.0.10+1
   
 dev_dependencies:
   flutter_test:
