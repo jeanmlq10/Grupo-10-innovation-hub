@@ -9,6 +9,7 @@ import 'core/local_preferences_secured.dart';
 import 'core/local_preferences_shared.dart';
 
 import 'features/auth/auth_dependencies.dart';
+import 'features/create_project/create_project_dependencies.dart';
 import 'features/product/product_dependencies.dart';
 import 'features/home/home_dependencies.dart';
 import 'features/home/ui/views/home_page.dart';
@@ -30,6 +31,7 @@ void main() async {
   registerProduct();
   registerHome();
   registerMyProjects();
+  registerCreateProject();
   runApp(const MyApp());
 }
 
