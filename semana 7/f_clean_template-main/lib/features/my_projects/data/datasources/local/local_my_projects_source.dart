@@ -64,11 +64,40 @@ class LocalMyProjectsSource implements IMyProjectsSource {
     ),
   ];
 
+  // Ids 1-5 are already used by the seeded mock data above.
+  int _nextId = 6;
+
   @override
   Future<List<MyProject>> getMyProjects() async {
     // Small artificial delay so the loading state is visible, same spirit
     // as `LocalProjectSource.getProjects()` in the home feature.
     await Future.delayed(const Duration(milliseconds: 400));
     return List.unmodifiable(_myProjects);
+  }
+
+  @override
+  void addProject({
+    required String name,
+    required String description,
+    required int membersCount,
+  }) {
+    // Every project coming out of "Crear proyecto" starts the same way:
+    // published (not a draft), "En desarrollo", with no tasks or
+    // requests yet — that's a business rule about a brand-new project's
+    // initial state, so it belongs here in the data layer, not in the
+    // wizard's UI.
+    _myProjects.insert(
+      0,
+      MyProject(
+        id: '${_nextId++}',
+        name: name,
+        description: description,
+        status: 'En desarrollo',
+        isDraft: false,
+        membersCount: membersCount,
+        tasksCount: 0,
+        requestsCount: 0,
+      ),
+    );
   }
 }

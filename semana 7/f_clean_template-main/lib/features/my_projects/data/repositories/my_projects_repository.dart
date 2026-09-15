@@ -12,4 +12,15 @@ class MyProjectsRepository implements IMyProjectsRepository {
 
   @override
   Future<List<MyProject>> getMyProjects() => source.getMyProjects();
+
+  @override
+  void addPublishedProject({
+    required String name,
+    required String description,
+    required int membersCount,
+  }) => source.addProject(
+    name: name,
+    description: description,
+    membersCount: membersCount,
+  );
 }

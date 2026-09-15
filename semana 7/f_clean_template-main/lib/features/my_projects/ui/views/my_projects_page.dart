@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../create_project/ui/views/create_project_page.dart';
 import '../../../home/ui/home_colors.dart';
 import '../../../home/ui/widgets/home_bottom_navigation.dart';
 import '../../domain/models/my_project.dart';
@@ -46,16 +47,12 @@ class MyProjectsPage extends StatelessWidget {
                       ),
                       InkWell(
                         customBorder: const CircleBorder(),
-                        onTap: () {
-                          // El flujo de creación completo llega en una
-                          // próxima etapa; por ahora el botón solo debe
-                          // estar presente y preparado.
-                          Get.snackbar(
-                            'Crear proyecto',
-                            'Publicar un proyecto nuevo llega en una próxima entrega.',
-                            snackPosition: SnackPosition.BOTTOM,
-                          );
-                        },
+                        // Etapa 2: el botón ya abre el flujo real de
+                        // creación (Crear proyecto → Nueva idea →
+                        // Información básica). El resto del flujo
+                        // (equipo, tiempo, audiencia, publicar) todavía
+                        // no existe — ver `CreateProjectPage`.
+                        onTap: () => Get.to(() => const CreateProjectPage()),
                         child: Container(
                           width: 40,
                           height: 40,

@@ -11,4 +11,15 @@ abstract class IMyProjectsRepository {
   /// future paginated/remote source only needs to change here, not in
   /// the UI.
   Future<List<MyProject>> getMyProjects();
+
+  /// Adds a freshly-published project (from the "Crear proyecto"
+  /// wizard) to the list "Mis proyectos" reads from. The id and status
+  /// ("En desarrollo") are assigned by the data source, same as any
+  /// other business rule about a project's initial state — the caller
+  /// only supplies what the user actually entered.
+  void addPublishedProject({
+    required String name,
+    required String description,
+    required int membersCount,
+  });
 }
