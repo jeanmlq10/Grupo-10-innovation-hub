@@ -2,17 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../home/ui/home_colors.dart';
+import '../../../shared_projects/domain/repositories/i_shared_projects_repository.dart';
+import '../../../shared_projects/ui/views/project_detail_page.dart';
+import 'create_project_page.dart';
 import '../widgets/confetti_check_illustration.dart';
 
-/// "¡Proyecto publicado!" — the final screen of the wizard. Both buttons
-/// go to "Mis proyectos" today: there's no dedicated project-detail
-/// screen yet for "Ver mi proyecto" to open, so it lands in the same
-/// place as "Volver a mis proyectos" until that detail screen exists.
+/// "¡Proyecto publicado!" — the final screen of the wizard.
+///
+/// "Ver mi proyecto" opens the actual project that was just published
+/// (looked up by id from the shared repository) — never just a generic
+/// trip to "Mis proyectos". "Volver a mis proyectos" does go there,
+/// where the same project also appears (same object, same id).
 class ProjectPublishedPage extends StatelessWidget {
-  const ProjectPublishedPage({super.key});
+  const ProjectPublishedPage({super.key, required this.projectId});
+
+  final String projectId;
 
   @override
   Widget build(BuildContext context) {
+    final project = Get.find<ISharedProjectsRepository>().getById(projectId);
+    final isPrivate = project?.audience == 'Solo yo';
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -23,8 +33,8 @@ class ProjectPublishedPage extends StatelessWidget {
               const Spacer(),
               const ConfettiCheckIllustration(),
               const SizedBox(height: 28),
-              const Text(
-                '¡Proyecto publicado!',
+              Text(
+                isPrivate ? '¡Proyecto guardado!' : '¡Proyecto publicado!',
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -46,7 +56,7 @@ class ProjectPublishedPage extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () => Get.offAllNamed('/mis-proyectos'),
+                  onPressed: () => _openMyProject(),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: HomeColors.primaryPurple,
                     foregroundColor: Colors.white,
@@ -55,8 +65,8 @@ class ProjectPublishedPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(14),
                     ),
                   ),
-                  child: const Text(
-                    'Ver mi proyecto',
+                  child: Text(
+                    isPrivate ? 'Editar mi proyecto' : 'Ver mi proyecto',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -86,5 +96,21 @@ class ProjectPublishedPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _openMyProject() {
+    final repository = Get.find<ISharedProjectsRepository>();
+    final project = repository.getById(projectId);
+    if (project == null) {
+      // Shouldn't happen — the id came straight from the wizard that
+      // just published this exact project — but fall back gracefully.
+      Get.offAllNamed('/mis-proyectos');
+      return;
+    }
+    if (project.audience == 'Solo yo') {
+      Get.to(() => CreateProjectPage(editProjectId: project.id));
+    } else {
+      Get.to(() => ProjectDetailPage(project: project));
+    }
   }
 }

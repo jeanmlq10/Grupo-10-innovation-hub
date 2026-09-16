@@ -12,7 +12,12 @@ import 'estimated_time_page.dart';
 /// role the project needs. No role is mandatory: the reference doesn't
 /// require a minimum team, so "Siguiente" always proceeds regardless of
 /// whether any counter was touched.
-class TeamNeededPage extends StatelessWidget {
+///
+/// A `StatefulWidget` only for the "Otro" text field's
+/// `TextEditingController` — same reasoning as "Nueva idea"/"Información
+/// básica": the ephemeral text-editing state lives here, the real data
+/// (`otherRoleName`) lives on `CreateProjectController`.
+class TeamNeededPage extends StatefulWidget {
   const TeamNeededPage({super.key});
 
   static const _roles = [
@@ -61,9 +66,29 @@ class TeamNeededPage extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) {
-    final CreateProjectController controller = Get.find();
+  State<TeamNeededPage> createState() => _TeamNeededPageState();
+}
 
+class _TeamNeededPageState extends State<TeamNeededPage> {
+  final CreateProjectController controller = Get.find();
+  late final TextEditingController _otherRoleController;
+
+  @override
+  void initState() {
+    super.initState();
+    _otherRoleController = TextEditingController(
+      text: controller.otherRoleName.value,
+    );
+  }
+
+  @override
+  void dispose() {
+    _otherRoleController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -109,7 +134,7 @@ class TeamNeededPage extends StatelessWidget {
                   () => SingleChildScrollView(
                     child: Column(
                       children: [
-                        for (final role in _roles)
+                        for (final role in TeamNeededPage._roles) ...[
                           TeamRoleTile(
                             icon: role.icon,
                             iconBackground: role.background,
@@ -122,6 +147,55 @@ class TeamNeededPage extends StatelessWidget {
                             onDecrement: () =>
                                 controller.decrementRole(role.role),
                           ),
+                          if (role.role == 'Otro' &&
+                              controller.roleCount('Otro') > 0)
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                bottom: 12,
+                                left: 4,
+                                right: 4,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    '¿Qué rol necesitas?',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 13.5,
+                                      color: HomeColors.textPrimary,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  TextField(
+                                    controller: _otherRoleController,
+                                    onChanged: controller.setOtherRoleName,
+                                    style: const TextStyle(
+                                      color: HomeColors.textPrimary,
+                                    ),
+                                    decoration: InputDecoration(
+                                      hintText: 'Especifica el rol',
+                                      hintStyle: const TextStyle(
+                                        color: HomeColors.textSecondary,
+                                      ),
+                                      filled: true,
+                                      fillColor: HomeColors.surfaceGrey,
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                        vertical: 14,
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(14),
+                                        borderSide: BorderSide.none,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                        ],
                       ],
                     ),
                   ),

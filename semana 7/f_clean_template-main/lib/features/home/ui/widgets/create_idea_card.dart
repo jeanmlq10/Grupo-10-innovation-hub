@@ -3,13 +3,11 @@ import 'package:get/get.dart';
 
 import '../home_colors.dart';
 import 'dashed_border.dart';
+import '../../../create_project/ui/views/create_project_page.dart';
 
 /// "Crea otra idea" call-to-action card at the top of the project feed.
-///
-/// Publishing a new idea belongs to a different flow/entrega, so tapping
-/// it only surfaces a placeholder message for now instead of navigating
-/// anywhere — same "visual only, pending" treatment as the bottom
-/// navigation tabs other than Explorar.
+/// Opens the same "Crear proyecto" flow reachable from "Mis proyectos"'s
+/// "+" button.
 class CreateIdeaCard extends StatelessWidget {
   const CreateIdeaCard({super.key});
 
@@ -23,13 +21,7 @@ class CreateIdeaCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         child: InkWell(
           borderRadius: BorderRadius.circular(20),
-          onTap: () {
-            Get.snackbar(
-              'Crea otra idea',
-              'Publicar una idea nueva llega en una próxima entrega.',
-              snackPosition: SnackPosition.BOTTOM,
-            );
-          },
+          onTap: () => Get.to(() => const CreateProjectPage()),
           child: Padding(
             padding: const EdgeInsets.all(14),
             child: Row(

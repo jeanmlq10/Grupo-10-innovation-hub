@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -85,20 +83,11 @@ class _NewIdeaPageState extends State<NewIdeaPage> {
                 ),
               ),
               Expanded(
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    // Scale the illustration to the available space
-                    // instead of a fixed logical-pixel size, so it looks
-                    // as big as the reference on any screen — capped by
-                    // whichever runs out first, width or height.
-                    final target = math.min(
-                      constraints.maxWidth * 0.82,
-                      constraints.maxHeight * 0.95,
-                    );
-                    return Center(
-                      child: IdeaCloudIllustration(size: target),
-                    );
-                  },
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: IdeaCloudIllustration(size: 230),
+                  ),
                 ),
               ),
               TextField(

@@ -152,7 +152,7 @@ class _BasicInfoPageState extends State<BasicInfoPage> {
                         onChanged: controller.updateName,
                         style: const TextStyle(color: HomeColors.textPrimary),
                         decoration: InputDecoration(
-                          hintText: 'Ej. EcoCampus',
+                          hintText: 'Ej. Mi proyecto',
                           hintStyle: const TextStyle(
                             color: HomeColors.textSecondary,
                           ),

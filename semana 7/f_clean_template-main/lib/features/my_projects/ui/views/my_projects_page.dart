@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../create_project/ui/views/create_project_page.dart';
 import '../../../home/ui/home_colors.dart';
 import '../../../home/ui/widgets/home_bottom_navigation.dart';
+import '../../../shared_projects/domain/repositories/i_shared_projects_repository.dart';
+import '../../../shared_projects/ui/views/project_detail_page.dart';
+import '../../../create_project/ui/views/create_project_page.dart';
 import '../../domain/models/my_project.dart';
 import '../viewmodels/my_projects_controller.dart';
 import '../widgets/my_project_card.dart';
@@ -14,12 +16,27 @@ import '../widgets/my_projects_tabs.dart';
 /// [MyProjectsController] exposes; all business logic (fetching, tab
 /// filtering, loading state) lives in the controller/repository/data
 /// source, never here — same rule `HomePage` follows.
-class MyProjectsPage extends StatelessWidget {
+class MyProjectsPage extends StatefulWidget {
   const MyProjectsPage({super.key});
 
   @override
+  State<MyProjectsPage> createState() => _MyProjectsPageState();
+}
+
+class _MyProjectsPageState extends State<MyProjectsPage> {
+  late final MyProjectsController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = Get.find<MyProjectsController>();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.getMyProjects();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final MyProjectsController controller = Get.find();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -121,7 +138,29 @@ class MyProjectsPage extends StatelessWidget {
                       if (item.isPlaceholder) {
                         return const MyProjectPlaceholderCard();
                       }
-                      return MyProjectCard(project: item);
+                      final isUserProject = item.id.startsWith('u');
+                      return MyProjectCard(
+                        project: item,
+                        onTap: () {
+                          if (!isUserProject) return;
+                          final project = Get.find<ISharedProjectsRepository>().getById(item.id);
+                          if (project == null) return;
+                          if (project.isDraft) {
+                            Get.to(() => CreateProjectPage(editProjectId: project.id));
+                          } else {
+                            Get.to(() => ProjectDetailPage(project: project));
+                          }
+                        },
+                        // "Editar proyecto" from the three-dot menu always
+                        // opens the edit flow directly — for both drafts
+                        // and already-published projects, per this
+                        // block's requirement.
+                        onEdit: isUserProject
+                            ? () => Get.to(
+                                  () => CreateProjectPage(editProjectId: item.id),
+                                )
+                            : null,
+                      );
                     },
                   ),
                 );

@@ -6,7 +6,9 @@ import 'data/repositories/my_projects_repository.dart';
 import 'domain/repositories/i_my_projects_repository.dart';
 import 'ui/viewmodels/my_projects_controller.dart';
 
-/// Registers the "Mis proyectos" dependency chain with GetX.
+/// Registers the "Mis proyectos" dependency chain with GetX. Must run
+/// after `registerSharedProjects()`, since [MyProjectsController] reads
+/// from `ISharedProjectsRepository` too (see that class for why).
 ///
 /// [MyProjectsController] uses `fenix: true` for the same reason as
 /// `HomeController` in `registerHome()`: navigating away with
@@ -15,11 +17,11 @@ import 'ui/viewmodels/my_projects_controller.dart';
 /// fail the next time this screen is opened.
 ///
 /// Swap [LocalMyProjectsSource] for a remote [IMyProjectsSource]
-/// implementation here once creation/drafts/publishing move off local
-/// data; the controller, repository contract and every widget stay
+/// implementation here once the EXAMPLE entries move off local data;
+/// the controller, repository contract and every widget stay
 /// untouched — same pattern as `registerHome()`.
 void registerMyProjects() {
   Get.put<IMyProjectsSource>(LocalMyProjectsSource());
   Get.put<IMyProjectsRepository>(MyProjectsRepository(Get.find()));
-  Get.lazyPut(() => MyProjectsController(Get.find()), fenix: true);
+  Get.lazyPut(() => MyProjectsController(Get.find(), Get.find()), fenix: true);
 }

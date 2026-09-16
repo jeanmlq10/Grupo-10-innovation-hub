@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../home_colors.dart';
+import '../../../shared_projects/ui/views/notifications_page.dart';
 
 /// Bottom navigation bar for "Explorar | Mis proyectos | Notificaciones |
 /// Perfil".
@@ -10,10 +11,10 @@ import '../home_colors.dart';
 /// named routes in `main.dart` ('/home' and '/mis-proyectos'). Navigating
 /// by route name — instead of importing `HomePage`/`MyProjectsPage`
 /// directly — keeps this shared widget free of a circular import with
-/// the pages that embed it. "Notificaciones" and "Perfil" stay
-/// visual-only/pending, as the assignment explicitly scopes out those
-/// features for now; tapping them just informs the user instead of
-/// navigating or crashing.
+/// the pages that embed it. "Notificaciones" now opens `NotificationsPage`
+/// (pushed, not a named route, since it's not a peer tab you toggle back
+/// and forth into — it's a normal screen you visit and back out of).
+/// "Perfil" stays visual-only/pending, out of scope for this block.
 class HomeBottomNavigation extends StatelessWidget {
   const HomeBottomNavigation({super.key, this.currentIndex = 0});
 
@@ -35,6 +36,9 @@ class HomeBottomNavigation extends StatelessWidget {
         break;
       case 1:
         Get.offNamed('/mis-proyectos');
+        break;
+      case 2:
+        Get.to(() => const NotificationsPage());
         break;
       default:
         Get.snackbar(

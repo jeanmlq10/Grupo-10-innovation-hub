@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../home/ui/home_colors.dart';
 
-/// Low-fidelity grey placeholder card, matching the ones drawn below
-/// "EcoCampus" in the Figma reference — a grey image box next to a few
+/// Low-fidelity grey placeholder card — a grey image box next to a few
 /// grey text bars, no real data yet.
 class MyProjectPlaceholderCard extends StatelessWidget {
   const MyProjectPlaceholderCard({super.key});

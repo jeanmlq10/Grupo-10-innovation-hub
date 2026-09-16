@@ -2,20 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../home/ui/home_colors.dart';
+import '../viewmodels/create_project_controller.dart';
 import '../widgets/create_project_step_tile.dart';
 import 'new_idea_page.dart';
 
 /// "Crear proyecto" — reached from the "+" button in "Mis proyectos".
-/// Purely an overview screen: it just lists the 5 steps of the wizard
-/// and, on "Comenzar", pushes the first real step ("Nueva idea"). It
-/// doesn't read or write any draft data, so it doesn't need
-/// `CreateProjectController` — same reasoning `HomePage` follows for its
-/// static header.
+/// Overview screen for the creation/editing wizard. It starts a new local
+/// draft or loads an existing user project when editing.
 class CreateProjectPage extends StatelessWidget {
-  const CreateProjectPage({super.key});
+  const CreateProjectPage({super.key, this.editProjectId});
+
+  final String? editProjectId;
 
   static const _steps = [
-    _StepInfo('Información básica', 'Nombre, descripción, categoría'),
+    _StepInfo('Información básica', 'Nombre y descripción'),
     _StepInfo('Equipo necesario', '¿Qué miembros necesitas?'),
     _StepInfo('Tiempo estimado', 'Define la duración del proyecto'),
     _StepInfo('Audiencia', '¿Quién puede ver tu proyecto?'),
@@ -24,6 +24,7 @@ class CreateProjectPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<CreateProjectController>();
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -70,7 +71,18 @@ class CreateProjectPage extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () => Get.to(() => const NewIdeaPage()),
+                  onPressed: () {
+                    if (editProjectId == null) {
+                      controller.startNewDraft();
+                      Get.to(() => const NewIdeaPage());
+                      return;
+                    }
+
+                    final ok = controller.loadForEdit(editProjectId!);
+                    if (ok) {
+                      Get.to(() => const NewIdeaPage());
+                    }
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: HomeColors.primaryPurple,
                     foregroundColor: Colors.white,

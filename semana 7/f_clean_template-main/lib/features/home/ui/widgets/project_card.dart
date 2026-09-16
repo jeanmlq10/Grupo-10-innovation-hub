@@ -5,11 +5,6 @@ import '../home_colors.dart';
 import 'dashed_border.dart';
 
 /// Card for a single [Project] in the "Explorar proyectos" feed.
-///
-/// Note: in the Figma prototype only the first card (EcoCampus) is drawn
-/// in full detail; the ones below it are low-fidelity placeholders (a
-/// grey box + grey bars). This widget renders every project with the one
-/// fully-specified style so the whole list stays legible and consistent.
 class ProjectCard extends StatelessWidget {
   const ProjectCard({super.key, required this.project, this.onTap});
 
@@ -25,8 +20,16 @@ class ProjectCard extends StatelessWidget {
     'Comunidad': Icons.diversity_3_outlined,
   };
 
-  IconData _iconFor(String category) =>
-      _categoryIcons[category] ?? Icons.label_outline;
+  IconData get _leadingIcon {
+    for (final category in project.categories) {
+      final icon = _categoryIcons[category];
+      if (icon != null) return icon;
+    }
+    // Every project — example or user-created — gets the same generic
+    // icon treatment already used elsewhere in the app (Mis proyectos,
+    // Ver proyecto) instead of a grey placeholder box.
+    return Icons.eco_outlined;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,15 +48,49 @@ class ProjectCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _UnderlinedTitle(text: project.name),
-              const SizedBox(height: 6),
-              Text(
-                project.description,
-                style: const TextStyle(
-                  fontSize: 13.5,
-                  color: HomeColors.textPrimary,
-                  height: 1.3,
-                ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFDCEFE1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      _leadingIcon,
+                      color: const Color(0xFF3E8E5C),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          project.name.isEmpty ? '(Sin nombre)' : project.name,
+                          style: const TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                            color: HomeColors.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          project.description.isEmpty
+                              ? 'Sin descripción todavía.'
+                              : project.description,
+                          style: const TextStyle(
+                            fontSize: 13.5,
+                            color: HomeColors.textPrimary,
+                            height: 1.3,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
               if (project.categories.isNotEmpty) ...[
                 const SizedBox(height: 12),
@@ -63,7 +100,7 @@ class ProjectCard extends StatelessWidget {
                   children: project.categories
                       .map((category) => _CategoryChip(
                             label: category,
-                            icon: _iconFor(category),
+                            icon: _categoryIcons[category] ?? Icons.label_outline,
                           ))
                       .toList(),
                 ),
@@ -72,39 +109,6 @@ class ProjectCard extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-/// Renders the project name with the short underline accent stroke seen
-/// under "EcoCampus" in the prototype.
-class _UnderlinedTitle extends StatelessWidget {
-  const _UnderlinedTitle({required this.text});
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Positioned(
-          left: 2,
-          right: 2,
-          bottom: 3,
-          child: Container(height: 3, color: HomeColors.titleAccentBlue),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 0),
-          child: Text(
-            text,
-            style: const TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.bold,
-              color: HomeColors.textPrimary,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

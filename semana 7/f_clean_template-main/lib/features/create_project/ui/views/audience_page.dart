@@ -89,9 +89,42 @@ class AudiencePage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              WizardNavButtons(
-                onBack: () => Get.back(),
-                onNext: () => Get.to(() => const ReviewPublishPage()),
+              Obx(
+                () => Column(
+                  children: [
+                    if (controller.audience.value == 'Solo yo')
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton(
+                          onPressed: () {
+                            controller.saveDraft();
+                            Get.offAllNamed('/mis-proyectos');
+                          },
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: HomeColors.primaryPurple,
+                            side: const BorderSide(color: HomeColors.primaryPurple),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                          ),
+                          child: const Text('Guardar como borrador'),
+                        ),
+                      ),
+                    if (controller.audience.value == 'Solo yo')
+                      const SizedBox(height: 8),
+                    WizardNavButtons(
+                      onBack: () => Get.back(),
+                      onNext: controller.audience.value == null
+                          ? () => Get.snackbar(
+                                'Audiencia requerida',
+                                'Selecciona quién puede ver tu proyecto.',
+                                snackPosition: SnackPosition.BOTTOM,
+                              )
+                          : () => Get.to(() => const ReviewPublishPage()),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

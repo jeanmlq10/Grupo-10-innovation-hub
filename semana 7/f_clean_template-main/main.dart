@@ -15,6 +15,7 @@ import 'features/home/home_dependencies.dart';
 import 'features/home/ui/views/home_page.dart';
 import 'features/my_projects/my_projects_dependencies.dart';
 import 'features/my_projects/ui/views/my_projects_page.dart';
+import 'features/shared_projects/shared_projects_dependencies.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,6 +30,9 @@ void main() async {
   // compiles/works — this entrega just doesn't route through it yet.
   registerAuth();
   registerProduct();
+  // Must come before home/my_projects/create_project: all three read
+  // from (or write to) the shared projects store via Get.find().
+  registerSharedProjects();
   registerHome();
   registerMyProjects();
   registerCreateProject();

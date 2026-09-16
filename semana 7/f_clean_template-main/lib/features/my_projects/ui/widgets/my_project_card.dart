@@ -3,17 +3,22 @@ import 'package:flutter/material.dart';
 import '../../../home/ui/home_colors.dart';
 import '../../domain/models/my_project.dart';
 
-/// Fully-specified card for a [MyProject] — used for the "EcoCampus"
-/// published project and for "Huerta comunitaria" in "Mis borradores".
+/// Fully-specified card for a [MyProject] — used for any published
+/// project the user created and its full stats.
 ///
 /// The stats row (Miembros / Tareas / Solicitudes) only renders when the
-/// project actually has those counters, since a draft like "Huerta
-/// comunitaria" doesn't have them yet in the reference.
+/// project actually has those counters, since a fresh draft doesn't have
+/// them yet.
 class MyProjectCard extends StatelessWidget {
-  const MyProjectCard({super.key, required this.project, this.onTap});
+  const MyProjectCard({super.key, required this.project, this.onTap, this.onEdit});
 
   final MyProject project;
   final VoidCallback? onTap;
+
+  /// Shows the three-dot menu with "Editar proyecto" when provided.
+  /// `null` keeps the dot purely decorative (used for non-editable
+  /// example/seed cards, if any ever exist again).
+  final VoidCallback? onEdit;
 
   bool get _hasStats =>
       project.membersCount != null ||
@@ -77,11 +82,28 @@ class MyProjectCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const Icon(
-                    Icons.more_vert,
-                    color: HomeColors.textSecondary,
-                    size: 20,
-                  ),
+                  if (onEdit != null)
+                    PopupMenuButton<String>(
+                      icon: const Icon(
+                        Icons.more_vert,
+                        color: HomeColors.textSecondary,
+                        size: 20,
+                      ),
+                      padding: EdgeInsets.zero,
+                      onSelected: (_) => onEdit?.call(),
+                      itemBuilder: (context) => const [
+                        PopupMenuItem<String>(
+                          value: 'edit',
+                          child: Text('Editar proyecto'),
+                        ),
+                      ],
+                    )
+                  else
+                    const Icon(
+                      Icons.more_vert,
+                      color: HomeColors.textSecondary,
+                      size: 20,
+                    ),
                 ],
               ),
               const SizedBox(height: 12),
