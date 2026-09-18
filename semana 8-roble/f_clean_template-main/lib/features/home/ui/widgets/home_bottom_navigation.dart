@@ -24,7 +24,11 @@ class HomeBottomNavigation extends StatelessWidget {
   static const _tabs = [
     _TabData(icon: Icons.explore_outlined, label: 'Explorar'),
     _TabData(icon: Icons.folder_shared_outlined, label: 'Mis proyectos'),
-    _TabData(icon: Icons.notifications_none, label: 'Notificaciones', hasBadge: true),
+    _TabData(
+      icon: Icons.notifications_none,
+      label: 'Notificaciones',
+      hasBadge: true,
+    ),
     _TabData(icon: Icons.account_circle_outlined, label: 'Perfil'),
   ];
 

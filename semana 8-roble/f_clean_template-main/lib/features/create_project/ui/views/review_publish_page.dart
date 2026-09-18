@@ -58,7 +58,10 @@ class ReviewPublishPage extends StatelessWidget {
               const SizedBox(height: 4),
               const Text(
                 'Verifica la información de tu proyecto',
-                style: TextStyle(fontSize: 14.5, color: HomeColors.textSecondary),
+                style: TextStyle(
+                  fontSize: 14.5,
+                  color: HomeColors.textSecondary,
+                ),
               ),
               const SizedBox(height: 20),
               Expanded(

@@ -37,7 +37,6 @@ class _MyProjectsPageState extends State<MyProjectsPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Colors.white,
       // index 1 = "Mis proyectos" tab selected in the shared bottom nav.
@@ -143,10 +142,14 @@ class _MyProjectsPageState extends State<MyProjectsPage> {
                         project: item,
                         onTap: () {
                           if (!isUserProject) return;
-                          final project = Get.find<ISharedProjectsRepository>().getById(item.id);
+                          final project = Get.find<ISharedProjectsRepository>()
+                              .getById(item.id);
                           if (project == null) return;
                           if (project.isDraft) {
-                            Get.to(() => CreateProjectPage(editProjectId: project.id));
+                            Get.to(
+                              () =>
+                                  CreateProjectPage(editProjectId: project.id),
+                            );
                           } else {
                             Get.to(() => ProjectDetailPage(project: project));
                           }
@@ -157,8 +160,8 @@ class _MyProjectsPageState extends State<MyProjectsPage> {
                         // block's requirement.
                         onEdit: isUserProject
                             ? () => Get.to(
-                                  () => CreateProjectPage(editProjectId: item.id),
-                                )
+                                () => CreateProjectPage(editProjectId: item.id),
+                              )
                             : null,
                       );
                     },

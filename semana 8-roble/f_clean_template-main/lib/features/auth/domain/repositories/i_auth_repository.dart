@@ -1,19 +1,30 @@
 import '../models/authentication_user.dart';
 
 abstract class IAuthRepository {
-  Future<bool> login(AuthenticationUser user);
+  Future<AuthenticationUser> login(String email, String password);
+
+  Future<void> registerWithVerification({
+    required String email,
+    required String password,
+    required String name,
+    Map<String, dynamic> extra,
+  });
+
+  Future<void> verifyEmail(String email, String code);
+
+  Future<void> resendCode(String email);
+
+  Future<AuthenticationUser> signInWithGoogle();
+
+  bool get isLoggedIn;
 
   Future<bool> restoreSession();
 
-  Future<AuthenticationUser?> getLoggedUser();
+  Future<AuthenticationUser?> currentUser();
 
-  Future<bool> signUp(AuthenticationUser user);
-
-  Future<bool> logOut();
-
-  Future<bool> validate(String email, String validationCode);
-
-  Future<bool> validateToken();
+  Future<void> logOut();
 
   Future<void> forgotPassword(String email);
+
+  Future<void> resetPassword(String token, String newPassword);
 }

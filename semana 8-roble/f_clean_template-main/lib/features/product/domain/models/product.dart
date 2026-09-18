@@ -12,24 +12,24 @@ class Product {
   int quantity;
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
-        id: json["_id"],
-        name: json["name"] ?? "---",
-        description: json["description"] ?? "---",
-        quantity: json["quantity"] ?? 0,
-      );
+    id: json["_id"],
+    name: json["name"] ?? "---",
+    description: json["description"] ?? "---",
+    quantity: json["quantity"] ?? 0,
+  );
 
   Map<String, dynamic> toJson() => {
-        "_id": id ?? "0",
-        "name": name,
-        "description": description,
-        "quantity": quantity,
-      };
+    "_id": id ?? "0",
+    "name": name,
+    "description": description,
+    "quantity": quantity,
+  };
 
   Map<String, dynamic> toJsonNoId() => {
-        "name": name,
-        "description": description,
-        "quantity": quantity,
-      };
+    "name": name,
+    "description": description,
+    "quantity": quantity,
+  };
 
   @override
   String toString() {

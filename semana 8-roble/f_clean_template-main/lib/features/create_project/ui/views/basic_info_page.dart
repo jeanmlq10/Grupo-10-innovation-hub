@@ -84,7 +84,10 @@ class _BasicInfoPageState extends State<BasicInfoPage> {
               const SizedBox(height: 4),
               const Text(
                 'Cuéntanos sobre tu proyecto',
-                style: TextStyle(fontSize: 14.5, color: HomeColors.textSecondary),
+                style: TextStyle(
+                  fontSize: 14.5,
+                  color: HomeColors.textSecondary,
+                ),
               ),
               const SizedBox(height: 22),
               Expanded(

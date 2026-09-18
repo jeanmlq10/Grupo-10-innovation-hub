@@ -67,7 +67,10 @@ class AudiencePage extends StatelessWidget {
               const SizedBox(height: 4),
               const Text(
                 '¿Quién puede ver tu proyecto?',
-                style: TextStyle(fontSize: 14.5, color: HomeColors.textSecondary),
+                style: TextStyle(
+                  fontSize: 14.5,
+                  color: HomeColors.textSecondary,
+                ),
               ),
               const SizedBox(height: 20),
               Expanded(
@@ -81,7 +84,8 @@ class AudiencePage extends StatelessWidget {
                             title: option.label,
                             subtitle: option.subtitle,
                             selected: controller.audience.value == option.label,
-                            onTap: () => controller.selectAudience(option.label),
+                            onTap: () =>
+                                controller.selectAudience(option.label),
                           ),
                       ],
                     ),
@@ -102,7 +106,9 @@ class AudiencePage extends StatelessWidget {
                           },
                           style: OutlinedButton.styleFrom(
                             foregroundColor: HomeColors.primaryPurple,
-                            side: const BorderSide(color: HomeColors.primaryPurple),
+                            side: const BorderSide(
+                              color: HomeColors.primaryPurple,
+                            ),
                             padding: const EdgeInsets.symmetric(vertical: 14),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14),
@@ -117,10 +123,10 @@ class AudiencePage extends StatelessWidget {
                       onBack: () => Get.back(),
                       onNext: controller.audience.value == null
                           ? () => Get.snackbar(
-                                'Audiencia requerida',
-                                'Selecciona quién puede ver tu proyecto.',
-                                snackPosition: SnackPosition.BOTTOM,
-                              )
+                              'Audiencia requerida',
+                              'Selecciona quién puede ver tu proyecto.',
+                              snackPosition: SnackPosition.BOTTOM,
+                            )
                           : () => Get.to(() => const ReviewPublishPage()),
                     ),
                   ],

@@ -58,10 +58,7 @@ class ProjectCard extends StatelessWidget {
                       color: const Color(0xFFDCEFE1),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Icon(
-                      _leadingIcon,
-                      color: const Color(0xFF3E8E5C),
-                    ),
+                    child: Icon(_leadingIcon, color: const Color(0xFF3E8E5C)),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -98,10 +95,12 @@ class ProjectCard extends StatelessWidget {
                   spacing: 8,
                   runSpacing: 8,
                   children: project.categories
-                      .map((category) => _CategoryChip(
-                            label: category,
-                            icon: _categoryIcons[category] ?? Icons.label_outline,
-                          ))
+                      .map(
+                        (category) => _CategoryChip(
+                          label: category,
+                          icon: _categoryIcons[category] ?? Icons.label_outline,
+                        ),
+                      )
                       .toList(),
                 ),
               ],

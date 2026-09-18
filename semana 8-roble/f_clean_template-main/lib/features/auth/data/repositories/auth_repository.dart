@@ -3,38 +3,57 @@ import '../../domain/repositories/i_auth_repository.dart';
 import '../datasources/remote/i_authentication_source.dart';
 
 class AuthRepository implements IAuthRepository {
-  late IAuthenticationSource authenticationSource;
-
   AuthRepository(this.authenticationSource);
 
-  @override
-  Future<bool> login(AuthenticationUser user) async =>
-      await authenticationSource.login(user);
+  final IAuthenticationSource authenticationSource;
 
   @override
-  Future<bool> restoreSession() async =>
-      await authenticationSource.restoreSession();
+  Future<AuthenticationUser> login(String email, String password) =>
+      authenticationSource.login(email, password);
 
   @override
-  Future<AuthenticationUser?> getLoggedUser() async =>
-      await authenticationSource.getLoggedUser();
+  Future<void> registerWithVerification({
+    required String email,
+    required String password,
+    required String name,
+    Map<String, dynamic> extra = const {},
+  }) => authenticationSource.registerWithVerification(
+    email: email,
+    password: password,
+    name: name,
+    extra: extra,
+  );
 
   @override
-  Future<bool> signUp(AuthenticationUser user) async =>
-      await authenticationSource.signUp(user);
+  Future<void> verifyEmail(String email, String code) =>
+      authenticationSource.verifyEmail(email, code);
 
   @override
-  Future<bool> logOut() async => await authenticationSource.logOut();
+  Future<void> resendCode(String email) =>
+      authenticationSource.resendCode(email);
 
   @override
-  Future<bool> validate(String email, String validationCode) async =>
-      await authenticationSource.validate(email, validationCode);
+  Future<AuthenticationUser> signInWithGoogle() =>
+      authenticationSource.signInWithGoogle();
 
   @override
-  Future<bool> validateToken() async =>
-      await authenticationSource.verifyToken();
+  bool get isLoggedIn => authenticationSource.isLoggedIn;
 
   @override
-  Future<void> forgotPassword(String email) async =>
-      await authenticationSource.forgotPassword(email);
+  Future<bool> restoreSession() => authenticationSource.restoreSession();
+
+  @override
+  Future<AuthenticationUser?> currentUser() =>
+      authenticationSource.currentUser();
+
+  @override
+  Future<void> logOut() => authenticationSource.logOut();
+
+  @override
+  Future<void> forgotPassword(String email) =>
+      authenticationSource.forgotPassword(email);
+
+  @override
+  Future<void> resetPassword(String token, String newPassword) =>
+      authenticationSource.resetPassword(token, newPassword);
 }

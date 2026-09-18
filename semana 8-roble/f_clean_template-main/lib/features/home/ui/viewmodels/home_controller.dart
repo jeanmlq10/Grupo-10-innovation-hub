@@ -39,8 +39,8 @@ class HomeController extends GetxController with UiLoggy {
   List<Project> get filteredProjects {
     final base = showingFollowed.value
         ? _projects
-            .where((project) => sharedRepository.isFollowing(project.id))
-            .toList()
+              .where((project) => sharedRepository.isFollowing(project.id))
+              .toList()
         : _projects;
     final query = searchQuery.value.trim().toLowerCase();
     if (query.isEmpty) return base;

@@ -30,7 +30,10 @@ class NotificationsPage extends StatelessWidget {
                 onPressed: () => Get.back(),
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
-                icon: const Icon(Icons.arrow_back, color: HomeColors.textPrimary),
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: HomeColors.textPrimary,
+                ),
               ),
               const SizedBox(height: 8),
               const Text(
@@ -53,10 +56,10 @@ class NotificationsPage extends StatelessWidget {
                     : ListView.separated(
                         padding: const EdgeInsets.only(bottom: 20),
                         itemCount: notifications.length,
-                        separatorBuilder: (_, __) =>
-                            const SizedBox(height: 12),
-                        itemBuilder: (context, index) =>
-                            _NotificationTile(notification: notifications[index]),
+                        separatorBuilder: (_, __) => const SizedBox(height: 12),
+                        itemBuilder: (context, index) => _NotificationTile(
+                          notification: notifications[index],
+                        ),
                       ),
               ),
             ],

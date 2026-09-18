@@ -62,7 +62,10 @@ class _NewIdeaPageState extends State<NewIdeaPage> {
                 onPressed: () => Get.back(),
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
-                icon: const Icon(Icons.arrow_back, color: HomeColors.textPrimary),
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: HomeColors.textPrimary,
+                ),
               ),
               const SizedBox(height: 20),
               const Text(

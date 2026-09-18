@@ -11,8 +11,10 @@ import 'ui/viewmodels/authentication_controller.dart';
 /// Authentication is needed by [Central] as soon as the application starts, so
 /// the source, repository, and controller are created eagerly.
 void registerAuth() {
+  // The roble SDK manages its own secure session storage; no dependency on
+  // ILocalPreferences is needed here anymore.
   Get.put<IAuthenticationSource>(
-    AuthenticationSourceService(Get.find()),
+    AuthenticationSourceService(),
     permanent: true,
   );
   Get.put<IAuthRepository>(AuthRepository(Get.find()));

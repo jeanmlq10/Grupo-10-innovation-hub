@@ -126,7 +126,10 @@ class _TeamNeededPageState extends State<TeamNeededPage> {
               const SizedBox(height: 4),
               const Text(
                 '¿Qué miembros necesitas?',
-                style: TextStyle(fontSize: 14.5, color: HomeColors.textSecondary),
+                style: TextStyle(
+                  fontSize: 14.5,
+                  color: HomeColors.textSecondary,
+                ),
               ),
               const SizedBox(height: 20),
               Expanded(
@@ -182,12 +185,11 @@ class _TeamNeededPageState extends State<TeamNeededPage> {
                                       fillColor: HomeColors.surfaceGrey,
                                       contentPadding:
                                           const EdgeInsets.symmetric(
-                                        horizontal: 16,
-                                        vertical: 14,
-                                      ),
+                                            horizontal: 16,
+                                            vertical: 14,
+                                          ),
                                       border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(14),
+                                        borderRadius: BorderRadius.circular(14),
                                         borderSide: BorderSide.none,
                                       ),
                                     ),

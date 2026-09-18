@@ -42,7 +42,10 @@ class _AvailableTasksPageState extends State<AvailableTasksPage> {
                 onPressed: () => Get.back(),
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
-                icon: const Icon(Icons.arrow_back, color: HomeColors.textPrimary),
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: HomeColors.textPrimary,
+                ),
               ),
               const SizedBox(height: 16),
               const Text(
@@ -56,7 +59,10 @@ class _AvailableTasksPageState extends State<AvailableTasksPage> {
               const SizedBox(height: 4),
               const Text(
                 'Elige en cuál quieres ayudar',
-                style: TextStyle(fontSize: 14.5, color: HomeColors.textSecondary),
+                style: TextStyle(
+                  fontSize: 14.5,
+                  color: HomeColors.textSecondary,
+                ),
               ),
               const SizedBox(height: 20),
               Expanded(

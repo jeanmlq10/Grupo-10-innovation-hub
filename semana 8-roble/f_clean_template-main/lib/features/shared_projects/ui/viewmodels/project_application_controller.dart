@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 import '../../../home/domain/models/project.dart';
+import '../../../auth/ui/viewmodels/authentication_controller.dart';
 import '../../domain/models/participation_request.dart';
 import '../../domain/repositories/i_shared_projects_repository.dart';
 
@@ -23,6 +24,7 @@ class ProjectApplicationController extends GetxController {
     required String role,
     required String message,
   }) {
+    final user = Get.find<AuthenticationController>().loggedUser;
     repository.submitRequest(
       ParticipationRequest(
         // The repository/data source assigns the real id — this one is
@@ -32,6 +34,9 @@ class ProjectApplicationController extends GetxController {
         projectId: projectId,
         role: role,
         message: message,
+        applicantName: user?.name ?? user?.email ?? 'Usuario interesado',
+        applicantUserId: user?.userId,
+        applicantEmail: user?.email,
       ),
     );
   }

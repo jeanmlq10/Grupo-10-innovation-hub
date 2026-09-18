@@ -32,9 +32,7 @@ class SelectableOptionTile extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: selected
-              ? HomeColors.navSelectedBackground
-              : Colors.white,
+          color: selected ? HomeColors.navSelectedBackground : Colors.white,
           border: Border.all(
             color: selected ? HomeColors.primaryPurple : HomeColors.borderGrey,
             width: selected ? 1.6 : 1,

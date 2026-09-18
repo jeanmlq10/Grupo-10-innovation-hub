@@ -59,7 +59,10 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
                 onPressed: () => Get.back(),
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
-                icon: const Icon(Icons.arrow_back, color: HomeColors.textPrimary),
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: HomeColors.textPrimary,
+                ),
               ),
             ),
             const SizedBox(height: 4),
@@ -158,7 +161,10 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
                     ),
                     child: const Text(
                       'Editar proyecto',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
@@ -181,7 +187,10 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
                     ),
                     child: const Text(
                       'Opciones del proyecto',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
@@ -228,7 +237,10 @@ class _DescriptionTab extends StatelessWidget {
                 label: '$_membersNeeded miembros necesarios',
               ),
               if (project.duration != null)
-                _InfoChip(icon: Icons.schedule_outlined, label: project.duration!),
+                _InfoChip(
+                  icon: Icons.schedule_outlined,
+                  label: project.duration!,
+                ),
               if (project.audience != null)
                 _InfoChip(
                   icon: Icons.visibility_outlined,
@@ -413,7 +425,10 @@ class _InfoChip extends StatelessWidget {
           const SizedBox(width: 6),
           Text(
             label,
-            style: const TextStyle(fontSize: 12.5, color: HomeColors.textPrimary),
+            style: const TextStyle(
+              fontSize: 12.5,
+              color: HomeColors.textPrimary,
+            ),
           ),
         ],
       ),

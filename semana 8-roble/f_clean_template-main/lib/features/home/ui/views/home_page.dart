@@ -8,6 +8,7 @@ import '../widgets/explore_filter_tabs.dart';
 import '../widgets/home_bottom_navigation.dart';
 import '../widgets/project_card.dart';
 import '../widgets/project_search_bar.dart';
+import '../../../auth/ui/viewmodels/authentication_controller.dart';
 import '../../../shared_projects/ui/views/project_detail_page.dart';
 
 /// "Explorar proyectos" — the Home of Movil.
@@ -36,6 +37,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final auth = Get.find<AuthenticationController>();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -49,13 +51,59 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Explorar proyectos',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: HomeColors.textPrimary,
-                    ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Expanded(
+                        child: Text(
+                          'Explorar proyectos',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: HomeColors.textPrimary,
+                          ),
+                        ),
+                      ),
+                      Obx(() {
+                        final user = auth.loggedUser;
+                        return IconButton(
+                          tooltip: user == null
+                              ? 'Cerrar sesion'
+                              : '${user.name}\n${user.email}',
+                          onPressed: () async {
+                            await auth.logOut();
+                            Get.offAllNamed('/');
+                          },
+                          icon: CircleAvatar(
+                            radius: 18,
+                            backgroundImage: user?.photoUrl == null
+                                ? null
+                                : NetworkImage(user!.photoUrl!),
+                            backgroundColor: HomeColors.navSelectedBackground,
+                            child: user?.photoUrl == null
+                                ? const Icon(
+                                    Icons.logout,
+                                    color: HomeColors.primaryPurple,
+                                    size: 19,
+                                  )
+                                : null,
+                          ),
+                        );
+                      }),
+                    ],
+                  ),
+                  Obx(
+                    () => auth.loggedUser == null
+                        ? const SizedBox.shrink()
+                        : Text(
+                            auth.loggedUser!.career?.isNotEmpty == true
+                                ? '${auth.loggedUser!.name} · ${auth.loggedUser!.career}'
+                                : auth.loggedUser!.email,
+                            style: const TextStyle(
+                              fontSize: 12.5,
+                              color: HomeColors.textSecondary,
+                            ),
+                          ),
                   ),
                   const SizedBox(height: 6),
                   const Text(
@@ -87,7 +135,9 @@ class _HomePageState extends State<HomePage> {
                 }
 
                 final projects = controller.filteredProjects;
-                final hasSearch = controller.searchQuery.value.trim().isNotEmpty;
+                final hasSearch = controller.searchQuery.value
+                    .trim()
+                    .isNotEmpty;
 
                 // A search with no matches is its own message and skips
                 // "Crea otra idea" — that's about narrowing an existing
@@ -104,7 +154,7 @@ class _HomePageState extends State<HomePage> {
                 final emptyMessage = controller.showingFollowed.value
                     ? 'Todavía no sigues ningún proyecto.'
                     : 'Todavía no hay proyectos publicados. '
-                        '¡Crea el primero!';
+                          '¡Crea el primero!';
 
                 return RefreshIndicator(
                   onRefresh: controller.getProjects,

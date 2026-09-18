@@ -62,7 +62,10 @@ class EstimatedTimePage extends StatelessWidget {
               const SizedBox(height: 4),
               const Text(
                 '¿Cuánto tiempo crees que tomará?',
-                style: TextStyle(fontSize: 14.5, color: HomeColors.textSecondary),
+                style: TextStyle(
+                  fontSize: 14.5,
+                  color: HomeColors.textSecondary,
+                ),
               ),
               const SizedBox(height: 20),
               Expanded(
@@ -76,7 +79,8 @@ class EstimatedTimePage extends StatelessWidget {
                             title: option.label,
                             subtitle: option.subtitle,
                             selected: controller.duration.value == option.label,
-                            onTap: () => controller.selectDuration(option.label),
+                            onTap: () =>
+                                controller.selectDuration(option.label),
                           ),
                       ],
                     ),

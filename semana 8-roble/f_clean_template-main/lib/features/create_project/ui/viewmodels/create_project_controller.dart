@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 import '../../../home/domain/models/project.dart';
+import '../../../auth/ui/viewmodels/authentication_controller.dart';
 import '../../../shared_projects/domain/repositories/i_shared_projects_repository.dart';
 
 /// ViewModel shared by every step of the "Crear proyecto" wizard.
@@ -69,7 +70,12 @@ class CreateProjectController extends GetxController {
   }
 
   void startNewDraft() {
-    final draft = repository.startDraft();
+    final user = Get.find<AuthenticationController>().loggedUser;
+    final draft = repository.startDraft().copyWith(
+      createdBy: user?.userId,
+      createdByName: user?.name,
+    );
+    repository.updateDraft(draft);
     draftId = draft.id;
     isEditing = false;
     editingProjectWasDraft = true;
@@ -165,6 +171,8 @@ class CreateProjectController extends GetxController {
         duration: duration.value,
         audience: audience.value,
         isDraft: true,
+        createdBy: current.createdBy,
+        createdByName: current.createdByName,
       ),
     );
   }
@@ -180,6 +188,8 @@ class CreateProjectController extends GetxController {
         duration: duration.value,
         audience: audience.value,
         isDraft: editingProjectWasDraft,
+        createdBy: current.createdBy,
+        createdByName: current.createdByName,
       ),
     );
   }
@@ -194,6 +204,7 @@ class CreateProjectController extends GetxController {
     final base =
         current ??
         Project(id: draftId, name: '', description: '', categories: const []);
+    final user = Get.find<AuthenticationController>().loggedUser;
     repository.updateDraft(
       base.copyWith(
         name: name.value,
@@ -208,6 +219,8 @@ class CreateProjectController extends GetxController {
         // that. Otherwise, opening a private draft to fix a typo would
         // silently "publish" it the instant you typed a letter.
         isDraft: isEditing ? editingProjectWasDraft : true,
+        createdBy: base.createdBy ?? user?.userId,
+        createdByName: base.createdByName ?? user?.name,
       ),
     );
   }

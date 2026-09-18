@@ -1,25 +1,31 @@
 import 'package:f_clean_template/features/auth/domain/models/authentication_user.dart';
 import 'package:f_clean_template/features/auth/domain/repositories/i_auth_repository.dart';
 import 'package:get/get.dart';
-
 import 'package:loggy/loggy.dart';
 
 import '../../../../core/error_message.dart';
 
 class AuthenticationController extends GetxController with UiLoggy {
+  AuthenticationController(this.repoAuthentication);
+
   final IAuthRepository repoAuthentication;
   final _logged = false.obs;
   final _loggedUser = Rxn<AuthenticationUser>();
   final _isLoading = false.obs;
+  final _isRestoring = true.obs;
 
-  /// Empty while the latest authentication request completed successfully.
+  /// Email awaiting a verification code from [registerWithVerification].
+  /// Null when there is no registration in progress.
+  final _pendingVerificationEmail = Rxn<String>();
+
   final RxString error = ''.obs;
 
-  AuthenticationController(this.repoAuthentication);
-
   bool get isLoading => _isLoading.value;
+  bool get isRestoring => _isRestoring.value;
   bool get isLogged => _logged.value;
   String get loggedEmail => _loggedUser.value?.email ?? '';
+  AuthenticationUser? get loggedUser => _loggedUser.value;
+  String? get pendingVerificationEmail => _pendingVerificationEmail.value;
 
   @override
   void onInit() {
@@ -28,10 +34,11 @@ class AuthenticationController extends GetxController with UiLoggy {
   }
 
   Future<void> _restoreSession() async {
+    _isRestoring.value = true;
     try {
       _logged.value = await repoAuthentication.restoreSession();
       _loggedUser.value = _logged.value
-          ? await repoAuthentication.getLoggedUser()
+          ? await repoAuthentication.currentUser()
           : null;
     } catch (exception) {
       loggy.warning(
@@ -39,31 +46,46 @@ class AuthenticationController extends GetxController with UiLoggy {
       );
       _logged.value = false;
       _loggedUser.value = null;
+    } finally {
+      _isRestoring.value = false;
     }
   }
 
   Future<bool> login(String email, String password) async {
-    loggy.debug('AuthenticationController: Login $email');
     error.value = '';
     if (!_validate(email, password)) {
-      loggy.warning('AuthenticationController: Invalid email or password');
       error.value =
-          'Enter a valid email and a password with at least 7 characters.';
+          'Ingresa un correo valido y una contrasena de al menos 7 caracteres.';
       return false;
     }
     _isLoading.value = true;
     try {
-      final loggedIn = await repoAuthentication.login(
-        AuthenticationUser(email: email, name: email, password: password),
+      _loggedUser.value = await repoAuthentication.login(
+        email.trim(),
+        password,
       );
-      _logged.value = loggedIn;
-      _loggedUser.value = loggedIn
-          ? await repoAuthentication.getLoggedUser()
-          : null;
-      if (!loggedIn) error.value = 'Unable to sign in. Check your credentials.';
-      return loggedIn;
+      _logged.value = true;
+      return true;
     } catch (exception) {
       loggy.error('AuthenticationController: Login error $exception');
+      error.value = errorMessage(exception);
+      _logged.value = false;
+      _loggedUser.value = null;
+      return false;
+    } finally {
+      _isLoading.value = false;
+    }
+  }
+
+  Future<bool> signInWithGoogle() async {
+    error.value = '';
+    _isLoading.value = true;
+    try {
+      _loggedUser.value = await repoAuthentication.signInWithGoogle();
+      _logged.value = true;
+      return true;
+    } catch (exception) {
+      loggy.error('AuthenticationController: Google login error $exception');
       error.value = errorMessage(exception);
       return false;
     } finally {
@@ -71,53 +93,110 @@ class AuthenticationController extends GetxController with UiLoggy {
     }
   }
 
-  Future<bool> signUp(String email, String password) async {
-    loggy.debug('AuthenticationController: Sign Up $email');
+  Future<bool> register({
+    required String email,
+    required String password,
+    required String name,
+    Map<String, dynamic> extra = const {},
+  }) async {
     error.value = '';
-    if (!_validate(email, password)) {
-      loggy.warning('AuthenticationController: Invalid email or password');
+    if (!_validate(email, password) || name.trim().isEmpty) {
       error.value =
-          'Enter a valid email and a password with at least 7 characters.';
+          'Completa nombre, correo y una contrasena de al menos 7 caracteres.';
       return false;
     }
     _isLoading.value = true;
     try {
-      final created = await repoAuthentication.signUp(
-        AuthenticationUser(email: email, name: email, password: password),
+      await repoAuthentication.registerWithVerification(
+        email: email.trim(),
+        password: password,
+        name: name.trim(),
+        extra: extra,
       );
-      if (!created) {
-        error.value = 'Unable to create the account. Please try again.';
-      }
-      return created;
+      _pendingVerificationEmail.value = email.trim();
+      return true;
     } catch (exception) {
-      loggy.error('AuthenticationController: Sign up error $exception');
+      loggy.error('AuthenticationController: Register error $exception');
       error.value = errorMessage(exception);
       return false;
     } finally {
       _isLoading.value = false;
+    }
+  }
+
+  Future<bool> verifyEmail(String code) async {
+    final email = _pendingVerificationEmail.value;
+    if (email == null) {
+      error.value = 'No hay un registro pendiente de verificacion.';
+      return false;
+    }
+    error.value = '';
+    _isLoading.value = true;
+    try {
+      await repoAuthentication.verifyEmail(email, code);
+      _pendingVerificationEmail.value = null;
+      return true;
+    } catch (exception) {
+      loggy.error('AuthenticationController: Verify email error $exception');
+      error.value = errorMessage(exception);
+      return false;
+    } finally {
+      _isLoading.value = false;
+    }
+  }
+
+  Future<bool> resendVerificationCode() async {
+    final email = _pendingVerificationEmail.value;
+    if (email == null) return false;
+    try {
+      await repoAuthentication.resendCode(email);
+      return true;
+    } catch (exception) {
+      loggy.error('AuthenticationController: Resend code error $exception');
+      error.value = errorMessage(exception);
+      return false;
+    }
+  }
+
+  Future<bool> forgotPassword(String email) async {
+    error.value = '';
+    try {
+      await repoAuthentication.forgotPassword(email.trim());
+      return true;
+    } catch (exception) {
+      loggy.error('AuthenticationController: Forgot password error $exception');
+      error.value = errorMessage(exception);
+      return false;
+    }
+  }
+
+  Future<bool> resetPassword(String token, String newPassword) async {
+    error.value = '';
+    try {
+      await repoAuthentication.resetPassword(token, newPassword);
+      return true;
+    } catch (exception) {
+      loggy.error('AuthenticationController: Reset password error $exception');
+      error.value = errorMessage(exception);
+      return false;
     }
   }
 
   Future<bool> logOut() async {
-    loggy.debug('AuthenticationController: Log Out');
     error.value = '';
     try {
-      final loggedOut = await repoAuthentication.logOut();
-      _logged.value = false;
-      _loggedUser.value = null;
-      if (!loggedOut) error.value = 'Unable to sign out. Please try again.';
-      return loggedOut;
+      await repoAuthentication.logOut();
+      return true;
     } catch (exception) {
       loggy.error('AuthenticationController: Logout error $exception');
       error.value = errorMessage(exception);
-      // A failed remote request should not keep a user in a local session that
-      // is no longer trustworthy.
+      return false;
+    } finally {
       _logged.value = false;
       _loggedUser.value = null;
-      return false;
     }
   }
 
   bool _validate(String email, String password) =>
-      email.isNotEmpty && password.length > 6;
+      email.trim().contains('@') && password.length > 6;
 }

@@ -79,7 +79,10 @@ class _JoinTeamPageState extends State<JoinTeamPage> {
                 onPressed: () => Get.back(),
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
-                icon: const Icon(Icons.arrow_back, color: HomeColors.textPrimary),
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: HomeColors.textPrimary,
+                ),
               ),
               const SizedBox(height: 16),
               const Text(
@@ -145,10 +148,8 @@ class _JoinTeamPageState extends State<JoinTeamPage> {
                     ),
                     items: roles
                         .map(
-                          (role) => DropdownMenuItem(
-                            value: role,
-                            child: Text(role),
-                          ),
+                          (role) =>
+                              DropdownMenuItem(value: role, child: Text(role)),
                         )
                         .toList(),
                     onChanged: (value) => setState(() => _selectedRole = value),

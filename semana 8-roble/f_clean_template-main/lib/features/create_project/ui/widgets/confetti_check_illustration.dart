@@ -72,7 +72,11 @@ class _ConfettiPainter extends CustomPainter {
       }
     }
 
-    canvas.drawCircle(center, radius, Paint()..color = HomeColors.primaryPurple);
+    canvas.drawCircle(
+      center,
+      radius,
+      Paint()..color = HomeColors.primaryPurple,
+    );
 
     final checkPaint = Paint()
       ..color = Colors.white

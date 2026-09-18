@@ -70,7 +70,10 @@ class _ChooseParticipationPageState extends State<ChooseParticipationPage> {
                 onPressed: () => Get.back(),
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
-                icon: const Icon(Icons.arrow_back, color: HomeColors.textPrimary),
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: HomeColors.textPrimary,
+                ),
               ),
               const SizedBox(height: 16),
               const Text(
@@ -108,7 +111,8 @@ class _ChooseParticipationPageState extends State<ChooseParticipationPage> {
                 icon: Icons.groups_outlined,
                 title: 'Unirme al equipo',
                 subtitle: 'Forma parte del equipo a largo plazo.',
-                onTap: () => Get.to(() => JoinTeamPage(project: widget.project)),
+                onTap: () =>
+                    Get.to(() => JoinTeamPage(project: widget.project)),
               ),
             ],
           ),

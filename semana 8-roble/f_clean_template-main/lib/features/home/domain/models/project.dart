@@ -25,6 +25,8 @@ class Project {
     this.audience,
     this.isDraft = false,
     this.acceptedMembersCount = 0,
+    this.createdBy,
+    this.createdByName,
   });
 
   final String id;
@@ -57,6 +59,8 @@ class Project {
   /// Starts at 0 and grows only through
   /// `ISharedProjectsRepository.acceptRequest`.
   final int acceptedMembersCount;
+  final String? createdBy;
+  final String? createdByName;
 
   Project copyWith({
     String? name,
@@ -68,6 +72,8 @@ class Project {
     String? audience,
     bool? isDraft,
     int? acceptedMembersCount,
+    String? createdBy,
+    String? createdByName,
   }) => Project(
     id: id,
     name: name ?? this.name,
@@ -79,6 +85,8 @@ class Project {
     audience: audience ?? this.audience,
     isDraft: isDraft ?? this.isDraft,
     acceptedMembersCount: acceptedMembersCount ?? this.acceptedMembersCount,
+    createdBy: createdBy ?? this.createdBy,
+    createdByName: createdByName ?? this.createdByName,
   );
 
   factory Project.fromJson(Map<String, dynamic> json) => Project(
@@ -91,7 +99,8 @@ class Project {
             .toList() ??
         const [],
     canApply: json['canApply'] ?? false,
-    teamRoles: (json['teamRoles'] as Map<String, dynamic>?)?.map(
+    teamRoles:
+        (json['teamRoles'] as Map<String, dynamic>?)?.map(
           (key, value) => MapEntry(key, value as int),
         ) ??
         const {},
@@ -99,6 +108,8 @@ class Project {
     audience: json['audience'],
     isDraft: json['isDraft'] ?? false,
     acceptedMembersCount: json['acceptedMembersCount'] ?? 0,
+    createdBy: json['createdBy'],
+    createdByName: json['createdByName'],
   );
 
   Map<String, dynamic> toJson() => {
@@ -112,6 +123,8 @@ class Project {
     'audience': audience,
     'isDraft': isDraft,
     'acceptedMembersCount': acceptedMembersCount,
+    'createdBy': createdBy,
+    'createdByName': createdByName,
   };
 
   @override

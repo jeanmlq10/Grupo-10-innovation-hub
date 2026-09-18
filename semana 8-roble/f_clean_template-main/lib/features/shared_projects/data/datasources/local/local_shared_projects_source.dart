@@ -86,6 +86,8 @@ class LocalSharedProjectsSource implements ISharedProjectsSource {
         role: request.role,
         message: request.message,
         applicantName: request.applicantName,
+        applicantUserId: request.applicantUserId,
+        applicantEmail: request.applicantEmail,
       ),
     );
 
@@ -133,7 +135,9 @@ class LocalSharedProjectsSource implements ISharedProjectsSource {
   void rejectRequest(String requestId) {
     final index = _requests.indexWhere((r) => r.id == requestId);
     if (index == -1) return;
-    _requests[index] = _requests[index].copyWith(status: RequestStatus.rejected);
+    _requests[index] = _requests[index].copyWith(
+      status: RequestStatus.rejected,
+    );
   }
 
   @override

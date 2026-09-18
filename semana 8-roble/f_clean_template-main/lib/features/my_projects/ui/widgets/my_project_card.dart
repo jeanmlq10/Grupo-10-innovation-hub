@@ -10,7 +10,12 @@ import '../../domain/models/my_project.dart';
 /// project actually has those counters, since a fresh draft doesn't have
 /// them yet.
 class MyProjectCard extends StatelessWidget {
-  const MyProjectCard({super.key, required this.project, this.onTap, this.onEdit});
+  const MyProjectCard({
+    super.key,
+    required this.project,
+    this.onTap,
+    this.onEdit,
+  });
 
   final MyProject project;
   final VoidCallback? onTap;

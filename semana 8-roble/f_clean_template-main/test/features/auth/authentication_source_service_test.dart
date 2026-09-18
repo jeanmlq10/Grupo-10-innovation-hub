@@ -1,93 +1,86 @@
-import 'package:f_clean_template/core/i_local_preferences.dart';
 import 'package:f_clean_template/features/auth/data/datasources/remote/authentication_source_service.dart';
-import 'package:f_clean_template/features/auth/domain/models/authentication_user.dart';
+import 'package:f_clean_template/features/auth/data/roble_auth_config.dart';
+import 'package:f_clean_template/features/auth/domain/auth_exceptions.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+/// AuthenticationSourceService is now a thin adapter over the official
+/// `roble` SDK (RobleApiDataBase) rather than a hand-rolled HTTP client, so
+/// there is no request/response shape left here to unit-test in isolation:
+/// that behavior is the SDK's own contract, tested by the `roble` package
+/// itself. What this suite covers is the piece that *is* this app's
+/// responsibility — failing clearly, before any network call, when the
+/// project isn't configured — plus the institutional-email business rule.
+///
+/// Exercising real login/Google/logout flows requires a configured
+/// ROBLE_CONTRACT_ID and either real or Roble-provided test credentials;
+/// see the "Pruebas que requieren credenciales reales" section of
+/// AUTH_DELIVERABLES.md.
 void main() {
-  group('AuthenticationSourceService', () {
-    late AuthenticationSourceService source;
-
-    setUp(() {
-      source = AuthenticationSourceService(_MemoryPreferences());
-    });
-
+  group('AuthenticationSourceService configuration', () {
     test(
-      'stores multiple users and restores the matching login session',
+      'throws AuthConfigurationException before any call when unconfigured',
       () async {
-        await source.signUp(_user('alice@example.com', 'Password1!'));
-        await source.signUp(_user('bob@example.com', 'Password2!'));
-
-        expect(
-          await source.login(_user('ALICE@example.com', 'Password1!')),
-          isTrue,
+        final source = AuthenticationSourceService(
+          config: const RobleAuthConfig(
+            baseUrl: 'https://roble-api.test-openlab.uninorte.edu.co',
+            contractId: '',
+            ssoRedirect: '',
+            googleIosClientId: '',
+            institutionalEmailDomain: 'uninorte.edu.co',
+          ),
         );
-        expect(await source.restoreSession(), isTrue);
-        expect((await source.getLoggedUser())?.email, 'alice@example.com');
 
-        await source.logOut();
-        expect(await source.restoreSession(), isFalse);
-        expect(await source.getLoggedUser(), isNull);
+        await expectLater(
+          source.login('ana@uninorte.edu.co', 'Password1!'),
+          throwsA(isA<AuthConfigurationException>()),
+        );
+        await expectLater(
+          source.signInWithGoogle(),
+          throwsA(isA<AuthConfigurationException>()),
+        );
       },
     );
 
-    test('rejects duplicate accounts and invalid credentials', () async {
-      await source.signUp(_user('alice@example.com', 'Password1!'));
+    test(
+      'does not throw at construction time (login screen must still render)',
+      () {
+        expect(
+          () => AuthenticationSourceService(
+            config: const RobleAuthConfig(
+              baseUrl: 'https://roble-api.test-openlab.uninorte.edu.co',
+              contractId: '',
+              ssoRedirect: '',
+              googleIosClientId: '',
+              institutionalEmailDomain: 'uninorte.edu.co',
+            ),
+          ),
+          returnsNormally,
+        );
+      },
+    );
 
-      await expectLater(
-        source.signUp(_user('ALICE@example.com', 'Password2!')),
-        throwsA(isA<StateError>()),
-      );
-      await expectLater(
-        source.login(_user('alice@example.com', 'incorrect')),
-        throwsA(isA<StateError>()),
-      );
-    });
+    test(
+      'rejects registration with a non-institutional email before calling Roble',
+      () async {
+        final source = AuthenticationSourceService(
+          config: const RobleAuthConfig(
+            baseUrl: 'https://roble-api.test-openlab.uninorte.edu.co',
+            contractId: 'movil_flutter_dcaabc5f4e',
+            ssoRedirect: 'innovation-hub-web-dev',
+            googleIosClientId: '',
+            institutionalEmailDomain: 'uninorte.edu.co',
+          ),
+        );
+
+        await expectLater(
+          source.registerWithVerification(
+            email: 'ana@gmail.com',
+            password: 'Password1!',
+            name: 'Ana',
+          ),
+          throwsA(isA<NonInstitutionalEmailException>()),
+        );
+      },
+    );
   });
-}
-
-AuthenticationUser _user(String email, String password) =>
-    AuthenticationUser(email: email, name: email, password: password);
-
-class _MemoryPreferences implements ILocalPreferences {
-  final Map<String, Object> _values = <String, Object>{};
-
-  @override
-  Future<void> clear() async => _values.clear();
-
-  @override
-  Future<bool?> getBool(String key) async => _values[key] as bool?;
-
-  @override
-  Future<double?> getDouble(String key) async => _values[key] as double?;
-
-  @override
-  Future<int?> getInt(String key) async => _values[key] as int?;
-
-  @override
-  Future<String?> getString(String key) async => _values[key] as String?;
-
-  @override
-  Future<List<String>?> getStringList(String key) async =>
-      (_values[key] as List<String>?)?.toList();
-
-  @override
-  Future<void> remove(String key) async => _values.remove(key);
-
-  @override
-  Future<void> setBool(String key, bool value) async => _values[key] = value;
-
-  @override
-  Future<void> setDouble(String key, double value) async =>
-      _values[key] = value;
-
-  @override
-  Future<void> setInt(String key, int value) async => _values[key] = value;
-
-  @override
-  Future<void> setString(String key, String value) async =>
-      _values[key] = value;
-
-  @override
-  Future<void> setStringList(String key, List<String> value) async =>
-      _values[key] = value.toList();
 }
