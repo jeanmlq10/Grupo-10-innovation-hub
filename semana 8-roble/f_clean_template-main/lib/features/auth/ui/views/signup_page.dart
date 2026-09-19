@@ -5,10 +5,11 @@ import '../../../home/ui/home_colors.dart';
 import '../../domain/password_policy.dart';
 import '../viewmodels/authentication_controller.dart';
 
-/// Institutional sign-up. Roble owns the account: this screen only calls
-/// `registerWithVerification` and then the email-code confirmation step —
-/// it never stores a password itself and never logs the user in directly,
-/// so a verified account still goes through the normal login screen.
+/// Institutional sign-up. Roble owns the account: this screen calls
+/// `registerWithVerification`, asks for the emailed code and, once it is
+/// verified, the controller signs the user in with the password just typed so
+/// they land in Home instead of returning to the login screen. It never stores
+/// the password itself.
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
 
@@ -72,6 +73,13 @@ class _SignUpPageState extends State<SignUpPage> {
       return;
     }
     if (!mounted) return;
+    if (_auth.isLogged) {
+      // Signed in automatically: drop the sign-up screen so Central shows Home.
+      Navigator.of(context).popUntil((route) => route.isFirst);
+      return;
+    }
+    // Verified, but the automatic sign-in did not go through (network, rate
+    // limit): send the user back to log in by hand.
     Get.snackbar(
       'Cuenta verificada',
       'Ya puedes iniciar sesion con tu correo y contrasena.',

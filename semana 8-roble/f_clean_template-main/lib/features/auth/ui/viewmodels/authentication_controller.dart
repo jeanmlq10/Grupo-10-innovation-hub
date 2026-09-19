@@ -43,6 +43,11 @@ class AuthenticationController extends GetxController with UiLoggy {
   bool _loadingProviders = false;
   int _consecutiveRateLimits = 0;
   DateTime? _resendBlockedUntil;
+
+  /// Password typed at sign-up, kept only in memory until the email is
+  /// verified so the app can sign the user straight in. Cleared as soon as it
+  /// is used, and on any failure or logout. Never persisted or logged.
+  String? _pendingPassword;
   Timer? _cooldownTimer;
 
   bool get isLoading => _isLoading.value;
@@ -239,10 +244,15 @@ class AuthenticationController extends GetxController with UiLoggy {
         extra: extra,
       );
       _pendingVerificationEmail.value = normalized;
+      _pendingPassword = password;
       return true;
     });
   }
 
+  /// Verifies the emailed code and, right after, signs the user in with the
+  /// password given at sign-up, so they land in the app without going back to
+  /// the login screen. Returns true when the email was verified; check
+  /// [isLogged] to know whether the automatic sign-in also worked.
   Future<bool> verifyEmail(String code) {
     final email = _pendingVerificationEmail.value;
     if (email == null) {
@@ -252,6 +262,21 @@ class AuthenticationController extends GetxController with UiLoggy {
     return _guarded(() async {
       await repoAuthentication.verifyEmail(email, code);
       _pendingVerificationEmail.value = null;
+      final password = _pendingPassword;
+      _pendingPassword = null;
+      if (password != null) {
+        // The account is verified at this point, so a failure here must not
+        // turn into a "verification failed": the user can still log in by hand.
+        try {
+          _loggedUser.value = await repoAuthentication.login(email, password);
+          _logged.value = true;
+        } on AuthRateLimitedException catch (exception) {
+          _startCooldown(exception.retryAfter);
+        } catch (exception) {
+          loggy.warning('AuthenticationController: auto sign-in failed');
+          loggy.debug('AuthenticationController: auto sign-in: $exception');
+        }
+      }
       return true;
     });
   }
@@ -297,6 +322,7 @@ class AuthenticationController extends GetxController with UiLoggy {
   /// Always clears the local session, even if the remote call fails.
   Future<bool> logOut() async {
     error.value = '';
+    _pendingPassword = null;
     try {
       await repoAuthentication.logOut();
       return true;

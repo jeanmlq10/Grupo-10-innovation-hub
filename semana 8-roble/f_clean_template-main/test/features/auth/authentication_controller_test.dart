@@ -471,9 +471,33 @@ void main() {
       );
 
       test(
-        'verifyEmail clears the pending state once the code is accepted',
+        'verifyEmail signs the user in with the sign-up password, no login screen',
         () async {
-          final repo = _FakeAuthRepository();
+          final repo = _FakeAuthRepository()..loginResult = user();
+          final controller = await ready(repo);
+          await controller.register(
+            email: ' Ana@Uninorte.edu.co ',
+            password: 'Password1!',
+            name: 'Ana',
+          );
+
+          final ok = await controller.verifyEmail('123456');
+
+          expect(ok, isTrue);
+          expect(controller.pendingVerificationEmail, isNull);
+          expect(controller.isLogged, isTrue);
+          expect(controller.loggedEmail, 'ana@uninorte.edu.co');
+          expect(repo.loginCalls, 1);
+          expect(repo.lastLoginEmail, 'ana@uninorte.edu.co');
+          expect(repo.lastLoginPassword, 'Password1!');
+        },
+      );
+
+      test(
+        'a failed automatic sign-in still counts as verified, and can be retried by hand',
+        () async {
+          final repo = _FakeAuthRepository()
+            ..loginError = const RobleApiNetworkException('down');
           final controller = await ready(repo);
           await controller.register(
             email: 'ana@uninorte.edu.co',
@@ -484,7 +508,48 @@ void main() {
           final ok = await controller.verifyEmail('123456');
 
           expect(ok, isTrue);
+          expect(controller.isLogged, isFalse);
           expect(controller.pendingVerificationEmail, isNull);
+          expect(repo.loginCalls, 1, reason: 'no automatic retry');
+        },
+      );
+
+      test('a 429 during the automatic sign-in starts the cooldown', () async {
+        final repo = _FakeAuthRepository()
+          ..loginError = const AuthRateLimitedException(Duration(seconds: 30));
+        final controller = await ready(repo);
+        await controller.register(
+          email: 'ana@uninorte.edu.co',
+          password: 'Password1!',
+          name: 'Ana',
+        );
+
+        final ok = await controller.verifyEmail('123456');
+
+        expect(ok, isTrue);
+        expect(controller.isLogged, isFalse);
+        expect(controller.isBlocked, isTrue);
+      });
+
+      test(
+        'a wrong code does not sign in and keeps the pending state',
+        () async {
+          final repo = _FakeAuthRepository()
+            ..loginResult = user()
+            ..verifyError = const RobleApiHttpException(400, 'Codigo invalido');
+          final controller = await ready(repo);
+          await controller.register(
+            email: 'ana@uninorte.edu.co',
+            password: 'Password1!',
+            name: 'Ana',
+          );
+
+          final ok = await controller.verifyEmail('000000');
+
+          expect(ok, isFalse);
+          expect(controller.isLogged, isFalse);
+          expect(controller.pendingVerificationEmail, 'ana@uninorte.edu.co');
+          expect(repo.loginCalls, 0);
         },
       );
 
@@ -539,6 +604,7 @@ class _FakeAuthRepository implements IAuthRepository {
   Completer<void>? loginGate;
   int loginCalls = 0;
   String? lastLoginEmail;
+  String? lastLoginPassword;
 
   AuthenticationUser? microsoftResult;
   Object? microsoftError;
@@ -551,6 +617,7 @@ class _FakeAuthRepository implements IAuthRepository {
   int registerCalls = 0;
   String? lastRegisterEmail;
 
+  Object? verifyError;
   int resendCalls = 0;
   int resetCalls = 0;
   Object? logoutError;
@@ -571,6 +638,7 @@ class _FakeAuthRepository implements IAuthRepository {
   Future<AuthenticationUser> login(String email, String password) async {
     loginCalls++;
     lastLoginEmail = email;
+    lastLoginPassword = password;
     if (loginGate != null) await loginGate!.future;
     if (loginError != null) throw loginError!;
     return loginResult!;
@@ -604,7 +672,9 @@ class _FakeAuthRepository implements IAuthRepository {
   }
 
   @override
-  Future<void> verifyEmail(String email, String code) async {}
+  Future<void> verifyEmail(String email, String code) async {
+    if (verifyError != null) throw verifyError!;
+  }
 
   @override
   Future<void> resendCode(String email) async => resendCalls++;

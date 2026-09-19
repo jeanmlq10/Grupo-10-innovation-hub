@@ -104,12 +104,18 @@ AuthenticationController.onInit() -> restoreSession():
   correo nuevo crea un usuario verificado y uno existente se vincula
   (automáticamente si el proveedor certifica el correo; si no, responde 409 y
   la app pide iniciar sesión con el método original).
-- **Registro institucional**: `SignUpPage` ahora es un formulario real
-  (antes solo mostraba un mensaje). Llama a
-  `registerWithVerification(email, password, name, extra: {career})`,
-  valida que el correo sea del dominio institucional configurado, y pide el
-  código enviado por correo (`verifyEmail`). Solo después de verificar se
-  puede hacer login — el registro nunca autentica directamente.
+- **Registro institucional**: `SignUpPage` es un formulario real. Llama a
+  `registerWithVerification(email, password, name, extra: {career})`, valida
+  el dominio institucional y la política de contraseña, y pide el código
+  enviado por correo (`verifyEmail`). Al verificarlo, el controlador inicia
+  sesión solo con la contraseña recién escrita (guardada únicamente en memoria
+  hasta ese momento, nunca en disco ni en logs) y la app entra directo al Home,
+  sin volver al login. Si la cuenta quedó verificada pero el inicio automático
+  falla (red, 429), se avisa y se vuelve al login; no se reintenta solo.
+  Se mantiene la verificación por correo a propósito: `register(autoLogin: true)`
+  del SDK usa `signup-direct`, que activa la cuenta sin comprobar el correo, y
+  en una plataforma restringida a `@uninorte.edu.co` cualquiera podría
+  registrar un correo ajeno.
 - **Logout**: `controller.logOut()` -> `roble.logout()` revoca la sesión en
   el dispositivo; el estado local se limpia igual aunque la llamada de red
   falle (no deja al usuario "atascado" logueado).
@@ -290,14 +296,15 @@ flutter run --dart-define-from-file=.env
 flutter test
 ```
 
-70 pruebas en verde: mapeo/normalización del perfil, dominio institucional,
+75 pruebas en verde: mapeo/normalización del perfil, dominio institucional,
 política de contraseña, `RetryPolicy` (backoff, máximo, sin reintento en
 4xx/429), `RetryAfterClient`, el servicio contra un `RobleApiDataBase` real con
 `MockClient` (429, duplicados, proveedores), el controlador (restauración,
 login éxito/fallo, una sola petición en vuelo, cooldown por 429 con y sin
 `Retry-After`, sin reintentos en 401/403, Microsoft éxito/cancelado/
-deshabilitado/conflicto, registro, verificación, logout) y la pantalla de login
-(botón de Microsoft presente, Google ausente).
+deshabilitado/conflicto, registro, verificación, logout) la pantalla de login
+(botón de Microsoft presente, Google ausente) y el flujo completo de interfaz
+registro → código → Home.
 
 ### Pruebas que requieren credenciales reales (no incluidas)
 
@@ -311,7 +318,7 @@ deshabilitado/conflicto, registro, verificación, logout) y la pantalla de login
 
 - `dart format lib test` — aplicado.
 - `flutter analyze` — **0 issues nuevos**; 4 `info` preexistentes ajenos a auth.
-- `flutter test` — **70/70**.
+- `flutter test` — **75/75**.
 - `flutter build web --dart-define-from-file=.env` — **exitoso**.
 - Android/iOS: **no compilado** en este entorno (Android SDK 35 en vez de 36 y
   licencias sin aceptar). Sin probar en dispositivo.
