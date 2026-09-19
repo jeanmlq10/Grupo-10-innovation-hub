@@ -16,7 +16,13 @@ abstract class IAuthenticationSource {
 
   Future<void> resendCode(String email);
 
-  Future<AuthenticationUser> signInWithGoogle();
+  /// Whether Microsoft is enabled as a sign-in provider in the Roble project.
+  Future<bool> isMicrosoftEnabled();
+
+  /// Signs in through Microsoft, with Roble as the identity broker. In Roble
+  /// social login is also sign-up: an unknown email creates a verified
+  /// account, a known one is linked to the existing user.
+  Future<AuthenticationUser> signInWithMicrosoft();
 
   /// True when a session is present in memory (no network call).
   bool get isLoggedIn;

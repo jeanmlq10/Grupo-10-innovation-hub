@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../home/ui/home_colors.dart';
+import '../../domain/password_policy.dart';
 import '../viewmodels/authentication_controller.dart';
 
 /// Institutional sign-up. Roble owns the account: this screen only calls
@@ -36,6 +37,7 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Future<void> _register() async {
+    if (_auth.isBusy) return;
     FocusScope.of(context).unfocus();
     if (!_formKey.currentState!.validate()) return;
 
@@ -60,6 +62,7 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Future<void> _verify() async {
+    if (_auth.isBusy) return;
     FocusScope.of(context).unfocus();
     if (!_codeFormKey.currentState!.validate()) return;
 
@@ -83,9 +86,12 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   void _showError() {
+    final message = _auth.error.value;
+    // Empty when a duplicate tap was ignored while a request was running.
+    if (message.isEmpty) return;
     Get.snackbar(
       'Registro',
-      _auth.error.value,
+      message,
       icon: const Icon(Icons.error_outline, color: Colors.red),
       snackPosition: SnackPosition.BOTTOM,
     );
@@ -171,16 +177,30 @@ class _SignUpPageState extends State<SignUpPage> {
             controller: _passwordController,
             obscureText: true,
             decoration: const InputDecoration(
-              labelText: 'Contrasena',
+              labelText: 'Contraseña',
               border: OutlineInputBorder(),
             ),
-            validator: (value) =>
-                (value ?? '').length < 7 ? 'Minimo 7 caracteres.' : null,
+            // Same rule Roble enforces, so a weak password never costs one of
+            // the 5 sign-up requests per hour the server allows.
+            validator: (value) => PasswordPolicy.validate(value ?? ''),
+          ),
+          Obx(
+            () => _auth.isBlocked
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 12),
+                    child: Text(
+                      'Demasiados intentos. Podras volver a intentarlo en '
+                      '${_auth.retrySecondsLeft} s.',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                  )
+                : const SizedBox.shrink(),
           ),
           const SizedBox(height: 20),
           Obx(
             () => FilledButton(
-              onPressed: _auth.isLoading ? null : _register,
+              onPressed: _auth.isBusy ? null : _register,
               style: FilledButton.styleFrom(
                 backgroundColor: HomeColors.primaryPurple,
                 padding: const EdgeInsets.symmetric(vertical: 15),
@@ -232,7 +252,7 @@ class _SignUpPageState extends State<SignUpPage> {
           const SizedBox(height: 20),
           Obx(
             () => FilledButton(
-              onPressed: _auth.isLoading ? null : _verify,
+              onPressed: _auth.isBusy ? null : _verify,
               style: FilledButton.styleFrom(
                 backgroundColor: HomeColors.primaryPurple,
                 padding: const EdgeInsets.symmetric(vertical: 15),
@@ -241,9 +261,11 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
           ),
           const SizedBox(height: 12),
-          TextButton(
-            onPressed: _resendCode,
-            child: const Text('Reenviar codigo'),
+          Obx(
+            () => TextButton(
+              onPressed: _auth.isBusy ? null : _resendCode,
+              child: const Text('Reenviar codigo'),
+            ),
           ),
         ],
       ),

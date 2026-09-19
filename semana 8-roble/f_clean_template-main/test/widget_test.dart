@@ -30,6 +30,8 @@ void main() {
 
     expect(find.text('Innovation Hub'), findsOneWidget);
     expect(find.text('Iniciar sesion'), findsOneWidget);
+    expect(find.text('Continuar con Microsoft'), findsOneWidget);
+    expect(find.textContaining('Google'), findsNothing);
   });
 }
 

@@ -33,6 +33,32 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
-  <script src="flutter_bootstrap.js" async></script>
+  <!--
+    Return page of the Microsoft sign-in popup. Roble redirects the popup back
+    to this app with `?code=...`; the roble SDK (awaitSocialCallback) waits in
+    the main window for that URL, delivered by postMessage and, as a backup,
+    localStorage["roble-sso"], both keyed exactly as the SDK expects. The popup
+    then closes without ever booting the Flutter app.
+  -->
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      if (window.opener && params.get('code')) {
+        var url = window.location.href;
+        try { localStorage.setItem('roble-sso', url); } catch (e) {}
+        try { window.opener.postMessage('roble-sso:' + url, window.location.origin); } catch (e) {}
+        window.close();
+        window.__robleSsoReturn = true;
+      }
+    })();
+  </script>
+  <script>
+    if (!window.__robleSsoReturn) {
+      var s = document.createElement('script');
+      s.src = 'flutter_bootstrap.js';
+      s.async = true;
+      document.body.appendChild(s);
+    }
+  </script>
 </body>
 </html>

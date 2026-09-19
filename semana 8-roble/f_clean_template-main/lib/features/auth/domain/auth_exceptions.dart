@@ -19,3 +19,28 @@ class NonInstitutionalEmailException implements Exception {
   @override
   String toString() => 'El correo debe pertenecer al dominio $domain.';
 }
+
+/// Roble answered `429 Too Many Requests`. [retryAfter] is the server's
+/// `Retry-After` when it could be read, otherwise null and the caller must
+/// pick its own wait.
+class AuthRateLimitedException implements Exception {
+  const AuthRateLimitedException([this.retryAfter]);
+
+  final Duration? retryAfter;
+
+  @override
+  String toString() =>
+      'Demasiadas solicitudes. Intenta de nuevo en un momento.';
+}
+
+/// The requested social provider is not enabled in the Roble project.
+class AuthProviderUnavailableException implements Exception {
+  const AuthProviderUnavailableException(this.provider);
+
+  final String provider;
+
+  @override
+  String toString() =>
+      '$provider aun no esta habilitado en Roble. Pide al administrador del '
+      'proyecto que lo configure.';
+}

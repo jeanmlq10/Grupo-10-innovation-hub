@@ -13,7 +13,7 @@ ios/Flutter/ephemeral/
 ios/Flutter/Generated.xcconfig
 ios/Flutter/flutter_export_environment.sh
 
-# Local secrets: never commit real Roble/Google config, only .env.example.
+# Local secrets: never commit real Roble/Microsoft config, only .env.example.
 .env
 .env.*
 !.env.example

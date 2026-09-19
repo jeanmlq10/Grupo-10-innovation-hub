@@ -14,7 +14,9 @@ abstract class IAuthRepository {
 
   Future<void> resendCode(String email);
 
-  Future<AuthenticationUser> signInWithGoogle();
+  Future<bool> isMicrosoftEnabled();
+
+  Future<AuthenticationUser> signInWithMicrosoft();
 
   bool get isLoggedIn;
 

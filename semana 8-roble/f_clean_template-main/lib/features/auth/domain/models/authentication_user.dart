@@ -1,5 +1,5 @@
 /// Mirrors the profile map returned by every Roble sign-in method
-/// (`login`, `signInWithGoogle`, `currentUser`, ...):
+/// (`login`, `signInWithProvider`, `currentUser`, ...):
 /// `{id, userId, email, name, role, extra, createdAt, updatedAt}`.
 ///
 /// [userId] is the identifier the rest of the app must store on projects,
@@ -34,13 +34,26 @@ class AuthenticationUser {
   /// Roble's own profile map does not include a photo field.
   String? get photoUrl => _stringOrNull(extra['photo_url'] ?? extra['picture']);
 
+  /// Given name and family name, split from [name] on the first space when it
+  /// has more than one word. Best effort: providers return one display name.
+  String get firstName => name.trim().split(RegExp(r'\s+')).first;
+  String get lastName {
+    final parts = name.trim().split(RegExp(r'\s+'));
+    return parts.length > 1 ? parts.skip(1).join(' ') : '';
+  }
+
+  /// Emails are stored lowercase and trimmed, and are only a complementary
+  /// datum: [userId] is the stable identifier. The provider's own subject id
+  /// is not part of the profile Roble returns, so it cannot be kept here.
   factory AuthenticationUser.fromProfile(Map<String, dynamic> json) {
     final extra = json['extra'];
+    final email = (json['email']?.toString() ?? '').trim().toLowerCase();
+    final name = (json['name']?.toString() ?? '').trim();
     return AuthenticationUser(
       id: json['id']?.toString() ?? '',
       userId: json['userId']?.toString() ?? json['id']?.toString() ?? '',
-      email: json['email']?.toString() ?? '',
-      name: json['name']?.toString() ?? json['email']?.toString() ?? '',
+      email: email,
+      name: name.isEmpty ? email : name,
       role: _stringOrNull(json['role']),
       extra: extra is Map ? Map<String, dynamic>.from(extra) : const {},
       createdAt: DateTime.tryParse(json['createdAt']?.toString() ?? ''),

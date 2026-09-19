@@ -43,7 +43,7 @@ dependencies:
   # Renders the exact "Comencemos" cloud illustration exported from
   # Figma as raw SVG, instead of approximating it with icons/shapes.
   flutter_svg: ^2.0.10+1
-  # Official Roble client: handles login/signup, Google/Microsoft SSO,
+  # Official Roble client: handles login/signup, Microsoft SSO,
   # secure session storage and token renewal so this app never talks
   # HTTP to Roble's auth endpoints directly.
   roble: ^1.12.0

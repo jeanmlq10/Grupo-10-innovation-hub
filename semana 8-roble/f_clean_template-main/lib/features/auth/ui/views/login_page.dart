@@ -19,6 +19,14 @@ class _LoginPageState extends State<LoginPage> {
   final AuthenticationController _auth = Get.find();
 
   @override
+  void initState() {
+    super.initState();
+    // Learn which providers Roble has enabled now, so tapping the Microsoft
+    // button does not have to wait on a request first.
+    _auth.loadProviders();
+  }
+
+  @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
@@ -26,6 +34,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _login() async {
+    // Enter on the keyboard bypasses the disabled button, so check here too.
+    if (_auth.isBusy) return;
     FocusScope.of(context).unfocus();
     if (!_formKey.currentState!.validate()) return;
 
@@ -36,15 +46,19 @@ class _LoginPageState extends State<LoginPage> {
     if (!loggedIn) _showError();
   }
 
-  Future<void> _googleLogin() async {
-    final loggedIn = await _auth.signInWithGoogle();
+  Future<void> _microsoftLogin() async {
+    if (_auth.isBusy) return;
+    final loggedIn = await _auth.signInWithMicrosoft();
     if (!loggedIn) _showError();
   }
 
   void _showError() {
+    final message = _auth.error.value;
+    // Empty when a duplicate tap was ignored while a request was running.
+    if (message.isEmpty) return;
     Get.snackbar(
       'Autenticacion',
-      _auth.error.value,
+      message,
       icon: const Icon(Icons.lock_outline, color: Colors.red),
       snackPosition: SnackPosition.BOTTOM,
     );
@@ -82,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 8),
                     const Text(
-                      'Ingresa con tu cuenta institucional de Roble.',
+                      'Ingresa con tu cuenta institucional.',
                       textAlign: TextAlign.center,
                       style: TextStyle(color: HomeColors.textSecondary),
                     ),
@@ -109,22 +123,34 @@ class _LoginPageState extends State<LoginPage> {
                       obscureText: true,
                       autofillHints: const [AutofillHints.password],
                       decoration: const InputDecoration(
-                        labelText: 'Contrasena',
+                        labelText: 'Contraseña',
                         prefixIcon: Icon(Icons.lock_outline),
                         border: OutlineInputBorder(),
                       ),
-                      validator: (value) {
-                        if ((value ?? '').length < 7) {
-                          return 'Minimo 7 caracteres.';
-                        }
-                        return null;
-                      },
+                      // Login only asks for a value: existing passwords must be
+                      // sent as typed, the complexity rule applies at sign-up.
+                      validator: (value) => (value ?? '').isEmpty
+                          ? 'Ingresa tu contrasena.'
+                          : null,
                       onFieldSubmitted: (_) => _login(),
+                    ),
+                    Obx(
+                      () => _auth.isBlocked
+                          ? Padding(
+                              padding: const EdgeInsets.only(top: 12),
+                              child: Text(
+                                'Demasiados intentos. Podras volver a '
+                                'intentarlo en ${_auth.retrySecondsLeft} s.',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(color: Colors.red),
+                              ),
+                            )
+                          : const SizedBox.shrink(),
                     ),
                     const SizedBox(height: 20),
                     Obx(
                       () => FilledButton(
-                        onPressed: _auth.isLoading ? null : _login,
+                        onPressed: _auth.isBusy ? null : _login,
                         style: FilledButton.styleFrom(
                           backgroundColor: HomeColors.primaryPurple,
                           padding: const EdgeInsets.symmetric(vertical: 15),
@@ -144,9 +170,9 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(height: 12),
                     Obx(
                       () => OutlinedButton.icon(
-                        onPressed: _auth.isLoading ? null : _googleLogin,
-                        icon: const Icon(Icons.g_mobiledata, size: 28),
-                        label: const Text('Continuar con Google via Roble'),
+                        onPressed: _auth.isBusy ? null : _microsoftLogin,
+                        icon: const Icon(Icons.window, size: 22),
+                        label: const Text('Continuar con Microsoft'),
                         style: OutlinedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 13),
                         ),
@@ -160,7 +186,7 @@ class _LoginPageState extends State<LoginPage> {
                           builder: (context) => const SignUpPage(),
                         ),
                       ),
-                      child: const Text('Alta de usuario institucional'),
+                      child: const Text('Crear cuenta'),
                     ),
                   ],
                 ),

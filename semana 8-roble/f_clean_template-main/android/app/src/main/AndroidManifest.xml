@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Required by the roble package to reach the Roble API and by
-         Google Sign-In's account picker. -->
+         the browser-based Microsoft sign-in. -->
     <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:label="f_clean_template"

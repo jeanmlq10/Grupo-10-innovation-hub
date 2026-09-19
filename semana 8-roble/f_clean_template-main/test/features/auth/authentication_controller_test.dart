@@ -1,8 +1,12 @@
+import 'dart:async';
+
+import 'package:f_clean_template/features/auth/domain/auth_exceptions.dart';
 import 'package:f_clean_template/features/auth/domain/models/authentication_user.dart';
 import 'package:f_clean_template/features/auth/domain/repositories/i_auth_repository.dart';
 import 'package:f_clean_template/features/auth/ui/viewmodels/authentication_controller.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
+import 'package:roble/roble.dart';
 
 void main() {
   group('AuthenticationController', () {
@@ -16,60 +20,63 @@ void main() {
 
     // GetxController.onInit() only fires once the controller is registered
     // with GetX (Get.put), not from a bare constructor call.
-    AuthenticationController controllerFor(_FakeAuthRepository repo) =>
-        Get.put(AuthenticationController(repo));
+    Future<AuthenticationController> ready(_FakeAuthRepository repo) async {
+      final controller = Get.put(AuthenticationController(repo));
+      await Future<void>.delayed(Duration.zero);
+      return controller;
+    }
 
-    test(
-      'starts restoring, then not logged in when there is no saved session',
-      () async {
-        final repo = _FakeAuthRepository()..restoreResult = false;
-        final controller = controllerFor(repo);
+    group('session restore', () {
+      test(
+        'starts restoring, then not logged in without a saved session',
+        () async {
+          final repo = _FakeAuthRepository()..restoreResult = false;
+          final controller = Get.put(AuthenticationController(repo));
 
-        expect(controller.isRestoring, isTrue);
-        await Future<void>.delayed(Duration.zero);
+          expect(controller.isRestoring, isTrue);
+          await Future<void>.delayed(Duration.zero);
 
-        expect(controller.isRestoring, isFalse);
-        expect(controller.isLogged, isFalse);
-        expect(controller.loggedUser, isNull);
-      },
-    );
+          expect(controller.isRestoring, isFalse);
+          expect(controller.isLogged, isFalse);
+          expect(controller.loggedUser, isNull);
+        },
+      );
 
-    test(
-      'restores an existing valid session into an authenticated state',
-      () async {
+      test('restores a valid session into an authenticated state', () async {
         final repo = _FakeAuthRepository()
           ..restoreResult = true
           ..currentUserResult = user();
-        final controller = controllerFor(repo);
-
-        await Future<void>.delayed(Duration.zero);
+        final controller = await ready(repo);
 
         expect(controller.isLogged, isTrue);
         expect(controller.loggedUser?.email, 'ana@uninorte.edu.co');
-      },
-    );
+      });
 
-    test(
-      'an error while restoring is treated as session expired, not a crash',
-      () async {
+      test('an error while restoring means logged out, not a crash', () async {
         final repo = _FakeAuthRepository()
           ..restoreError = Exception('network down');
-        final controller = controllerFor(repo);
-
-        await Future<void>.delayed(Duration.zero);
+        final controller = await ready(repo);
 
         expect(controller.isLogged, isFalse);
         expect(controller.isRestoring, isFalse);
-      },
-    );
+      });
 
-    test(
-      'login success sets the authenticated state and the logged-in user',
-      () async {
-        final repo = _FakeAuthRepository()..restoreResult = false;
-        final controller = controllerFor(repo);
-        await Future<void>.delayed(Duration.zero);
-        repo.loginResult = user();
+      test('a 429 while restoring starts the cooldown', () async {
+        final repo = _FakeAuthRepository()
+          ..restoreError = const AuthRateLimitedException(
+            Duration(seconds: 30),
+          );
+        final controller = await ready(repo);
+
+        expect(controller.isLogged, isFalse);
+        expect(controller.isBlocked, isTrue);
+      });
+    });
+
+    group('login', () {
+      test('success sets the authenticated state', () async {
+        final repo = _FakeAuthRepository()..loginResult = user();
+        final controller = await ready(repo);
 
         final ok = await controller.login('ana@uninorte.edu.co', 'Password1!');
 
@@ -77,124 +84,440 @@ void main() {
         expect(controller.isLogged, isTrue);
         expect(controller.loggedEmail, 'ana@uninorte.edu.co');
         expect(controller.error.value, isEmpty);
-      },
-    );
+        expect(controller.isLoading, isFalse);
+      });
 
-    test(
-      'login failure surfaces an error and keeps the user logged out',
-      () async {
-        final repo = _FakeAuthRepository()..restoreResult = false;
-        final controller = controllerFor(repo);
-        await Future<void>.delayed(Duration.zero);
-        repo.loginError = Exception('bad credentials');
+      test(
+        'failure surfaces an error, stays logged out and resets loading',
+        () async {
+          final repo = _FakeAuthRepository()..loginError = Exception('bad');
+          final controller = await ready(repo);
 
+          final ok = await controller.login(
+            'ana@uninorte.edu.co',
+            'Password1!',
+          );
+
+          expect(ok, isFalse);
+          expect(controller.isLogged, isFalse);
+          expect(controller.error.value, isNotEmpty);
+          expect(controller.isLoading, isFalse);
+        },
+      );
+
+      test('normalizes the email before calling the repository', () async {
+        final repo = _FakeAuthRepository()..loginResult = user();
+        final controller = await ready(repo);
+
+        await controller.login('  Ana@Uninorte.EDU.co ', 'Password1!');
+
+        expect(repo.lastLoginEmail, 'ana@uninorte.edu.co');
+      });
+
+      test('an invalid form never reaches the repository', () async {
+        final repo = _FakeAuthRepository();
+        final controller = await ready(repo);
+
+        expect(await controller.login('not-an-email', 'x'), isFalse);
+        expect(await controller.login('ana@uninorte.edu.co', ''), isFalse);
+        expect(repo.loginCalls, 0);
+      });
+
+      test(
+        'an existing password is sent as typed, whatever its complexity',
+        () async {
+          final repo = _FakeAuthRepository()..loginResult = user();
+          final controller = await ready(repo);
+
+          await controller.login('ana@uninorte.edu.co', 'abc');
+
+          expect(repo.loginCalls, 1);
+        },
+      );
+
+      test('isLoading is true while the request is in flight', () async {
+        final repo = _FakeAuthRepository()
+          ..loginResult = user()
+          ..loginGate = Completer<void>();
+        final controller = await ready(repo);
+
+        final future = controller.login('ana@uninorte.edu.co', 'Password1!');
+        expect(controller.isLoading, isTrue);
+        repo.loginGate!.complete();
+        await future;
+
+        expect(controller.isLoading, isFalse);
+      });
+    });
+
+    group('one request at a time', () {
+      test('a second login while one is running is ignored', () async {
+        final repo = _FakeAuthRepository()
+          ..loginResult = user()
+          ..loginGate = Completer<void>();
+        final controller = await ready(repo);
+
+        final first = controller.login('ana@uninorte.edu.co', 'Password1!');
+        final second = controller.login('ana@uninorte.edu.co', 'Password1!');
+        final third = controller.signInWithMicrosoft();
+
+        expect(await second, isFalse);
+        expect(await third, isFalse);
+        repo.loginGate!.complete();
+        expect(await first, isTrue);
+        expect(repo.loginCalls, 1);
+        expect(repo.microsoftCalls, 0);
+      });
+
+      test('the lock is released after an error, so retry works', () async {
+        final repo = _FakeAuthRepository()..loginError = Exception('bad');
+        final controller = await ready(repo);
+
+        await controller.login('ana@uninorte.edu.co', 'Password1!');
+        repo
+          ..loginError = null
+          ..loginResult = user();
         final ok = await controller.login('ana@uninorte.edu.co', 'Password1!');
 
+        expect(ok, isTrue);
+        expect(repo.loginCalls, 2);
+      });
+    });
+
+    group('429 Too Many Requests', () {
+      test('blocks further attempts without touching the network', () async {
+        final repo = _FakeAuthRepository()
+          ..loginError = const AuthRateLimitedException(Duration(seconds: 30));
+        final controller = await ready(repo);
+
+        expect(
+          await controller.login('ana@uninorte.edu.co', 'Password1!'),
+          isFalse,
+        );
+        expect(controller.isBlocked, isTrue);
+        expect(controller.isBusy, isTrue);
+        expect(controller.error.value, contains('30'));
+
+        expect(
+          await controller.login('ana@uninorte.edu.co', 'Password1!'),
+          isFalse,
+        );
+        expect(await controller.signInWithMicrosoft(), isFalse);
+        expect(repo.loginCalls, 1, reason: 'no automatic or repeated retries');
+        expect(repo.microsoftCalls, 0);
+      });
+
+      test('respects the Retry-After the server sent', () async {
+        final repo = _FakeAuthRepository()
+          ..loginError = const AuthRateLimitedException(Duration(seconds: 42));
+        final controller = await ready(repo);
+
+        await controller.login('ana@uninorte.edu.co', 'Password1!');
+
+        expect(controller.retrySecondsLeft, 42);
+      });
+
+      test('uses the default wait when there is no Retry-After', () async {
+        final repo = _FakeAuthRepository()
+          ..loginError = const AuthRateLimitedException();
+        final controller = await ready(repo);
+
+        await controller.login('ana@uninorte.edu.co', 'Password1!');
+
+        expect(
+          controller.retrySecondsLeft,
+          AuthenticationController.defaultRateLimitWait.inSeconds,
+        );
+      });
+
+      test('the block lifts by itself and login works again', () async {
+        final repo = _FakeAuthRepository()
+          ..loginError = const AuthRateLimitedException(Duration(seconds: 1));
+        final controller = await ready(repo);
+        await controller.login('ana@uninorte.edu.co', 'Password1!');
+        expect(controller.isBlocked, isTrue);
+
+        await Future<void>.delayed(const Duration(milliseconds: 1300));
+        expect(controller.isBlocked, isFalse);
+
+        repo
+          ..loginError = null
+          ..loginResult = user();
+        expect(
+          await controller.login('ana@uninorte.edu.co', 'Password1!'),
+          isTrue,
+        );
+      });
+
+      test('a successful request resets the backoff', () async {
+        final repo = _FakeAuthRepository()
+          ..loginError = const AuthRateLimitedException(Duration(seconds: 1));
+        final controller = await ready(repo);
+        await controller.login('ana@uninorte.edu.co', 'Password1!');
+        await Future<void>.delayed(const Duration(milliseconds: 1300));
+
+        repo
+          ..loginError = null
+          ..loginResult = user();
+        await controller.login('ana@uninorte.edu.co', 'Password1!');
+        await controller.logOut();
+        repo
+          ..loginError = const AuthRateLimitedException()
+          ..loginResult = null;
+        await controller.login('ana@uninorte.edu.co', 'Password1!');
+
+        expect(
+          controller.retrySecondsLeft,
+          AuthenticationController.defaultRateLimitWait.inSeconds,
+        );
+      });
+
+      test('consecutive 429s without Retry-After back off progressively', () {
+        expect(
+          AuthenticationController.rateLimitBackoff(1),
+          const Duration(seconds: 60),
+        );
+        expect(
+          AuthenticationController.rateLimitBackoff(2),
+          const Duration(seconds: 120),
+        );
+        expect(
+          AuthenticationController.rateLimitBackoff(3),
+          const Duration(seconds: 240),
+        );
+        expect(
+          AuthenticationController.rateLimitBackoff(4),
+          const Duration(seconds: 480),
+        );
+        expect(
+          AuthenticationController.rateLimitBackoff(5),
+          const Duration(minutes: 15),
+        );
+        expect(
+          AuthenticationController.rateLimitBackoff(50),
+          const Duration(minutes: 15),
+        );
+      });
+    });
+
+    group('no automatic retries on definitive errors', () {
+      for (final status in [401, 403]) {
+        test('HTTP $status is reported once and never retried', () async {
+          final repo = _FakeAuthRepository()
+            ..loginError = RobleApiHttpException(status, 'no');
+          final controller = await ready(repo);
+
+          final ok = await controller.login(
+            'ana@uninorte.edu.co',
+            'Password1!',
+          );
+          await Future<void>.delayed(const Duration(milliseconds: 50));
+
+          expect(ok, isFalse);
+          expect(repo.loginCalls, 1);
+          expect(controller.isBlocked, isFalse);
+          expect(controller.error.value, isNotEmpty);
+        });
+      }
+    });
+
+    group('microsoft', () {
+      test('signs the user in', () async {
+        final repo = _FakeAuthRepository()
+          ..microsoftResult = user(email: 'ana@uninorte.edu.co');
+        final controller = await ready(repo);
+
+        final ok = await controller.signInWithMicrosoft();
+
+        expect(ok, isTrue);
+        expect(controller.isLogged, isTrue);
+        expect(controller.loggedEmail, 'ana@uninorte.edu.co');
+      });
+
+      test('a cancelled or blocked popup is an error, not a session', () async {
+        final repo = _FakeAuthRepository()
+          ..microsoftError = const RobleApiAuthException('cerrada');
+        final controller = await ready(repo);
+
+        final ok = await controller.signInWithMicrosoft();
+
         expect(ok, isFalse);
         expect(controller.isLogged, isFalse);
         expect(controller.error.value, isNotEmpty);
-      },
-    );
+        expect(controller.isLoading, isFalse);
+      });
 
-    test(
-      'rejects an invalid form before calling the repository at all',
-      () async {
-        final repo = _FakeAuthRepository()..restoreResult = false;
-        final controller = controllerFor(repo);
-        await Future<void>.delayed(Duration.zero);
+      test(
+        'an email that belongs to another sign-in method shows a clear message',
+        () async {
+          final repo = _FakeAuthRepository()
+            ..microsoftError = const RobleApiConflictException('conflict');
+          final controller = await ready(repo);
 
-        final ok = await controller.login('not-an-email', '123');
+          await controller.signInWithMicrosoft();
 
-        expect(ok, isFalse);
-        expect(repo.loginCalls, 0);
-      },
-    );
+          expect(controller.error.value, contains('Ya existe una cuenta'));
+        },
+      );
 
-    test('sets isLoading true while the login call is in flight', () async {
-      final repo = _FakeAuthRepository()..restoreResult = false;
-      final controller = controllerFor(repo);
-      await Future<void>.delayed(Duration.zero);
-      repo.loginResult = user();
-      repo.loginDelay = const Duration(milliseconds: 20);
+      test(
+        'is refused locally, without a request, when Roble has it disabled',
+        () async {
+          final repo = _FakeAuthRepository()..microsoftEnabledResult = false;
+          final controller = await ready(repo);
+          await controller.loadProviders();
 
-      final future = controller.login('ana@uninorte.edu.co', 'Password1!');
-      expect(controller.isLoading, isTrue);
-      await future;
-      expect(controller.isLoading, isFalse);
+          final ok = await controller.signInWithMicrosoft();
+
+          expect(ok, isFalse);
+          expect(repo.microsoftCalls, 0);
+          expect(controller.error.value, contains('Microsoft'));
+        },
+      );
+
+      test('providers are only requested once', () async {
+        final repo = _FakeAuthRepository()..microsoftEnabledResult = true;
+        final controller = await ready(repo);
+
+        await Future.wait([
+          controller.loadProviders(),
+          controller.loadProviders(),
+        ]);
+        await controller.loadProviders();
+
+        expect(repo.providerCalls, 1);
+        expect(controller.microsoftEnabled, isTrue);
+      });
     });
 
-    test('signInWithGoogle authenticates the user in one call', () async {
-      final repo = _FakeAuthRepository()..restoreResult = false;
-      final controller = controllerFor(repo);
-      await Future<void>.delayed(Duration.zero);
-      repo.googleResult = user(email: 'ana@gmail.com');
+    group('register', () {
+      test(
+        'goes to pending verification, not logged in, with a normalized email',
+        () async {
+          final repo = _FakeAuthRepository();
+          final controller = await ready(repo);
 
-      final ok = await controller.signInWithGoogle();
+          final ok = await controller.register(
+            email: ' Ana@Uninorte.edu.co ',
+            password: 'Password1!',
+            name: 'Ana',
+          );
 
-      expect(ok, isTrue);
-      expect(controller.loggedEmail, 'ana@gmail.com');
-    });
+          expect(ok, isTrue);
+          expect(controller.isLogged, isFalse);
+          expect(controller.pendingVerificationEmail, 'ana@uninorte.edu.co');
+          expect(repo.lastRegisterEmail, 'ana@uninorte.edu.co');
+        },
+      );
 
-    test(
-      'signInWithGoogle surfaces a cancelled/failed social flow as an error',
-      () async {
-        final repo = _FakeAuthRepository()..restoreResult = false;
-        final controller = controllerFor(repo);
-        await Future<void>.delayed(Duration.zero);
-        repo.googleError = Exception('user cancelled');
+      test('a password that breaks the policy never costs a request', () async {
+        final repo = _FakeAuthRepository();
+        final controller = await ready(repo);
 
-        final ok = await controller.signInWithGoogle();
+        for (final weak in ['abc', 'password1!', 'Password1%', 'Password!!']) {
+          final ok = await controller.register(
+            email: 'ana@uninorte.edu.co',
+            password: weak,
+            name: 'Ana',
+          );
+          expect(ok, isFalse, reason: weak);
+        }
 
-        expect(ok, isFalse);
-        expect(controller.isLogged, isFalse);
+        expect(repo.registerCalls, 0);
         expect(controller.error.value, isNotEmpty);
-      },
-    );
+      });
 
-    test(
-      'register succeeds into a pending-verification state, not a logged-in one',
-      () async {
-        final repo = _FakeAuthRepository()..restoreResult = false;
-        final controller = controllerFor(repo);
-        await Future<void>.delayed(Duration.zero);
+      test('a duplicate tap on Register sends a single request', () async {
+        final repo = _FakeAuthRepository()..registerGate = Completer<void>();
+        final controller = await ready(repo);
 
-        final ok = await controller.register(
+        final first = controller.register(
           email: 'ana@uninorte.edu.co',
           password: 'Password1!',
           name: 'Ana',
         );
+        final second = controller.register(
+          email: 'ana@uninorte.edu.co',
+          password: 'Password1!',
+          name: 'Ana',
+        );
+        repo.registerGate!.complete();
 
-        expect(ok, isTrue);
-        expect(controller.isLogged, isFalse);
-        expect(controller.pendingVerificationEmail, 'ana@uninorte.edu.co');
-      },
-    );
+        expect(await second, isFalse);
+        expect(await first, isTrue);
+        expect(repo.registerCalls, 1);
+      });
 
-    test(
-      'verifyEmail clears the pending state once the code is accepted',
-      () async {
-        final repo = _FakeAuthRepository()..restoreResult = false;
-        final controller = controllerFor(repo);
-        await Future<void>.delayed(Duration.zero);
+      test(
+        'an already registered email is reported with the server message',
+        () async {
+          final repo = _FakeAuthRepository()
+            ..registerError = const RobleApiHttpException(
+              400,
+              'El correo ya está registrado',
+            );
+          final controller = await ready(repo);
+
+          final ok = await controller.register(
+            email: 'ana@uninorte.edu.co',
+            password: 'Password1!',
+            name: 'Ana',
+          );
+
+          expect(ok, isFalse);
+          expect(controller.error.value, 'El correo ya está registrado');
+          expect(controller.pendingVerificationEmail, isNull);
+        },
+      );
+
+      test(
+        'verifyEmail clears the pending state once the code is accepted',
+        () async {
+          final repo = _FakeAuthRepository();
+          final controller = await ready(repo);
+          await controller.register(
+            email: 'ana@uninorte.edu.co',
+            password: 'Password1!',
+            name: 'Ana',
+          );
+
+          final ok = await controller.verifyEmail('123456');
+
+          expect(ok, isTrue);
+          expect(controller.pendingVerificationEmail, isNull);
+        },
+      );
+
+      test('resending the code twice in a row is throttled', () async {
+        final repo = _FakeAuthRepository();
+        final controller = await ready(repo);
         await controller.register(
           email: 'ana@uninorte.edu.co',
           password: 'Password1!',
           name: 'Ana',
         );
 
-        final ok = await controller.verifyEmail('123456');
+        expect(await controller.resendVerificationCode(), isTrue);
+        expect(await controller.resendVerificationCode(), isFalse);
+        expect(repo.resendCalls, 1);
+      });
+    });
 
-        expect(ok, isTrue);
-        expect(controller.pendingVerificationEmail, isNull);
-      },
-    );
+    test('resetPassword enforces the password policy locally', () async {
+      final repo = _FakeAuthRepository();
+      final controller = await ready(repo);
+
+      expect(await controller.resetPassword('123456', 'weak'), isFalse);
+      expect(repo.resetCalls, 0);
+      expect(await controller.resetPassword('123456', 'Password1!'), isTrue);
+      expect(repo.resetCalls, 1);
+    });
 
     test('logout clears the session even if the remote call fails', () async {
       final repo = _FakeAuthRepository()
         ..restoreResult = true
         ..currentUserResult = user();
-      final controller = controllerFor(repo);
-      await Future<void>.delayed(Duration.zero);
+      final controller = await ready(repo);
       repo.logoutError = Exception('network down');
 
       final ok = await controller.logOut();
@@ -213,12 +536,23 @@ class _FakeAuthRepository implements IAuthRepository {
 
   AuthenticationUser? loginResult;
   Object? loginError;
-  Duration loginDelay = Duration.zero;
+  Completer<void>? loginGate;
   int loginCalls = 0;
+  String? lastLoginEmail;
 
-  AuthenticationUser? googleResult;
-  Object? googleError;
+  AuthenticationUser? microsoftResult;
+  Object? microsoftError;
+  int microsoftCalls = 0;
+  bool microsoftEnabledResult = true;
+  int providerCalls = 0;
 
+  Object? registerError;
+  Completer<void>? registerGate;
+  int registerCalls = 0;
+  String? lastRegisterEmail;
+
+  int resendCalls = 0;
+  int resetCalls = 0;
   Object? logoutError;
 
   @override
@@ -236,15 +570,24 @@ class _FakeAuthRepository implements IAuthRepository {
   @override
   Future<AuthenticationUser> login(String email, String password) async {
     loginCalls++;
-    if (loginDelay > Duration.zero) await Future<void>.delayed(loginDelay);
+    lastLoginEmail = email;
+    if (loginGate != null) await loginGate!.future;
     if (loginError != null) throw loginError!;
     return loginResult!;
   }
 
   @override
-  Future<AuthenticationUser> signInWithGoogle() async {
-    if (googleError != null) throw googleError!;
-    return googleResult!;
+  Future<bool> isMicrosoftEnabled() async {
+    providerCalls++;
+    await Future<void>.delayed(const Duration(milliseconds: 5));
+    return microsoftEnabledResult;
+  }
+
+  @override
+  Future<AuthenticationUser> signInWithMicrosoft() async {
+    microsoftCalls++;
+    if (microsoftError != null) throw microsoftError!;
+    return microsoftResult!;
   }
 
   @override
@@ -253,13 +596,18 @@ class _FakeAuthRepository implements IAuthRepository {
     required String password,
     required String name,
     Map<String, dynamic> extra = const {},
-  }) async {}
+  }) async {
+    registerCalls++;
+    lastRegisterEmail = email;
+    if (registerGate != null) await registerGate!.future;
+    if (registerError != null) throw registerError!;
+  }
 
   @override
   Future<void> verifyEmail(String email, String code) async {}
 
   @override
-  Future<void> resendCode(String email) async {}
+  Future<void> resendCode(String email) async => resendCalls++;
 
   @override
   Future<void> logOut() async {
@@ -270,5 +618,6 @@ class _FakeAuthRepository implements IAuthRepository {
   Future<void> forgotPassword(String email) async {}
 
   @override
-  Future<void> resetPassword(String token, String newPassword) async {}
+  Future<void> resetPassword(String token, String newPassword) async =>
+      resetCalls++;
 }

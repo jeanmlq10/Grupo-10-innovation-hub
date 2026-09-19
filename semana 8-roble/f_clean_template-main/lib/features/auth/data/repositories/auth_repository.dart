@@ -33,8 +33,12 @@ class AuthRepository implements IAuthRepository {
       authenticationSource.resendCode(email);
 
   @override
-  Future<AuthenticationUser> signInWithGoogle() =>
-      authenticationSource.signInWithGoogle();
+  Future<bool> isMicrosoftEnabled() =>
+      authenticationSource.isMicrosoftEnabled();
+
+  @override
+  Future<AuthenticationUser> signInWithMicrosoft() =>
+      authenticationSource.signInWithMicrosoft();
 
   @override
   bool get isLoggedIn => authenticationSource.isLoggedIn;
