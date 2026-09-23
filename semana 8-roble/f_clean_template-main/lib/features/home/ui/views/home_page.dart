@@ -47,71 +47,75 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+              padding: const EdgeInsets.fromLTRB(20, 22, 20, 0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const Expanded(
                         child: Text(
                           'Explorar proyectos',
                           style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: HomeColors.textPrimary,
+                            fontSize: 23,
+                            fontWeight: FontWeight.w800,
+                            color: HomeColors.flowNavy,
+                            letterSpacing: -0.3,
                           ),
                         ),
                       ),
                       Obx(() {
                         final user = auth.loggedUser;
-                        return IconButton(
-                          tooltip: user == null
-                              ? 'Cerrar sesion'
-                              : '${user.name}\n${user.email}',
-                          onPressed: () async {
-                            await auth.logOut();
-                            Get.offAllNamed('/');
-                          },
-                          icon: CircleAvatar(
-                            radius: 18,
-                            backgroundImage: user?.photoUrl == null
-                                ? null
-                                : NetworkImage(user!.photoUrl!),
-                            backgroundColor: HomeColors.navSelectedBackground,
-                            child: user?.photoUrl == null
-                                ? const Icon(
-                                    Icons.logout,
-                                    color: HomeColors.primaryPurple,
-                                    size: 19,
-                                  )
-                                : null,
+                        return Tooltip(
+                          message: user == null
+                              ? 'Cerrar sesión'
+                              : 'Cerrar sesión\n${user.email}',
+                          child: Material(
+                            color: HomeColors.flowLavender,
+                            shape: const CircleBorder(),
+                            child: InkWell(
+                              customBorder: const CircleBorder(),
+                              onTap: () async {
+                                await auth.logOut();
+                                Get.offAllNamed('/');
+                              },
+                              child: const SizedBox(
+                                width: 42,
+                                height: 42,
+                                child: Icon(
+                                  Icons.logout,
+                                  color: HomeColors.flowAccent,
+                                  size: 21,
+                                ),
+                              ),
+                            ),
                           ),
                         );
                       }),
                     ],
                   ),
+                  const SizedBox(height: 8),
                   Obx(
                     () => auth.loggedUser == null
                         ? const SizedBox.shrink()
                         : Text(
                             auth.loggedUser!.career?.isNotEmpty == true
-                                ? '${auth.loggedUser!.name} · ${auth.loggedUser!.career}'
+                                ? '${auth.loggedUser!.name} - ${auth.loggedUser!.career}'
                                 : auth.loggedUser!.email,
                             style: const TextStyle(
-                              fontSize: 12.5,
-                              color: HomeColors.textSecondary,
+                              fontSize: 13,
+                              color: HomeColors.flowMeta,
                             ),
                           ),
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 10),
                   const Text(
                     'Descubre ideas y únete\na las que te inspiren',
                     style: TextStyle(
-                      fontSize: 14.5,
-                      color: HomeColors.textSecondary,
-                      height: 1.3,
+                      fontSize: 15.5,
+                      color: HomeColors.flowDescription,
+                      height: 1.35,
                     ),
                   ),
                   const SizedBox(height: 18),
@@ -146,7 +150,7 @@ class _HomePageState extends State<HomePage> {
                   return const Center(
                     child: Text(
                       'No encontramos proyectos con ese nombre.',
-                      style: TextStyle(color: HomeColors.textSecondary),
+                      style: TextStyle(color: HomeColors.flowEmpty),
                     ),
                   );
                 }
@@ -161,20 +165,21 @@ class _HomePageState extends State<HomePage> {
                   child: ListView.separated(
                     padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
                     itemCount: projects.isEmpty ? 2 : projects.length + 1,
-                    separatorBuilder: (_, __) => const SizedBox(height: 14),
+                    separatorBuilder: (_, _) => const SizedBox(height: 14),
                     itemBuilder: (context, index) {
                       if (index == 0) {
                         return const CreateIdeaCard();
                       }
                       if (projects.isEmpty) {
                         return Padding(
-                          padding: const EdgeInsets.only(top: 40),
+                          padding: const EdgeInsets.only(top: 34),
                           child: Center(
                             child: Text(
                               emptyMessage,
                               textAlign: TextAlign.center,
                               style: const TextStyle(
-                                color: HomeColors.textSecondary,
+                                fontSize: 13,
+                                color: HomeColors.flowEmpty,
                               ),
                             ),
                           ),
@@ -183,8 +188,13 @@ class _HomePageState extends State<HomePage> {
                       final project = projects[index - 1];
                       return ProjectCard(
                         project: project,
-                        onTap: () =>
-                            Get.to(() => ProjectDetailPage(project: project)),
+                        onTap: () async {
+                          await Get.to(
+                            () => ProjectDetailPage(project: project),
+                          );
+                          // Follows/comments may have changed: reload.
+                          controller.getProjects();
+                        },
                       );
                     },
                   ),

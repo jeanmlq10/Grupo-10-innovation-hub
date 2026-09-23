@@ -9,7 +9,10 @@ import '../widgets/wizard_nav_buttons.dart';
 import 'review_publish_page.dart';
 
 /// "Audiencia" — step 4 of 4. Single choice between a private project
-/// and one visible to the whole community.
+/// and one visible to the whole community. The choice is saved to Roble
+/// immediately: "Solo yo" keeps the project in "Mis borradores" and out of
+/// "Explorar"; "Toda la comunidad" makes it visible in "Explorar". There
+/// is no separate "Guardar como borrador" button anymore.
 class AudiencePage extends StatelessWidget {
   const AudiencePage({super.key});
 
@@ -96,29 +99,6 @@ class AudiencePage extends StatelessWidget {
               Obx(
                 () => Column(
                   children: [
-                    if (controller.audience.value == 'Solo yo')
-                      SizedBox(
-                        width: double.infinity,
-                        child: OutlinedButton(
-                          onPressed: () {
-                            controller.saveDraft();
-                            Get.offAllNamed('/mis-proyectos');
-                          },
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: HomeColors.primaryPurple,
-                            side: const BorderSide(
-                              color: HomeColors.primaryPurple,
-                            ),
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                          ),
-                          child: const Text('Guardar como borrador'),
-                        ),
-                      ),
-                    if (controller.audience.value == 'Solo yo')
-                      const SizedBox(height: 8),
                     WizardNavButtons(
                       onBack: () => Get.back(),
                       onNext: controller.audience.value == null

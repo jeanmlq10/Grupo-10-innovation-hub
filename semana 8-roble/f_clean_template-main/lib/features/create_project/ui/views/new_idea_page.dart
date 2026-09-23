@@ -89,7 +89,7 @@ class _NewIdeaPageState extends State<NewIdeaPage> {
                 child: Center(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: IdeaCloudIllustration(size: 230),
+                    child: IdeaCloudIllustration(size: 320),
                   ),
                 ),
               ),

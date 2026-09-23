@@ -25,8 +25,11 @@ class Project {
     this.audience,
     this.isDraft = false,
     this.acceptedMembersCount = 0,
+    this.acceptedRoleCounts = const {},
     this.createdBy,
     this.createdByName,
+    this.createdAt,
+    this.updatedAt,
   });
 
   final String id;
@@ -59,8 +62,19 @@ class Project {
   /// Starts at 0 and grows only through
   /// `ISharedProjectsRepository.acceptRequest`.
   final int acceptedMembersCount;
+
+  /// Role name → people already accepted in that role (Roble column
+  /// `acceptedRoleCounts`). Together with [teamRoles] (people needed) it
+  /// tells which team roles still have free spots.
+  final Map<String, int> acceptedRoleCounts;
+  /// Roble userId of the creator (the row's `_owner` for Roble projects).
   final String? createdBy;
   final String? createdByName;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+
+  /// Visible in "Explorar proyectos": published to the whole community.
+  bool get isPublic => !isDraft && audience == 'Toda la comunidad';
 
   Project copyWith({
     String? name,
@@ -72,8 +86,10 @@ class Project {
     String? audience,
     bool? isDraft,
     int? acceptedMembersCount,
+    Map<String, int>? acceptedRoleCounts,
     String? createdBy,
     String? createdByName,
+    DateTime? updatedAt,
   }) => Project(
     id: id,
     name: name ?? this.name,
@@ -85,8 +101,11 @@ class Project {
     audience: audience ?? this.audience,
     isDraft: isDraft ?? this.isDraft,
     acceptedMembersCount: acceptedMembersCount ?? this.acceptedMembersCount,
+    acceptedRoleCounts: acceptedRoleCounts ?? this.acceptedRoleCounts,
     createdBy: createdBy ?? this.createdBy,
     createdByName: createdByName ?? this.createdByName,
+    createdAt: createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
   );
 
   factory Project.fromJson(Map<String, dynamic> json) => Project(

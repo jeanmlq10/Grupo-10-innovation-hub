@@ -9,7 +9,9 @@ import '../widgets/wizard_nav_buttons.dart';
 import 'estimated_time_page.dart';
 
 /// "Equipo necesario" — step 2 of 4. Lets the user say how many of each
-/// role the project needs. No role is mandatory: the reference doesn't
+/// long-term team role the project needs and, separately, which specific
+/// tasks it needs help with (someone can apply to one task without joining
+/// the team). No role is mandatory: the reference doesn't
 /// require a minimum team, so "Siguiente" always proceeds regardless of
 /// whether any counter was touched.
 ///
@@ -72,6 +74,12 @@ class TeamNeededPage extends StatefulWidget {
 class _TeamNeededPageState extends State<TeamNeededPage> {
   final CreateProjectController controller = Get.find();
   late final TextEditingController _otherRoleController;
+  final TextEditingController _taskController = TextEditingController();
+
+  void _addTask() {
+    controller.addTask(_taskController.text);
+    _taskController.clear();
+  }
 
   @override
   void initState() {
@@ -84,6 +92,7 @@ class _TeamNeededPageState extends State<TeamNeededPage> {
   @override
   void dispose() {
     _otherRoleController.dispose();
+    _taskController.dispose();
     super.dispose();
   }
 
@@ -198,6 +207,11 @@ class _TeamNeededPageState extends State<TeamNeededPage> {
                               ),
                             ),
                         ],
+                        _TasksSection(
+                          controller: controller,
+                          taskController: _taskController,
+                          onAdd: _addTask,
+                        ),
                       ],
                     ),
                   ),
@@ -230,4 +244,145 @@ class _RoleInfo {
   final IconData icon;
   final Color background;
   final Color iconColor;
+}
+
+/// "Tareas específicas": concrete tasks ("Diseñar la interfaz"...), kept
+/// apart from the team roles above. Reuses the same tile/counter look.
+class _TasksSection extends StatelessWidget {
+  const _TasksSection({
+    required this.controller,
+    required this.taskController,
+    required this.onAdd,
+  });
+
+  final CreateProjectController controller;
+  final TextEditingController taskController;
+  final VoidCallback onAdd;
+
+  @override
+  Widget build(BuildContext context) {
+    // Own Obx: this widget builds outside the parent's Obx scope.
+    return Obx(() => _buildContent());
+  }
+
+  Widget _buildContent() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Tareas específicas',
+            style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.bold,
+              color: HomeColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 4),
+          const Text(
+            'Tareas puntuales en las que alguien puede ayudar sin unirse al equipo.',
+            style: TextStyle(fontSize: 13.5, color: HomeColors.textSecondary),
+          ),
+          const SizedBox(height: 12),
+          for (var i = 0; i < controller.tasks.length; i++)
+            Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.fromLTRB(14, 8, 6, 8),
+              decoration: BoxDecoration(
+                border: Border.all(color: HomeColors.borderGrey),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.task_alt_outlined,
+                    color: HomeColors.primaryPurple,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      controller.tasks[i].title,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                        color: HomeColors.textPrimary,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    tooltip: 'Menos personas',
+                    onPressed: () => controller.decrementTask(i),
+                    icon: const Icon(Icons.remove, size: 18),
+                  ),
+                  Text(
+                    '${controller.tasks[i].numberNeeded}',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: HomeColors.textPrimary,
+                    ),
+                  ),
+                  IconButton(
+                    tooltip: 'Más personas',
+                    onPressed: () => controller.incrementTask(i),
+                    icon: const Icon(Icons.add, size: 18),
+                  ),
+                  IconButton(
+                    tooltip: 'Quitar tarea',
+                    onPressed: () => controller.removeTask(i),
+                    icon: const Icon(
+                      Icons.close,
+                      size: 18,
+                      color: HomeColors.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: taskController,
+                  textInputAction: TextInputAction.done,
+                  onSubmitted: (_) => onAdd(),
+                  style: const TextStyle(color: HomeColors.textPrimary),
+                  decoration: InputDecoration(
+                    hintText: 'Ej: Diseñar la interfaz',
+                    hintStyle: const TextStyle(color: HomeColors.textSecondary),
+                    filled: true,
+                    fillColor: HomeColors.surfaceGrey,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Material(
+                color: HomeColors.primaryPurple,
+                borderRadius: BorderRadius.circular(14),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(14),
+                  onTap: onAdd,
+                  child: const SizedBox(
+                    width: 48,
+                    height: 48,
+                    child: Icon(Icons.add, color: Colors.white),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+        ],
+      ),
+    );
+  }
 }

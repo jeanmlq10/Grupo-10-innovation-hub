@@ -14,48 +14,49 @@ class CreateIdeaCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DashedBorder(
-      color: Colors.black.withValues(alpha: 0.85),
-      radius: 20,
+      color: HomeColors.flowIdeaDash,
+      strokeWidth: 1.4,
+      radius: 16,
       child: Material(
-        color: HomeColors.ideaCardBackground,
-        borderRadius: BorderRadius.circular(20),
+        color: HomeColors.flowIdeaCard,
+        borderRadius: BorderRadius.circular(16),
         child: InkWell(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(16),
           onTap: () => Get.to(() => const CreateProjectPage()),
           child: Padding(
-            padding: const EdgeInsets.all(14),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 18),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  width: 40,
-                  height: 40,
+                  width: 42,
+                  height: 42,
                   decoration: const BoxDecoration(
-                    color: HomeColors.circlePurple,
+                    color: HomeColors.flowIdeaPlus,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.add, color: Colors.white, size: 22),
+                  child: const Icon(Icons.add, color: Colors.white, size: 24),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
+                const SizedBox(width: 14),
+                const Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         'Crea otra idea',
                         style: TextStyle(
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w700,
                           fontSize: 15,
-                          color: HomeColors.textPrimary,
+                          color: HomeColors.flowNavy,
                         ),
                       ),
-                      SizedBox(height: 2),
+                      SizedBox(height: 4),
                       Text(
                         'Comparte tu idea y encuentra personas que quieren construirla contigo',
                         style: TextStyle(
                           fontSize: 12.5,
-                          color: HomeColors.textPrimary,
-                          height: 1.25,
+                          color: HomeColors.flowNavy,
+                          height: 1.3,
                         ),
                       ),
                     ],

@@ -29,7 +29,7 @@ class ExploreFilterTabs extends StatelessWidget {
             onTap: onSelectAll,
           ),
         ),
-        const SizedBox(width: 10),
+        const SizedBox(width: 12),
         Expanded(
           child: _FilterChip(
             label: 'Seguidos',
@@ -56,20 +56,20 @@ class _FilterChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: selected ? HomeColors.primaryPurple : HomeColors.surfaceGrey,
-      borderRadius: BorderRadius.circular(14),
+      color: selected ? HomeColors.flowPurple : HomeColors.flowTabGrey,
+      borderRadius: BorderRadius.circular(8),
       child: InkWell(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(8),
         onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12),
+        child: SizedBox(
+          height: 44,
           child: Center(
             child: Text(
               label,
               style: TextStyle(
-                color: selected ? Colors.white : HomeColors.textSecondary,
+                color: selected ? Colors.white : HomeColors.flowTabText,
                 fontWeight: FontWeight.w600,
-                fontSize: 13.5,
+                fontSize: 14,
               ),
             ),
           ),

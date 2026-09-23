@@ -11,7 +11,7 @@ import 'project_published_page.dart';
 /// same as "Audiencia": the reference doesn't give this screen its own
 /// fraction). Summarizes everything collected so far and, on "Publicar
 /// proyecto", flips the SAME project the wizard has been editing from
-/// draft to published — see `CreateProjectController.publish()`. No new
+/// draft to published — see `CreateProjectController.finish()`. No new
 /// project object is created here; this screen only triggers that
 /// transition.
 class ReviewPublishPage extends StatelessWidget {
@@ -160,6 +160,38 @@ class ReviewPublishPage extends StatelessWidget {
                                 ),
                               ),
                         const SizedBox(height: 20),
+                        // --- Tareas específicas ---
+                        const Text(
+                          'Tareas específicas',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14.5,
+                            color: HomeColors.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        if (controller.tasks.isEmpty)
+                          const Text(
+                            'No se agregaron tareas todavía.',
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: HomeColors.textSecondary,
+                            ),
+                          )
+                        else
+                          ...controller.tasks.map(
+                            (task) => Padding(
+                              padding: const EdgeInsets.only(bottom: 4),
+                              child: Text(
+                                '${task.numberNeeded} · ${task.title}',
+                                style: const TextStyle(
+                                  fontSize: 13.5,
+                                  color: HomeColors.textPrimary,
+                                ),
+                              ),
+                            ),
+                          ),
+                        const SizedBox(height: 20),
                         // --- Tiempo estimado ---
                         const Text(
                           'Tiempo estimado',
@@ -226,23 +258,11 @@ class ReviewPublishPage extends StatelessWidget {
                 onBack: () => Get.back(),
                 nextLabel: controller.isEditing
                     ? 'Guardar cambios'
+                    : controller.audience.value == 'Solo yo'
+                    ? 'Guardar en borradores'
                     : 'Publicar proyecto',
                 onNext: () => _publish(controller),
               ),
-              if (!controller.isEditing &&
-                  controller.audience.value == 'Solo yo') ...[
-                const SizedBox(height: 8),
-                SizedBox(
-                  width: double.infinity,
-                  child: TextButton(
-                    onPressed: () {
-                      controller.saveDraft();
-                      Get.offAllNamed('/mis-proyectos');
-                    },
-                    child: const Text('Guardar como borrador'),
-                  ),
-                ),
-              ],
             ],
           ),
         ),
@@ -250,13 +270,21 @@ class ReviewPublishPage extends StatelessWidget {
     );
   }
 
-  void _publish(CreateProjectController controller) {
+  /// Makes sure everything is stored in Roble, then leaves the wizard.
+  /// The audience already decided draft vs published (see
+  /// `CreateProjectController`), so this never creates a second project.
+  Future<void> _publish(CreateProjectController controller) async {
+    final ok = await controller.finish();
+    if (!ok) return;
     if (controller.isEditing) {
-      controller.saveChanges();
       Get.offAllNamed('/mis-proyectos');
       return;
     }
-    controller.publish();
-    Get.offAll(() => ProjectPublishedPage(projectId: controller.draftId));
+    Get.offAll(
+      () => ProjectPublishedPage(
+        projectId: controller.draftId,
+        isPrivate: controller.audience.value == 'Solo yo',
+      ),
+    );
   }
 }

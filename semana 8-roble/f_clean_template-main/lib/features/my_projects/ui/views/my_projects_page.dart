@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 
 import '../../../home/ui/home_colors.dart';
 import '../../../home/ui/widgets/home_bottom_navigation.dart';
-import '../../../shared_projects/domain/repositories/i_shared_projects_repository.dart';
 import '../../../shared_projects/ui/views/project_detail_page.dart';
 import '../../../create_project/ui/views/create_project_page.dart';
 import '../../domain/models/my_project.dart';
@@ -137,31 +136,40 @@ class _MyProjectsPageState extends State<MyProjectsPage> {
                       if (item.isPlaceholder) {
                         return const MyProjectPlaceholderCard();
                       }
-                      final isUserProject = item.id.startsWith('u');
+                      final isUserProject = controller.isUserProject(
+                        item.id,
+                      );
                       return MyProjectCard(
                         project: item,
-                        onTap: () {
+                        onTap: () async {
                           if (!isUserProject) return;
-                          final project = Get.find<ISharedProjectsRepository>()
-                              .getById(item.id);
+                          final project = controller.userProject(item.id);
                           if (project == null) return;
                           if (project.isDraft) {
-                            Get.to(
+                            await Get.to(
                               () =>
                                   CreateProjectPage(editProjectId: project.id),
                             );
                           } else {
-                            Get.to(() => ProjectDetailPage(project: project));
+                            await Get.to(
+                              () => ProjectDetailPage(project: project),
+                            );
                           }
+                          // Back from editing/viewing: reload from Roble.
+                          controller.getMyProjects();
                         },
                         // "Editar proyecto" from the three-dot menu always
                         // opens the edit flow directly — for both drafts
                         // and already-published projects, per this
                         // block's requirement.
                         onEdit: isUserProject
-                            ? () => Get.to(
-                                () => CreateProjectPage(editProjectId: item.id),
-                              )
+                            ? () async {
+                                await Get.to(
+                                  () =>
+                                      CreateProjectPage(editProjectId: item.id),
+                                );
+                                controller.getMyProjects();
+                              }
                             : null,
                       );
                     },

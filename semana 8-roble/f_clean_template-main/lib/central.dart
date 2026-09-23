@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'features/auth/ui/viewmodels/authentication_controller.dart';
-import 'features/auth/ui/views/login_page.dart';
+import 'features/auth/ui/views/welcome_page.dart';
 import 'features/home/ui/views/home_page.dart';
 
 class Central extends StatelessWidget {
@@ -17,7 +17,7 @@ class Central extends StatelessWidget {
       }
       return authenticationController.isLogged
           ? const HomePage()
-          : const LoginPage();
+          : const WelcomePage();
     });
   }
 }

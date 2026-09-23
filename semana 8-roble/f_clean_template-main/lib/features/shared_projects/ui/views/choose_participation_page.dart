@@ -3,17 +3,15 @@ import 'package:get/get.dart';
 
 import '../../../home/domain/models/project.dart';
 import '../../../home/ui/home_colors.dart';
-import '../../domain/repositories/i_shared_projects_repository.dart';
 import '../widgets/participation_option_tile.dart';
+import '../widgets/project_comments_sheet.dart';
 import 'available_tasks_page.dart';
 import 'join_team_page.dart';
 
-/// "Elige cómo participar" — reached from "Opciones del proyecto" on
-/// "Ver proyecto". Each option does something different on purpose:
-/// - "Seguir" toggles a real, persisted follow state (see
-///   `ISharedProjectsRepository.toggleFollow`) — it does NOT navigate
-///   anywhere, it just updates in place, same as any other toggle.
-/// - "Comentar" is explicitly out of scope for now and just says so.
+/// "Elige cómo participar" — now a secondary menu, reached from the ⋮
+/// button of "Ver proyecto". "Seguir" was removed from here: it lives in
+/// the bell at the top right of "Ver proyecto".
+/// - "Comentar" opens the same comments sheet as the "Comentar" button.
 /// - "Postularme a una tarea" and "Unirme al equipo" open the real
 ///   request flow.
 class ChooseParticipationPage extends StatefulWidget {
@@ -27,35 +25,6 @@ class ChooseParticipationPage extends StatefulWidget {
 }
 
 class _ChooseParticipationPageState extends State<ChooseParticipationPage> {
-  final ISharedProjectsRepository repository = Get.find();
-  late bool _isFollowing;
-
-  @override
-  void initState() {
-    super.initState();
-    _isFollowing = repository.isFollowing(widget.project.id);
-  }
-
-  void _toggleFollow() {
-    repository.toggleFollow(widget.project.id);
-    setState(() => _isFollowing = repository.isFollowing(widget.project.id));
-    Get.snackbar(
-      _isFollowing ? 'Ahora sigues este proyecto' : 'Dejaste de seguir',
-      _isFollowing
-          ? 'Recibirás novedades de "${widget.project.name}".'
-          : 'Ya no verás este proyecto en "Seguidos".',
-      snackPosition: SnackPosition.BOTTOM,
-    );
-  }
-
-  void _comingSoon(String title) {
-    Get.snackbar(
-      title,
-      'Esta opción llega en una próxima entrega.',
-      snackPosition: SnackPosition.BOTTOM,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,19 +55,10 @@ class _ChooseParticipationPageState extends State<ChooseParticipationPage> {
               ),
               const SizedBox(height: 20),
               ParticipationOptionTile(
-                icon: Icons.notifications_none,
-                title: _isFollowing ? 'Siguiendo' : 'Seguir',
-                subtitle: _isFollowing
-                    ? 'Ya recibes novedades de este proyecto.'
-                    : 'Recibe novedades del proyecto.',
-                selected: _isFollowing,
-                onTap: _toggleFollow,
-              ),
-              ParticipationOptionTile(
                 icon: Icons.chat_bubble_outline,
                 title: 'Comentar',
                 subtitle: 'Comparte ideas y dudas.',
-                onTap: () => _comingSoon('Comentar'),
+                onTap: () => showProjectComments(context, widget.project.id),
               ),
               ParticipationOptionTile(
                 icon: Icons.task_alt_outlined,

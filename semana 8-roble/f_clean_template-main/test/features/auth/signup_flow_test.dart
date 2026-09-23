@@ -1,13 +1,13 @@
 import 'package:f_clean_template/features/auth/domain/models/authentication_user.dart';
 import 'package:f_clean_template/features/auth/domain/repositories/i_auth_repository.dart';
 import 'package:f_clean_template/features/auth/ui/viewmodels/authentication_controller.dart';
-import 'package:f_clean_template/features/auth/ui/views/login_page.dart';
+import 'package:f_clean_template/features/auth/ui/views/welcome_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:roble/roble.dart';
 
-/// Stand-in for Central: Home when logged in, Login otherwise. Home itself
+/// Stand-in for Central: Home when logged in, Welcome otherwise. Home itself
 /// needs many unrelated controllers, so a marker text is enough to prove that
 /// the user ends up on the logged-in side.
 class _Root extends StatelessWidget {
@@ -19,7 +19,7 @@ class _Root extends StatelessWidget {
     return Obx(
       () => auth.isLogged
           ? const Scaffold(body: Text('HOME'))
-          : const LoginPage(),
+          : const WelcomePage(),
     );
   }
 }
@@ -30,8 +30,8 @@ void main() {
     Get.reset();
   });
 
-  // The default 800x600 test screen is too short for the login column, which
-  // would leave the sign-up button off-screen and untappable.
+  // The default 800x600 test screen is too short for the sign-up column,
+  // which would leave the submit button off-screen and untappable.
   void useTallScreen(WidgetTester tester) {
     tester.view.physicalSize = const Size(900, 1800);
     tester.view.devicePixelRatio = 1;
@@ -39,7 +39,7 @@ void main() {
   }
 
   Future<void> goToVerifyStep(WidgetTester tester) async {
-    await tester.tap(find.text('Crear cuenta'));
+    await tester.tap(find.text('¿No tienes cuenta? Regístrate'));
     await tester.pumpAndSettle();
     await tester.enterText(
       find.widgetWithText(TextFormField, 'Nombre completo'),
@@ -55,10 +55,10 @@ void main() {
     );
     await tester.tap(find.text('Registrarme'));
     await tester.pumpAndSettle(const Duration(seconds: 5));
-    expect(find.text('Codigo de verificacion'), findsOneWidget);
+    expect(find.text('Verificación'), findsOneWidget);
   }
 
-  testWidgets('after verifying the code the user lands in Home, not in Login', (
+  testWidgets('after verifying the code a new user sees the first-access choice over Home', (
     tester,
   ) async {
     useTallScreen(tester);
@@ -69,20 +69,25 @@ void main() {
 
     await goToVerifyStep(tester);
     await tester.enterText(
-      find.widgetWithText(TextFormField, 'Codigo de verificacion'),
+      find.byKey(const Key('verification_code_field')),
       '123456',
     );
     await tester.tap(find.text('Verificar'));
     await tester.pumpAndSettle(const Duration(seconds: 5));
 
-    expect(find.text('HOME'), findsOneWidget);
+    expect(find.text('¿Qué quieres hacer?'), findsOneWidget);
     expect(find.text('Alta institucional'), findsNothing);
-    expect(find.text('Iniciar sesion'), findsNothing);
+    expect(find.text('¡Bienvenido!'), findsNothing);
     expect(repo.loginPassword, 'Password1!');
+
+    // "Explorar proyectos" closes the choice and reveals Home.
+    await tester.tap(find.text('Explorar proyectos'));
+    await tester.pumpAndSettle();
+    expect(find.text('HOME'), findsOneWidget);
   });
 
   testWidgets(
-    'if the automatic sign-in fails, the user goes back to Login with the account verified',
+    'if the automatic sign-in fails, the user goes back to Welcome with the account verified',
     (tester) async {
       useTallScreen(tester);
       final repo = _Repo()..loginError = const RobleApiNetworkException('down');
@@ -92,14 +97,14 @@ void main() {
 
       await goToVerifyStep(tester);
       await tester.enterText(
-        find.widgetWithText(TextFormField, 'Codigo de verificacion'),
+        find.byKey(const Key('verification_code_field')),
         '123456',
       );
       await tester.tap(find.text('Verificar'));
       await tester.pumpAndSettle(const Duration(seconds: 5));
 
       expect(find.text('HOME'), findsNothing);
-      expect(find.text('Iniciar sesion'), findsOneWidget);
+      expect(find.text('¡Bienvenido!'), findsOneWidget);
       expect(find.text('Alta institucional'), findsNothing);
     },
   );

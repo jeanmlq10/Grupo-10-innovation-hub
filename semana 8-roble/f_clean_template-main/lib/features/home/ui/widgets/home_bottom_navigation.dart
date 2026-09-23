@@ -29,7 +29,7 @@ class HomeBottomNavigation extends StatelessWidget {
       label: 'Notificaciones',
       hasBadge: true,
     ),
-    _TabData(icon: Icons.account_circle_outlined, label: 'Perfil'),
+    _TabData(icon: Icons.person_outline, label: 'Perfil'),
   ];
 
   void _onTabTapped(int index) {
@@ -137,7 +137,7 @@ class _NavIcon extends StatelessWidget {
                   width: 9,
                   height: 9,
                   decoration: const BoxDecoration(
-                    color: HomeColors.circlePurple,
+                    color: HomeColors.flowAccent,
                     shape: BoxShape.circle,
                   ),
                 ),

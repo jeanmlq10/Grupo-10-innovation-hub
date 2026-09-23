@@ -1,23 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../core/error_message.dart';
 import '../../../home/ui/home_colors.dart';
 import '../../domain/models/app_notification.dart';
-import '../../domain/repositories/i_shared_projects_repository.dart';
+import '../viewmodels/project_application_controller.dart';
+import 'project_detail_page.dart';
 import 'requests_page.dart';
 
-/// "Notificaciones" — reachable from the bottom navigation bar. Only one
-/// kind of notification exists this stage: "someone applied to your
-/// project". Tapping any of them opens "Solicitudes", where the actual
-/// accept/reject decision happens.
-class NotificationsPage extends StatelessWidget {
+/// "Notificaciones" — reachable from the bottom navigation bar. Reads the
+/// user's notifications from Roble (new requests, accepted/rejected
+/// requests, comments). Tapping one marks it read and opens "Solicitudes"
+/// (new requests) or the project.
+class NotificationsPage extends StatefulWidget {
   const NotificationsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final notifications = Get.find<ISharedProjectsRepository>()
-        .getNotifications();
+  State<NotificationsPage> createState() => _NotificationsPageState();
+}
 
+class _NotificationsPageState extends State<NotificationsPage> {
+  final ProjectApplicationController _controller = Get.find();
+  late Future<List<AppNotification>> _future;
+
+  @override
+  void initState() {
+    super.initState();
+    _future = _controller.notifications();
+  }
+
+  Future<void> _open(AppNotification notification) async {
+    if (!notification.read) {
+      try {
+        await _controller.markNotificationRead(notification.id);
+      } catch (_) {
+        // Not being able to mark it read must not block opening it.
+      }
+    }
+    if (notification.type == AppNotificationType.newRequest) {
+      await Get.to(() => const RequestsPage());
+    } else if (notification.projectId.isNotEmpty) {
+      final project = await _controller.projectById(notification.projectId);
+      if (project != null) {
+        await Get.to(() => ProjectDetailPage(project: project));
+      }
+    }
+    if (mounted) setState(() => _future = _controller.notifications());
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -46,21 +78,44 @@ class NotificationsPage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               Expanded(
-                child: notifications.isEmpty
-                    ? const Center(
+                child: FutureBuilder<List<AppNotification>>(
+                  future: _future,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState != ConnectionState.done) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    final notifications =
+                        snapshot.data ?? const <AppNotification>[];
+                    if (snapshot.hasError || notifications.isEmpty) {
+                      return Center(
                         child: Text(
-                          'Todavía no tienes notificaciones.',
-                          style: TextStyle(color: HomeColors.textSecondary),
+                          snapshot.hasError
+                              ? errorMessage(snapshot.error!)
+                              : 'Todavía no tienes notificaciones.',
+                          style: const TextStyle(
+                            color: HomeColors.textSecondary,
+                          ),
                         ),
-                      )
-                    : ListView.separated(
+                      );
+                    }
+                    return RefreshIndicator(
+                      onRefresh: () async {
+                        final next = _controller.notifications();
+                        setState(() => _future = next);
+                        await next;
+                      },
+                      child: ListView.separated(
                         padding: const EdgeInsets.only(bottom: 20),
                         itemCount: notifications.length,
-                        separatorBuilder: (_, __) => const SizedBox(height: 12),
+                        separatorBuilder: (_, _) => const SizedBox(height: 12),
                         itemBuilder: (context, index) => _NotificationTile(
                           notification: notifications[index],
+                          onTap: () => _open(notifications[index]),
                         ),
                       ),
+                    );
+                  },
+                ),
               ),
             ],
           ),
@@ -71,9 +126,18 @@ class NotificationsPage extends StatelessWidget {
 }
 
 class _NotificationTile extends StatelessWidget {
-  const _NotificationTile({required this.notification});
+  const _NotificationTile({required this.notification, required this.onTap});
 
   final AppNotification notification;
+  final VoidCallback onTap;
+
+  IconData get _icon => switch (notification.type) {
+    AppNotificationType.requestAccepted => Icons.check_circle_outline,
+    AppNotificationType.requestRejected => Icons.cancel_outlined,
+    AppNotificationType.newComment => Icons.chat_bubble_outline,
+    AppNotificationType.memberJoined => Icons.group_add_outlined,
+    _ => Icons.person_add_alt_1,
+  };
 
   String get _timeLabel {
     final diff = DateTime.now().difference(notification.createdAt);
@@ -87,11 +151,13 @@ class _NotificationTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       borderRadius: BorderRadius.circular(14),
-      onTap: () => Get.to(() => const RequestsPage()),
+      onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: notification.read
+              ? Colors.white
+              : HomeColors.navSelectedBackground.withValues(alpha: 0.45),
           border: Border.all(color: HomeColors.borderGrey),
           borderRadius: BorderRadius.circular(14),
         ),
@@ -105,8 +171,8 @@ class _NotificationTile extends StatelessWidget {
                 color: HomeColors.navSelectedBackground,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
-                Icons.person_add_alt_1,
+              child: Icon(
+                _icon,
                 color: HomeColors.primaryPurple,
                 size: 20,
               ),

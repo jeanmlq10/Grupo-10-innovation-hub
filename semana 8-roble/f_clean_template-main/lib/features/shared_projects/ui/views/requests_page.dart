@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../core/error_message.dart';
 import '../../../home/ui/home_colors.dart';
 import '../../domain/models/participation_request.dart';
-import '../../domain/repositories/i_shared_projects_repository.dart';
+import '../viewmodels/project_application_controller.dart';
 
-/// "Solicitudes" — every participation request across every project the
-/// user owns, split into three tabs. There's no per-user login in this
-/// app, so this simply shows every request that exists locally rather
-/// than filtering by "projects I created" — in the single-device test
-/// flow described for this stage, that's the same set anyway.
+/// "Solicitudes" — participation requests received on the projects the
+/// logged-in user created (read from Roble), split into three tabs. Only
+/// the creator can accept or reject; that is also enforced when saving.
 class RequestsPage extends StatefulWidget {
   const RequestsPage({super.key});
 
@@ -19,13 +18,22 @@ class RequestsPage extends StatefulWidget {
 
 class _RequestsPageState extends State<RequestsPage>
     with SingleTickerProviderStateMixin {
-  final ISharedProjectsRepository repository = Get.find();
+  final ProjectApplicationController _controller = Get.find();
   late final TabController _tabController;
+  late Future<List<ParticipationRequest>> _future;
+
+  /// Request being accepted/rejected right now (its buttons show loading).
+  String? _processingId;
+
+  /// Decisions taken in this screen, applied immediately so the request
+  /// leaves "Pendientes" at once and can never be decided twice.
+  final Map<String, RequestStatus> _decided = {};
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    _future = _controller.requestsForMyProjects();
   }
 
   @override
@@ -34,19 +42,54 @@ class _RequestsPageState extends State<RequestsPage>
     super.dispose();
   }
 
-  List<ParticipationRequest> _byStatus(RequestStatus status) => repository
-      .allRequests()
-      .where((request) => request.status == status)
-      .toList();
-
-  void _accept(String requestId) {
-    repository.acceptRequest(requestId);
-    setState(() {});
+  void _reload() {
+    setState(() => _future = _controller.requestsForMyProjects());
   }
 
-  void _reject(String requestId) {
-    repository.rejectRequest(requestId);
-    setState(() {});
+  Future<void> _decide(ParticipationRequest request, bool accept) async {
+    if (_decided.containsKey(request.id)) {
+      Get.snackbar(
+        'Solicitudes',
+        _decided[request.id] == RequestStatus.accepted
+            ? 'Esta solicitud ya fue aceptada.'
+            : 'Esta solicitud ya fue rechazada.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+    // Only one decision at a time; extra taps while it loads do nothing.
+    if (_processingId != null) return;
+    setState(() => _processingId = request.id);
+    try {
+      if (accept) {
+        await _controller.acceptRequest(request);
+      } else {
+        await _controller.rejectRequest(request);
+      }
+      if (!mounted) return;
+      setState(() {
+        _decided[request.id] = accept
+            ? RequestStatus.accepted
+            : RequestStatus.rejected;
+      });
+      Get.snackbar(
+        'Solicitudes',
+        accept
+            ? '${request.applicantName} ahora es parte del equipo.'
+            : 'Solicitud rechazada.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      _reload();
+    } catch (error, stack) {
+      debugPrint('RequestsPage: decision failed: $error\n$stack');
+      Get.snackbar(
+        'Solicitudes',
+        errorMessage(error),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } finally {
+      if (mounted) setState(() => _processingId = null);
+    }
   }
 
   @override
@@ -99,24 +142,52 @@ class _RequestsPageState extends State<RequestsPage>
               ],
             ),
             Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  _RequestList(
-                    requests: _byStatus(RequestStatus.pending),
-                    emptyMessage: 'No tienes solicitudes pendientes.',
-                    onAccept: _accept,
-                    onReject: _reject,
-                  ),
-                  _RequestList(
-                    requests: _byStatus(RequestStatus.accepted),
-                    emptyMessage: 'Todavía no aceptas ninguna solicitud.',
-                  ),
-                  _RequestList(
-                    requests: _byStatus(RequestStatus.rejected),
-                    emptyMessage: 'No has rechazado ninguna solicitud.',
-                  ),
-                ],
+              child: FutureBuilder<List<ParticipationRequest>>(
+                future: _future,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState != ConnectionState.done) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text(
+                        errorMessage(snapshot.error!),
+                        style: const TextStyle(
+                          color: HomeColors.textSecondary,
+                        ),
+                      ),
+                    );
+                  }
+                  final all = (snapshot.data ?? const <ParticipationRequest>[])
+                      .map(
+                        (request) => _decided.containsKey(request.id)
+                            ? request.copyWith(status: _decided[request.id])
+                            : request,
+                      )
+                      .toList();
+                  List<ParticipationRequest> byStatus(RequestStatus status) =>
+                      all.where((request) => request.status == status).toList();
+                  return TabBarView(
+                    controller: _tabController,
+                    children: [
+                      _RequestList(
+                        requests: byStatus(RequestStatus.pending),
+                        emptyMessage: 'No tienes solicitudes pendientes.',
+                        processingId: _processingId,
+                        onAccept: (request) => _decide(request, true),
+                        onReject: (request) => _decide(request, false),
+                      ),
+                      _RequestList(
+                        requests: byStatus(RequestStatus.accepted),
+                        emptyMessage: 'Todavía no aceptas ninguna solicitud.',
+                      ),
+                      _RequestList(
+                        requests: byStatus(RequestStatus.rejected),
+                        emptyMessage: 'No has rechazado ninguna solicitud.',
+                      ),
+                    ],
+                  );
+                },
               ),
             ),
           ],
@@ -132,12 +203,25 @@ class _RequestList extends StatelessWidget {
     required this.emptyMessage,
     this.onAccept,
     this.onReject,
+    this.processingId,
   });
+
+  /// While set, every Aceptar/Rechazar is disabled and this one spins.
+  final String? processingId;
 
   final List<ParticipationRequest> requests;
   final String emptyMessage;
-  final ValueChanged<String>? onAccept;
-  final ValueChanged<String>? onReject;
+  final ValueChanged<ParticipationRequest>? onAccept;
+  final ValueChanged<ParticipationRequest>? onReject;
+
+  /// "Tarea: X · Proyecto" or "Equipo: X · Proyecto".
+  static String _subtitle(ParticipationRequest request) {
+    final kind = request.type == RequestType.task ? 'Tarea' : 'Equipo';
+    final project = request.projectName ?? '';
+    return project.isEmpty
+        ? '$kind: ${request.role}'
+        : '$kind: ${request.role} · $project';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -153,7 +237,7 @@ class _RequestList extends StatelessWidget {
     return ListView.separated(
       padding: const EdgeInsets.all(20),
       itemCount: requests.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 12),
+      separatorBuilder: (_, _) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
         final request = requests[index];
         return Container(
@@ -190,7 +274,7 @@ class _RequestList extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          request.role,
+                          _subtitle(request),
                           style: const TextStyle(
                             fontSize: 12.5,
                             color: HomeColors.textSecondary,
@@ -216,7 +300,9 @@ class _RequestList extends StatelessWidget {
                   children: [
                     Expanded(
                       child: OutlinedButton(
-                        onPressed: () => onReject!(request.id),
+                        onPressed: processingId != null
+                            ? null
+                            : () => onReject!(request),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: HomeColors.textPrimary,
                           side: const BorderSide(color: HomeColors.borderGrey),
@@ -231,16 +317,30 @@ class _RequestList extends StatelessWidget {
                     const SizedBox(width: 10),
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: () => onAccept!(request.id),
+                        onPressed: processingId != null
+                            ? null
+                            : () => onAccept!(request),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: HomeColors.primaryPurple,
                           foregroundColor: Colors.white,
+                          disabledBackgroundColor: HomeColors.primaryPurple
+                              .withValues(alpha: 0.6),
+                          disabledForegroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child: const Text('Aceptar'),
+                        child: processingId == request.id
+                            ? const SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : const Text('Aceptar'),
                       ),
                     ),
                   ],

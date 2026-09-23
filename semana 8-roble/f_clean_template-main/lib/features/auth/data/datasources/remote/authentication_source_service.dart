@@ -60,6 +60,11 @@ class AuthenticationSourceService implements IAuthenticationSource {
     );
   }
 
+  /// The single Roble client of the app (same session as login), exposed
+  /// so other data sources (projects) reuse it instead of creating a second
+  /// `RobleApiDataBase`, which would have its own separate session.
+  RobleApiDataBase get robleClient => _client;
+
   static String _normalizeEmail(String email) => email.trim().toLowerCase();
 
   /// Runs [action] and turns a `429` into [AuthRateLimitedException].

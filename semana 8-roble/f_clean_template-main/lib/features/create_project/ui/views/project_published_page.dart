@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../home/ui/home_colors.dart';
-import '../../../shared_projects/domain/repositories/i_shared_projects_repository.dart';
+import '../../../shared_projects/ui/viewmodels/project_application_controller.dart';
 import '../../../shared_projects/ui/views/project_detail_page.dart';
 import 'create_project_page.dart';
 import '../widgets/confetti_check_illustration.dart';
@@ -14,14 +14,19 @@ import '../widgets/confetti_check_illustration.dart';
 /// trip to "Mis proyectos". "Volver a mis proyectos" does go there,
 /// where the same project also appears (same object, same id).
 class ProjectPublishedPage extends StatelessWidget {
-  const ProjectPublishedPage({super.key, required this.projectId});
+  const ProjectPublishedPage({
+    super.key,
+    required this.projectId,
+    this.isPrivate = false,
+  });
 
   final String projectId;
 
+  /// "Solo yo": the project stays in "Mis borradores" (not in Explorar).
+  final bool isPrivate;
+
   @override
   Widget build(BuildContext context) {
-    final project = Get.find<ISharedProjectsRepository>().getById(projectId);
-    final isPrivate = project?.audience == 'Solo yo';
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -42,9 +47,12 @@ class ProjectPublishedPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-              const Text(
-                'Tu proyecto ya está disponible en Explorar proyectos.\n'
-                '¡Ahora otros usuarios podrán unirse!',
+              Text(
+                isPrivate
+                    ? 'Tu proyecto quedó guardado en Mis borradores.\n'
+                          'Solo tú puedes verlo.'
+                    : 'Tu proyecto ya está disponible en Explorar proyectos.\n'
+                          '¡Ahora otros usuarios podrán unirse!',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14.5,
@@ -98,12 +106,11 @@ class ProjectPublishedPage extends StatelessWidget {
     );
   }
 
-  void _openMyProject() {
-    final repository = Get.find<ISharedProjectsRepository>();
-    final project = repository.getById(projectId);
+  Future<void> _openMyProject() async {
+    // Always the fresh version stored in Roble.
+    final project = await Get.find<ProjectApplicationController>()
+        .projectById(projectId);
     if (project == null) {
-      // Shouldn't happen — the id came straight from the wizard that
-      // just published this exact project — but fall back gracefully.
       Get.offAllNamed('/mis-proyectos');
       return;
     }

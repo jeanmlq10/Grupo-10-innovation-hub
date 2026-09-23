@@ -3,12 +3,15 @@ import 'package:get/get.dart';
 
 import '../../../create_project/ui/widgets/selectable_option_tile.dart';
 import '../../../home/domain/models/project.dart';
+import '../../../../core/error_message.dart';
 import '../../../home/ui/home_colors.dart';
+import '../../domain/models/project_task.dart';
+import '../viewmodels/project_application_controller.dart';
 import 'join_team_page.dart';
 
-/// "Tareas disponibles" — the tasks offered here are exactly the roles
-/// the creator asked for in "Equipo necesario" (`project.teamRoles`),
-/// never invented data. Reuses [SelectableOptionTile] from
+/// "Tareas disponibles" — the project's specific tasks with free spots,
+/// loaded from Roble (`project_tasks`). They are NOT the team roles: those
+/// are chosen in "Unirme al equipo". Reuses [SelectableOptionTile] from
 /// `create_project` since it's the same "pick exactly one" interaction
 /// already used for "Tiempo estimado"/"Audiencia".
 class AvailableTasksPage extends StatefulWidget {
@@ -21,14 +24,20 @@ class AvailableTasksPage extends StatefulWidget {
 }
 
 class _AvailableTasksPageState extends State<AvailableTasksPage> {
-  String? _selectedRole;
+  final ProjectApplicationController _controller = Get.find();
+  late final Future<List<ProjectTask>> _tasksFuture;
+  ProjectTask? _selectedTask;
+
+  @override
+  void initState() {
+    super.initState();
+    _tasksFuture = _controller
+        .tasksFor(widget.project.id)
+        .then((tasks) => tasks.where((task) => task.hasSpots).toList());
+  }
 
   @override
   Widget build(BuildContext context) {
-    final roles = widget.project.teamRoles.entries
-        .where((entry) => entry.value > 0)
-        .map((entry) => entry.key)
-        .toList();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -66,35 +75,50 @@ class _AvailableTasksPageState extends State<AvailableTasksPage> {
               ),
               const SizedBox(height: 20),
               Expanded(
-                child: roles.isEmpty
-                    ? const Center(
+                child: FutureBuilder<List<ProjectTask>>(
+                  future: _tasksFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState != ConnectionState.done) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    final tasks = snapshot.data ?? const <ProjectTask>[];
+                    if (snapshot.hasError || tasks.isEmpty) {
+                      return Center(
                         child: Text(
-                          'Este proyecto no especificó tareas todavía.',
-                          style: TextStyle(color: HomeColors.textSecondary),
+                          snapshot.hasError
+                              ? errorMessage(snapshot.error!)
+                              : 'Este proyecto no tiene tareas disponibles.',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: HomeColors.textSecondary,
+                          ),
                         ),
-                      )
-                    : SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            for (final role in roles)
-                              SelectableOptionTile(
-                                icon: Icons.task_alt_outlined,
-                                title: role,
-                                subtitle: 'Tarea abierta del equipo necesario',
-                                selected: _selectedRole == role,
-                                onTap: () =>
-                                    setState(() => _selectedRole = role),
-                              ),
-                          ],
-                        ),
+                      );
+                    }
+                    return SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          for (final task in tasks)
+                            SelectableOptionTile(
+                              icon: Icons.task_alt_outlined,
+                              title: task.title,
+                              subtitle:
+                                  'Se necesitan ${task.numberNeeded - task.numberAccepted}',
+                              selected: _selectedTask?.id == task.id,
+                              onTap: () => setState(() => _selectedTask = task),
+                            ),
+                        ],
                       ),
+                    );
+                  },
+                ),
               ),
               const SizedBox(height: 8),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    if (_selectedRole == null) {
+                    if (_selectedTask == null) {
                       Get.snackbar(
                         'Elige una tarea',
                         'Selecciona en cuál tarea quieres ayudar.',
@@ -105,7 +129,7 @@ class _AvailableTasksPageState extends State<AvailableTasksPage> {
                     Get.to(
                       () => JoinTeamPage(
                         project: widget.project,
-                        initialRole: _selectedRole,
+                        task: _selectedTask,
                       ),
                     );
                   },

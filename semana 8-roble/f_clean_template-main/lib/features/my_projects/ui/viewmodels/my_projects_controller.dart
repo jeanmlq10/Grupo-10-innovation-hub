@@ -1,6 +1,9 @@
 import 'package:get/get.dart';
 import 'package:loggy/loggy.dart';
 
+import '../../../../core/error_message.dart';
+import '../../../home/domain/models/project.dart';
+
 import '../../../shared_projects/domain/models/participation_request.dart';
 import '../../../shared_projects/domain/repositories/i_shared_projects_repository.dart';
 import '../../domain/models/my_project.dart';
@@ -24,6 +27,14 @@ class MyProjectsController extends GetxController with UiLoggy {
   final ISharedProjectsRepository sharedRepository;
 
   final RxList<MyProject> _all = <MyProject>[].obs;
+
+  /// The user's Roble projects from the last load, by id — used to open
+  /// the right screen when a card is tapped.
+  final Map<String, Project> _userProjects = {};
+
+  bool isUserProject(String id) => _userProjects.containsKey(id);
+
+  Project? userProject(String id) => _userProjects[id];
   final RxBool isLoading = false.obs;
 
   /// `false` shows the "Mis proyectos" (published) tab, `true` shows
@@ -46,34 +57,68 @@ class MyProjectsController extends GetxController with UiLoggy {
     super.onInit();
   }
 
+  /// Reloads from Roble: projects created by the current user (drafts =
+  /// `isDraft == true`, published = `false`) and pending requests.
   Future<void> getMyProjects() async {
     loggy.debug('MyProjectsController: Getting my projects');
     isLoading.value = true;
-    final examples = await repository.getMyProjects();
-    final userProjects = sharedRepository.getAll().map((project) {
-      final pendingRequests = sharedRepository
-          .requestsFor(project.id)
-          .where((request) => request.status == RequestStatus.pending)
-          .length;
-      return MyProject(
-        id: project.id,
-        name: project.name.isEmpty ? 'Borrador sin nombre' : project.name,
-        description: project.description,
-        // No more "En desarrollo": a project is either still being
-        // drafted ("Borrador") or already published ("Publicado") —
-        // publicly (Toda la comunidad) or privately (Solo yo), the
-        // label is the same; only Explorar cares about the difference.
-        status: project.isDraft ? 'Borrador' : 'Publicado',
-        isDraft: project.isDraft,
-        // Real members who joined (an accepted request) — NOT how many
-        // the creator is still looking for (that's `teamRoles`/"Tareas").
-        membersCount: project.acceptedMembersCount,
-        tasksCount: project.teamRoles.length,
-        requestsCount: pendingRequests,
+    try {
+      final examples = await repository.getMyProjects();
+      final results = await Future.wait([
+        sharedRepository.getMine(),
+        sharedRepository.requestsForMyProjects(),
+      ]);
+      final mine = results[0] as List<Project>;
+      final requests = results[1] as List<ParticipationRequest>;
+
+      _userProjects
+        ..clear()
+        ..addEntries(mine.map((project) => MapEntry(project.id, project)));
+
+      // Specific tasks per project (table project_tasks), for the card.
+      final taskCounts = await Future.wait(
+        mine.map(
+          (project) => sharedRepository
+              .tasksFor(project.id)
+              .then((tasks) => tasks.length)
+              .catchError((_) => 0),
+        ),
       );
-    }).toList();
-    _all.value = [...examples, ...userProjects];
-    isLoading.value = false;
+      final taskCountById = {
+        for (var i = 0; i < mine.length; i++) mine[i].id: taskCounts[i],
+      };
+
+      final userProjects = mine.map((project) {
+        final pendingRequests = requests
+            .where(
+              (request) =>
+                  request.projectId == project.id &&
+                  request.status == RequestStatus.pending,
+            )
+            .length;
+        return MyProject(
+          id: project.id,
+          name: project.name.isEmpty ? 'Borrador sin nombre' : project.name,
+          description: project.description,
+          status: project.isDraft ? 'Borrador' : 'Publicado',
+          isDraft: project.isDraft,
+          // Real members who joined (accepted requests).
+          membersCount: project.acceptedMembersCount,
+          tasksCount: taskCountById[project.id] ?? 0,
+          requestsCount: pendingRequests,
+        );
+      }).toList();
+      _all.value = [...examples, ...userProjects];
+    } catch (error) {
+      loggy.error('MyProjectsController: could not load: $error');
+      Get.snackbar(
+        'Mis proyectos',
+        errorMessage(error, fallback: 'No se pudieron cargar tus proyectos.'),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   void showPublished() => showingDrafts.value = false;

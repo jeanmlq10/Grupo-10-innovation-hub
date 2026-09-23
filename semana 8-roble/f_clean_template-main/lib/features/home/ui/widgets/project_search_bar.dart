@@ -14,21 +14,21 @@ class ProjectSearchBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: HomeColors.surfaceGrey,
-        borderRadius: BorderRadius.circular(14),
+        color: HomeColors.flowSearchFill,
+        borderRadius: BorderRadius.circular(8),
       ),
       child: TextField(
         onChanged: onChanged,
-        style: const TextStyle(color: HomeColors.textPrimary, fontSize: 15),
+        style: const TextStyle(color: HomeColors.flowNavy, fontSize: 15),
         decoration: const InputDecoration(
           hintText: 'Buscar proyectos....',
-          hintStyle: TextStyle(color: HomeColors.textSecondary, fontSize: 15),
+          hintStyle: TextStyle(color: HomeColors.flowSearchHint, fontSize: 15),
           border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 15),
           suffixIcon: Icon(
             Icons.search_rounded,
-            color: HomeColors.textPrimary,
-            size: 26,
+            color: HomeColors.flowNavy,
+            size: 25,
           ),
         ),
       ),

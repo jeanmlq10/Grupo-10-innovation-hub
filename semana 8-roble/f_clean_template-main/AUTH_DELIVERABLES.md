@@ -283,12 +283,21 @@ proyecto, no al SDK cliente.
 
 ```bash
 flutter pub get
-flutter run -d chrome --web-port=5001 --dart-define-from-file=.env
-# o, en Android/iOS con emulador/dispositivo conectado:
-flutter run --dart-define-from-file=.env
+flutter run -d emulator-5554 --dart-define-from-file=dart_defines.json
 ```
 
-(Copia `.env.example` a `.env` y complétalo primero.)
+`dart_defines.json` (en la raíz) ya trae la URL de Roble, el contract id y el
+dominio institucional; son identificadores públicos, no secretos. En VS Code,
+F5 usa la configuración "Movil (Roble auth)" de `.vscode/launch.json`, que pasa
+ese mismo archivo. También sigue funcionando `--dart-define-from-file=.env`
+copiando `.env.example`.
+
+**Alcance actual:** Roble se usa solo para registro, login, logout y sesión.
+Proyectos, borradores, seguidores, solicitudes, notificaciones, equipos y
+tareas siguen en memoria local (`LocalSharedProjectsSource`,
+`LocalProjectSource`, `LocalMyProjectsSource`); no hay tablas de Roble para
+ellos. Los campos `createdBy`/`applicantUserId` solo guardan el `userId` de
+Roble dentro de esos objetos locales.
 
 ## 11. Cómo correr las pruebas
 

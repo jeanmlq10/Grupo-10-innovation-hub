@@ -1,67 +1,95 @@
 import '../../../home/domain/models/project.dart';
 import '../models/app_notification.dart';
 import '../models/participation_request.dart';
+import '../models/project_comment.dart';
+import '../models/project_member.dart';
+import '../models/project_task.dart';
+import '../models/project_team_role.dart';
 
 /// The single source of truth for projects created through "Crear
-/// proyecto" — reused by `create_project` (to write), `my_projects` and
-/// `home` (to read and merge into their own lists), and by this
-/// feature's own "Ver proyecto" / apply / notifications / requests
-/// screens.
+/// proyecto", persisted in Roble. Reused by `create_project` (to write),
+/// `my_projects` and `home` (to read), and by this feature's "Ver
+/// proyecto" / apply / notifications / requests screens.
 ///
-/// This is deliberately the ONLY place a user-created [Project] is
-/// stored. `home`'s and `my_projects`'s example/seed projects (if any
-/// exist) stay in their own local sources, completely separate — this
-/// repository never touches those.
+/// Visibility rules applied here, so no screen can leak them:
+/// - "Explorar": published (`isDraft == false`) with audience
+///   "Toda la comunidad".
+/// - "Mis proyectos"/"Mis borradores": `createdBy` == current user.
+/// Another user's drafts or private projects are never returned.
 abstract class ISharedProjectsRepository {
-  /// Creates a brand-new, blank draft project and stores it immediately
-  /// — from this point on it exists (and shows under "Mis borradores")
-  /// even before the user finishes the wizard.
-  Project startDraft();
+  /// Roble userId of the logged-in user.
+  String? get currentUserId;
 
-  /// Looks up a project by id — used by "Ver mi proyecto" (from the
-  /// publish confirmation) and by the whole apply flow.
-  Project? getById(String id);
+  // --- Projects ---
 
-  /// Every user-created project, published or still a draft. Callers
-  /// filter by `isDraft` for their own purposes (Explorar only wants
-  /// published ones; Mis proyectos wants both, split into its two tabs).
-  List<Project> getAll();
+  /// Creates the project row in Roble and returns it with its real id.
+  Future<Project> createProject(Project project);
 
-  /// Overwrites the stored project with the same id — called after every
-  /// field change while the wizard is active.
-  void updateDraft(Project project);
+  /// Overwrites the project row (same id: never creates a copy).
+  Future<Project> saveProject(Project project);
 
-  /// Flips `isDraft` to `false` on the given project. This is the SAME
-  /// object that was being edited — publishing never creates a second
-  /// copy.
-  void publish(String id);
+  /// The project if the current user may see it, otherwise `null`.
+  Future<Project?> getById(String id);
+
+  /// Projects shown in "Explorar proyectos".
+  Future<List<Project>> getExplorable();
+
+  /// Projects created by the current user (drafts and published).
+  Future<List<Project>> getMine();
+
+  // --- Team roles (long-term team) ---
+
+  /// Team roles of the project, from its `teamRoles` (needed) and
+  /// `acceptedRoleCounts` (accepted) columns. Saved with [saveProject].
+  Future<List<ProjectTeamRole>> rolesFor(String projectId);
+
+  // --- Specific tasks ---
+
+  Future<List<ProjectTask>> tasksFor(String projectId);
+
+  /// Makes the project's tasks match [tasks]; tasks with an empty id are
+  /// created. Returns the tasks as stored.
+  Future<List<ProjectTask>> setTasks(String projectId, List<ProjectTask> tasks);
 
   // --- Follow ---
 
-  void toggleFollow(String projectId);
+  /// Follows or unfollows; returns whether the user follows it afterwards.
+  Future<bool> toggleFollow(String projectId);
 
-  bool isFollowing(String projectId);
+  Future<bool> isFollowing(String projectId);
 
-  /// Ids of every project the user currently follows.
-  Set<String> followedProjectIds();
+  Future<Set<String>> followedProjectIds();
 
   // --- Participation requests ---
 
-  void submitRequest(ParticipationRequest request);
+  Future<void> submitRequest(ParticipationRequest request);
 
-  List<ParticipationRequest> requestsFor(String projectId);
+  /// Requests of one project, each with its current status.
+  Future<List<ParticipationRequest>> requestsFor(String projectId);
 
-  /// Every request across every project — what "Solicitudes" reads,
-  /// split into its three tabs by `status`.
-  List<ParticipationRequest> allRequests();
+  /// Requests received on every project of the current user.
+  Future<List<ParticipationRequest>> requestsForMyProjects();
 
-  /// Moves the request to accepted and adds one to the project's
-  /// `acceptedMembersCount` — the SAME project object, never a new one.
-  void acceptRequest(String requestId);
+  /// Only the project creator can decide. Accepting also updates the
+  /// task/role counter, registers the member, updates the project's
+  /// member count and notifies the applicant.
+  Future<void> acceptRequest(ParticipationRequest request);
 
-  void rejectRequest(String requestId);
+  Future<void> rejectRequest(ParticipationRequest request);
+
+  // --- Members ---
+
+  Future<List<ProjectMember>> membersFor(String projectId);
+
+  // --- Comments ---
+
+  Future<List<ProjectComment>> commentsFor(String projectId);
+
+  Future<void> addComment(ProjectComment comment);
 
   // --- Notifications ---
 
-  List<AppNotification> getNotifications();
+  Future<List<AppNotification>> getNotifications();
+
+  Future<void> markNotificationRead(String id);
 }

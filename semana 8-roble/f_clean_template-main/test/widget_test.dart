@@ -22,15 +22,15 @@ void main() {
     registerCreateProject();
   });
 
-  testWidgets('opens the login screen when there is no valid session', (
+  testWidgets('opens the welcome screen when there is no valid session', (
     tester,
   ) async {
     await tester.pumpWidget(const MyApp());
     await tester.pumpAndSettle();
 
-    expect(find.text('Innovation Hub'), findsOneWidget);
-    expect(find.text('Iniciar sesion'), findsOneWidget);
-    expect(find.text('Continuar con Microsoft'), findsOneWidget);
+    expect(find.text('¡Bienvenido!'), findsOneWidget);
+    expect(find.text('Iniciar sesión'), findsOneWidget);
+    expect(find.text('¿No tienes cuenta? Regístrate'), findsOneWidget);
     expect(find.textContaining('Google'), findsNothing);
   });
 }
