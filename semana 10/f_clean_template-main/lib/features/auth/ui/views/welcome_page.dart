@@ -9,11 +9,6 @@ import 'package:f_clean_template/features/auth/ui/views/login_page.dart';
 import 'package:f_clean_template/features/auth/ui/views/signup_page.dart';
 
 /// Pantalla de bienvenida del flujo de autenticación.
-///
-/// IMPORTANTE: esta pantalla conserva exactamente la navegación existente.
-/// Los cambios aquí son únicamente visuales para reproducir la pantalla
-/// "Bienvenido" del flujo de referencia. Se añadió "Continuar como
-/// visitante" (requerimiento 1.1).
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
 
@@ -22,18 +17,12 @@ class WelcomePage extends StatelessWidget {
     final screen = MediaQuery.sizeOf(context);
     final width = flowWidth(context);
 
-    // La composición del Figma está muy compacta: título arriba, ilustración
-    // grande inmediatamente debajo, texto y finalmente los dos botones.
-    // Se calcula todo a partir del ancho para conservar las proporciones.
     final titleSize = (width * 0.075).clamp(27.0, 34.0).toDouble();
     final illustrationWidth = (width * 0.91).clamp(315.0, 370.0).toDouble();
     final bodyTextSize = (width * 0.044).clamp(15.5, 18.0).toDouble();
     final buttonHeight = (width * 0.135).clamp(52.0, 58.0).toDouble();
     final horizontalPadding = width * 0.07;
 
-    // En pantallas altas se mantiene el mismo punto de partida que el flujo;
-    // en pantallas pequeñas reducimos ligeramente el espacio para evitar
-    // overflow sin cambiar la composición.
     final topSpace = (screen.height * 0.055).clamp(22.0, 38.0).toDouble();
 
     return Scaffold(
@@ -44,8 +33,6 @@ class WelcomePage extends StatelessWidget {
           physics: const ClampingScrollPhysics(),
           child: Center(
             child: ConstrainedBox(
-              // minHeight = alto visible: reparte título, nube y botones
-              // en toda la pantalla; en pantallas pequeñas hace scroll.
               constraints: BoxConstraints(
                 maxWidth: width,
                 minHeight: viewport.maxHeight,
@@ -73,8 +60,6 @@ class WelcomePage extends StatelessWidget {
                         height: 1.05,
                       ),
                     ),
-                    // La nube ocupa el espacio central libre: título arriba,
-                    // texto y botones abajo.
                     Expanded(
                       child: Center(
                         child: Padding(
@@ -142,9 +127,6 @@ class WelcomePage extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: width * 0.018),
-                    // "Continuar como visitante": entra a Explorar proyectos
-                    // solo para mirar. Central (que observa la sesión)
-                    // cambia sola a Explorar al activarse el modo visitante.
                     SizedBox(
                       height: buttonHeight,
                       child: FilledButton(

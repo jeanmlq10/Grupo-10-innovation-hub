@@ -12,10 +12,6 @@ import 'package:f_clean_template/features/projects/ui/widgets/deadline_picker_fi
 /// "Equipo necesario" — paso 2. Cuántas personas de cada rol necesita el
 /// proyecto y la "Fecha límite para postularse al equipo". Las tareas
 /// específicas se agregan en el siguiente paso, "Información de tareas".
-///
-/// A `StatefulWidget` only for the "Otro" text field's
-/// `TextEditingController`; the real data lives on
-/// `CreateProjectController`.
 class TeamNeededPage extends StatefulWidget {
   const TeamNeededPage({super.key});
 
@@ -197,11 +193,7 @@ class _TeamNeededPageState extends State<TeamNeededPage> {
                               ),
                             ),
                         ],
-                        // Las tareas específicas se agregan en el paso
-                        // siguiente, "Información de tareas".
                         const SizedBox(height: 8),
-                        // Cambio 2: hasta cuándo se puede pedir unirse al
-                        // equipo (columna `teamDeadline` de projects).
                         const Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
@@ -227,7 +219,6 @@ class _TeamNeededPageState extends State<TeamNeededPage> {
               const SizedBox(height: 8),
               WizardNavButtons(
                 onBack: () => Get.back(),
-                // Siguiente paso: "Información de tareas" (Cambio 2).
                 onNext: () => Get.to(() => const TaskInfoPage()),
               ),
             ],

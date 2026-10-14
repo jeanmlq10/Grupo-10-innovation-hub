@@ -1,14 +1,4 @@
 /// A project owned by the current user, shown in "Mis proyectos".
-///
-/// Unlike `features/home/domain/models/project.dart` (read-only cards in
-/// the public "Explorar" feed), a [MyProject] also carries the data this
-/// screen needs: whether it is still a [isDraft] or already published,
-/// its [status] label, and the member/task/request counters shown on the
-/// detailed card.
-///
-/// [isPlaceholder] marks the grey low-fidelity cards from the Figma
-/// reference (no data yet, just a visual placeholder) so the UI can
-/// render them without a name/description/stats.
 class MyProject {
   MyProject({
     required this.id,

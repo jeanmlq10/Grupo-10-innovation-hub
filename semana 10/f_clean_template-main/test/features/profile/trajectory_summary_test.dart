@@ -19,7 +19,7 @@ void main() {
       requestsSent: 2,
       requestsAccepted: 2,
     );
-    expect(s.collaboration, 0.8); // (2*2 + 1*2 + 2) / 10
+    expect(s.collaboration, 0.8);
     expect(s.fulfillment, 0.75);
     expect(s.quality, 1);
     expect(s.commitment, CommitmentLevel.high);

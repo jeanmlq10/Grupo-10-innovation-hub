@@ -138,7 +138,6 @@ class _RequestResultPageState extends State<RequestResultPage> {
                     ),
                   ),
                   const SizedBox(height: 22),
-                  // Tarjeta del proyecto con "Ver proyecto >".
                   Container(
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(

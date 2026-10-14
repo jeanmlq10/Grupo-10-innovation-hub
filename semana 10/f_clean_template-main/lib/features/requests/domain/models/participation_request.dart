@@ -30,16 +30,13 @@ class ParticipationRequest {
   final String id;
   final String projectId;
 
-  /// Label shown in the UI: the task title or the team role name.
   final String role;
   final String message;
   final RequestType type;
 
-  /// `_id` of the task (type task) or of the team role row (type team).
   final String? taskId;
   final String? teamRoleId;
 
-  /// Roble userId of the project creator (who can decide on it).
   final String? projectOwnerId;
   final String? projectName;
   final String applicantName;

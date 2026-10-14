@@ -46,8 +46,6 @@ class RequestsController extends GetxController {
     return user?.name ?? user?.email ?? 'Usuario';
   }
 
-  // ------------------------------------------------------------ Enviar
-
   Future<void> submitTaskRequest({
     required Project project,
     required ProjectTask task,
@@ -80,7 +78,6 @@ class RequestsController extends GetxController {
     ),
   );
 
-  /// Regla: solo a proyectos publicos y nunca al propio. Se avisa al dueno.
   Future<void> _submit(Project project, ParticipationRequest draft) async {
     final me = _me;
     final fresh = await projects.getById(project.id, viewerId: me);
@@ -90,8 +87,6 @@ class RequestsController extends GetxController {
     if (fresh.createdBy == me) {
       throw StateError('No puedes postularte a tu propio proyecto.');
     }
-    // Cambio 2: fechas límite. Se revisa con los datos frescos de Roble,
-    // no con lo que la pantalla tenía cargado.
     if (draft.type == RequestType.team && !fresh.isTeamCallOpenAt()) {
       throw StateError('La convocatoria para unirse al equipo ya cerró.');
     }
@@ -120,8 +115,6 @@ class RequestsController extends GetxController {
     if (owner != null) {
       final projectName = fresh.name.isEmpty ? 'sin nombre' : fresh.name;
       final isTask = draft.type == RequestType.task;
-      // Página 4: "Nueva postulación a tarea" o "Solicitud para unirse al
-      // equipo", con quién la envió y a qué rol/tarea.
       await _notify(
         recipient: owner,
         type: isTask
@@ -142,10 +135,6 @@ class RequestsController extends GetxController {
     }
   }
 
-  // ------------------------------------------------------------ Decidir
-
-  /// Una solicitud recibida en un proyecto mío, con su estado actual (para
-  /// el detalle de la notificación). null si no existe o no es mío.
   Future<ParticipationRequest?> requestFor(
     String projectId,
     String requestId,
@@ -169,8 +158,6 @@ class RequestsController extends GetxController {
     );
   }
 
-  /// Solo el dueno. Idempotente: si ya se decidio, o la persona ya es
-  /// miembro en ese rol, no escribe nada de nuevo.
   Future<void> acceptRequest(ParticipationRequest request) async {
     final me = _me;
     var project = await _ownedProject(request.projectId, me);
@@ -288,7 +275,6 @@ class RequestsController extends GetxController {
     return current.isNotEmpty && current.first.status == RequestStatus.pending;
   }
 
-  /// Un aviso que falla no deshace la accion que lo produjo.
   Future<void> _notify({
     required String recipient,
     required String type,
@@ -313,7 +299,6 @@ class RequestsController extends GetxController {
         detail: detail,
       );
     } catch (_) {
-      // Ignorado a proposito: ver arriba.
     }
   }
 }

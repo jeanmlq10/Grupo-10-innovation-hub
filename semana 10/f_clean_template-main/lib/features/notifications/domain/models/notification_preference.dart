@@ -25,7 +25,6 @@ enum NotificationPreference {
     NotificationPreference.platformNews => {NotificationCategory.platformNews},
   };
 
-  /// Clave para guardarla en Roble.
   String get key => name;
 
   static NotificationPreference? fromKey(String key) {
@@ -35,7 +34,6 @@ enum NotificationPreference {
     return null;
   }
 
-  /// Categorías que el usuario NO quiere ver, según sus preferencias.
   static Set<NotificationCategory> mutedCategories({
     required bool allEnabled,
     required Set<String> mutedKeys,

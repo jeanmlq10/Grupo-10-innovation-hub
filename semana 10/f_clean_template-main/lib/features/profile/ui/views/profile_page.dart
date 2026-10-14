@@ -36,7 +36,6 @@ class _ProfilePageState extends State<ProfilePage> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _controller.loadMine());
   }
 
-  /// Abre una pantalla y al volver recarga (pudo cambiar algo).
   Future<void> _go(Widget Function() page) async {
     await Get.to(page);
     _controller.loadMine();
@@ -71,7 +70,6 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Center(child: CircularProgressIndicator()),
                   )
                 else ...[
-                  // Tarjeta con nombre y "Editar perfil".
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(

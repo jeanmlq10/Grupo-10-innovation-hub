@@ -8,7 +8,6 @@ class PerformanceBar extends StatelessWidget {
 
   final String label;
 
-  /// Entre 0 y 1.
   final double value;
 
   @override

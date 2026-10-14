@@ -68,16 +68,13 @@ void main() {
       ProjectRoleFilter.designer,
     );
 
-    // Pide Diseñador/a: coincide por rol...
     expect(designer.matches(project, hasOpenTasks: false, now: now), isTrue);
-    // ...pero ese rol ya está lleno.
     expect(
       designer
           .copyWith(memberAvailability: MemberAvailabilityFilter.withOpenSpots)
           .matches(project, hasOpenTasks: false, now: now),
       isFalse,
     );
-    // Desarrollador/a sí tiene cupo.
     expect(
       const ExploreFilters(
         memberAvailability: MemberAvailabilityFilter.withOpenSpots,
@@ -88,7 +85,6 @@ void main() {
       ),
       isTrue,
     );
-    // No pide Líder.
     expect(
       const ExploreFilters()
           .toggleRole(ProjectRoleFilter.leader)

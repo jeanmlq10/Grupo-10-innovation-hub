@@ -19,7 +19,6 @@ class CreateProjectStepTile extends StatelessWidget {
   final String title;
   final String subtitle;
 
-  /// `false` for the last step, which has nothing left to connect to.
   final bool showConnector;
 
   @override

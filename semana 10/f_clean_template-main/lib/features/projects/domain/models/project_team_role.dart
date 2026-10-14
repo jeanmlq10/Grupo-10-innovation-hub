@@ -11,14 +11,12 @@ class ProjectTeamRole {
     this.status = 'open',
   });
 
-  /// Roble `_id`.
   final String id;
   final String projectId;
   final String role;
   final int numberNeeded;
   final int numberAccepted;
 
-  /// `open` while there are free spots, `closed` once filled.
   final String status;
 
   bool get hasSpots => numberAccepted < numberNeeded;

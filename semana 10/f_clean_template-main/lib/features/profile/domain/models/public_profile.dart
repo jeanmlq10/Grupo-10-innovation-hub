@@ -17,6 +17,5 @@ class PublicProfile {
   final TrajectorySummary? summary;
   final List<ActivityEntry> activity;
 
-  /// false cuando el perfil es privado o la actividad es "Solo yo".
   final bool canSeeDetails;
 }

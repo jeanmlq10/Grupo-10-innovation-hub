@@ -22,7 +22,6 @@ abstract final class AvatarIcons {
     'star': Icons.star_rounded,
   };
 
-  /// null si [key] está vacío o no existe (se muestra la inicial).
   static IconData? of(String? key) =>
       key == null || key.isEmpty ? null : all[key];
 }

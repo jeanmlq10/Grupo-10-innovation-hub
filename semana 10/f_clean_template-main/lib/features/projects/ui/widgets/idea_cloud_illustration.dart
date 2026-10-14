@@ -2,19 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 /// Ilustración de "Comencemos".
-///
-/// Mantiene el mismo personaje visual de la pantalla "Bienvenido":
-/// - nube grande y proporcionada
-/// - contorno azul marino
-/// - ojos y sonrisa iguales
-/// - brazos y piernas con las mismas proporciones
-///
-/// En esta pantalla el personaje conserva el BOMBILLO, tal como exige
-/// el flujo de creación de proyecto.
 class IdeaCloudIllustration extends StatelessWidget {
   const IdeaCloudIllustration({super.key, this.size = 320});
 
-  /// Ancho total de la ilustración, incluyendo el bombillo.
   final double size;
 
   static const double _viewBoxWidth = 322;

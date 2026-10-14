@@ -9,10 +9,6 @@ import 'package:f_clean_template/features/projects/ui/views/basic_info_page.dart
 /// "Comencemos" (referred to as "Nueva idea" in the step overview) — the
 /// first real step of the wizard. It only collects the idea's name; that
 /// name then pre-fills "Información básica" via `CreateProjectController`.
-///
-/// This is a `StatefulWidget` purely to own the `TextEditingController`
-/// (ephemeral text-editing/cursor state) — the actual business state
-/// (the idea's name) lives in `CreateProjectController`, never here.
 class NewIdeaPage extends StatefulWidget {
   const NewIdeaPage({super.key});
 

@@ -11,10 +11,7 @@ import 'package:f_clean_template/features/projects/ui/widgets/my_project_card.da
 import 'package:f_clean_template/features/projects/ui/widgets/my_project_placeholder_card.dart';
 import 'package:f_clean_template/features/projects/ui/widgets/my_projects_tabs.dart';
 
-/// "Mis proyectos" — this entrega's only new screen. It only renders what
-/// [MyProjectsController] exposes; all business logic (fetching, tab
-/// filtering, loading state) lives in the controller/repository/data
-/// source, never here — same rule `HomePage` follows.
+/// "Mis proyectos": proyectos publicados y borradores, con editar y eliminar.
 class MyProjectsPage extends StatefulWidget {
   const MyProjectsPage({super.key});
 
@@ -34,7 +31,6 @@ class _MyProjectsPageState extends State<MyProjectsPage> {
     });
   }
 
-  /// Pide confirmación y elimina el borrador en Roble.
   Future<void> _confirmDelete(MyProject item) async {
     final confirm = await Get.dialog<bool>(
       AlertDialog(
@@ -72,7 +68,6 @@ class _MyProjectsPageState extends State<MyProjectsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      // index 1 = "Mis proyectos" tab selected in the shared bottom nav.
       bottomNavigationBar: const HomeBottomNavigation(currentIndex: 1),
       body: SafeArea(
         child: Column(
@@ -96,11 +91,6 @@ class _MyProjectsPageState extends State<MyProjectsPage> {
                       ),
                       InkWell(
                         customBorder: const CircleBorder(),
-                        // Etapa 2: el botón ya abre el flujo real de
-                        // creación (Crear proyecto → Nueva idea →
-                        // Información básica). El resto del flujo
-                        // (equipo, tiempo, audiencia, publicar) todavía
-                        // no existe — ver `CreateProjectPage`.
                         onTap: () => Get.to(() => const CreateProjectPage()),
                         child: Container(
                           width: 40,
@@ -189,13 +179,8 @@ class _MyProjectsPageState extends State<MyProjectsPage> {
                               () => ProjectDetailPage(project: project),
                             );
                           }
-                          // Back from editing/viewing: reload from Roble.
                           controller.getMyProjects();
                         },
-                        // "Editar proyecto" from the three-dot menu always
-                        // opens the edit flow directly — for both drafts
-                        // and already-published projects, per this
-                        // block's requirement.
                         onEdit: isUserProject
                             ? () async {
                                 await Get.to(
@@ -205,7 +190,6 @@ class _MyProjectsPageState extends State<MyProjectsPage> {
                                 controller.getMyProjects();
                               }
                             : null,
-                        // Solo los borradores se pueden eliminar.
                         onDelete: isUserProject && item.isDraft
                             ? () => _confirmDelete(item)
                             : null,

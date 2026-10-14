@@ -24,7 +24,6 @@ class CommentsController extends GetxController {
   Future<List<ProjectComment>> commentsFor(String projectId) =>
       comments.forProject(projectId);
 
-  /// Regla: solo en proyectos que el usuario puede ver. Se avisa al dueno.
   Future<void> addComment({
     required String projectId,
     required String text,
@@ -57,13 +56,11 @@ class CommentsController extends GetxController {
               '$name comentó en '
               '${project.name.isEmpty ? "tu proyecto" : project.name}.',
           projectId: project.id,
-          // Página 4.3: el detalle muestra quién y qué comentó.
           actorUserId: user.userId,
           actorName: name,
           detail: text,
         );
       } catch (_) {
-        // El comentario ya quedo guardado; el aviso es secundario.
       }
     }
   }

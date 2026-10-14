@@ -11,10 +11,6 @@ import 'package:f_clean_template/features/projects/ui/views/team_needed_page.dar
 /// steps 1-4 of the progress bar shown here; "Equipo necesario", "Tiempo
 /// estimado", "Audiencia" and "Revisar y publicar" are the remaining 2/4,
 /// 3/4 and 4/4 steps, not implemented yet).
-///
-/// Deliberately has NO category field — the assignment explicitly says
-/// the category shown in the "Crear proyecto" overview text will be
-/// removed later, so it was never added here in the first place.
 class BasicInfoPage extends StatefulWidget {
   const BasicInfoPage({super.key});
 
@@ -30,8 +26,6 @@ class _BasicInfoPageState extends State<BasicInfoPage> {
   @override
   void initState() {
     super.initState();
-    // Pre-filled with whatever was typed in "Nueva idea" — this is the
-    // carry-over the assignment asked to verify.
     _nameController = TextEditingController(text: controller.name.value);
     _descriptionController = TextEditingController(
       text: controller.description.value,

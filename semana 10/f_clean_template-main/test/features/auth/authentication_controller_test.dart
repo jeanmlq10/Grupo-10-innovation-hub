@@ -18,8 +18,6 @@ void main() {
     AuthenticationUser user({String email = 'ana@uninorte.edu.co'}) =>
         AuthenticationUser(id: 'p1', userId: 'u1', email: email, name: 'Ana');
 
-    // GetxController.onInit() only fires once the controller is registered
-    // with GetX (Get.put), not from a bare constructor call.
     Future<AuthenticationController> ready(_FakeAuthRepository repo) async {
       final controller = Get.put(AuthenticationController(repo));
       await Future<void>.delayed(Duration.zero);

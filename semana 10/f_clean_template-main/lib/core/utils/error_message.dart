@@ -5,8 +5,6 @@ import 'package:f_clean_template/core/errors/app_failure.dart';
 /// Turns an exception into a message safe to show a user — never the raw
 /// exception text, which could leak internal details from Roble.
 String errorMessage(Object error, {String? fallback}) {
-  // Failures de las features (y excepciones de auth): ya traen un texto
-  // pensado para el usuario. toString() incluye el detalle (dominio, etc.).
   if (error is AppFailure) return error.toString();
 
   if (error is RobleApiForbiddenException) {
@@ -23,10 +21,6 @@ String errorMessage(Object error, {String? fallback}) {
     if (error.statusCode == 401) {
       return 'Correo o contrasena incorrectos.';
     }
-    // 4xx are Roble's own field/rule validation (e.g. password complexity or
-    // "El correo ya está registrado"), already written to be shown to the end
-    // user. Only 5xx falls back to a generic message, since that is an
-    // internal/unexpected server failure.
     if (error.statusCode >= 400 && error.statusCode < 500) {
       final message = _unwrap(error.message);
       if (message.isNotEmpty) return message;

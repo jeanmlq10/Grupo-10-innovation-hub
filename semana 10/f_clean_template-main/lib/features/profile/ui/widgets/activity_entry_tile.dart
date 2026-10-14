@@ -16,7 +16,6 @@ class ActivityEntryTile extends StatelessWidget {
 
   final ActivityEntry entry;
 
-  /// Es mi historial ("Publicaste...") o el de otra persona ("Publicó...").
   final bool self;
   final VoidCallback? onTap;
 

@@ -16,12 +16,6 @@ import 'package:f_clean_template/features/projects/domain/models/my_project.dart
 /// to [the feature repositories] (for the example entries) and
 /// the feature repositories (for anything created through "Crear
 /// proyecto").
-///
-/// The two lists are merged here, at read time, into a single
-/// `MyProject` list — the shared, user-created projects are converted
-/// into `MyProject` only for *display* (so the existing `MyProjectCard`
-/// widget can render them unchanged); the one real, persisted copy of
-/// each stays in the feature repositories.
 class MyProjectsController extends GetxController with UiLoggy {
   MyProjectsController(this.projectRepository, this.taskRepository, this.requestRepository, this.session);
 
@@ -32,8 +26,6 @@ class MyProjectsController extends GetxController with UiLoggy {
 
   final RxList<MyProject> _all = <MyProject>[].obs;
 
-  /// The user's Roble projects from the last load, by id — used to open
-  /// the right screen when a card is tapped.
   final Map<String, Project> _userProjects = {};
 
   bool isUserProject(String id) => _userProjects.containsKey(id);
@@ -41,8 +33,6 @@ class MyProjectsController extends GetxController with UiLoggy {
   Project? userProject(String id) => _userProjects[id];
   final RxBool isLoading = false.obs;
 
-  /// `false` shows the "Mis proyectos" (published) tab, `true` shows
-  /// "Mis borradores".
   final RxBool showingDrafts = false.obs;
 
   List<MyProject> get publishedProjects =>
@@ -51,7 +41,6 @@ class MyProjectsController extends GetxController with UiLoggy {
   List<MyProject> get draftProjects =>
       _all.where((project) => project.isDraft).toList();
 
-  /// The list the currently-selected tab should render.
   List<MyProject> get visibleProjects =>
       showingDrafts.value ? draftProjects : publishedProjects;
 
@@ -61,8 +50,6 @@ class MyProjectsController extends GetxController with UiLoggy {
     super.onInit();
   }
 
-  /// Reloads from Roble: projects created by the current user (drafts =
-  /// `isDraft == true`, published = `false`) and pending requests.
   Future<void> getMyProjects() async {
     loggy.debug('MyProjectsController: Getting my projects');
     isLoading.value = true;
@@ -82,7 +69,6 @@ class MyProjectsController extends GetxController with UiLoggy {
         ..clear()
         ..addEntries(mine.map((project) => MapEntry(project.id, project)));
 
-      // Specific tasks per project (table project_tasks), for the card.
       final taskCounts = await Future.wait(
         mine.map(
           (project) => taskRepository
@@ -109,7 +95,6 @@ class MyProjectsController extends GetxController with UiLoggy {
           description: project.description,
           status: project.isDraft ? 'Borrador' : 'Publicado',
           isDraft: project.isDraft,
-          // Real members who joined (accepted requests).
           membersCount: project.acceptedMembersCount,
           tasksCount: taskCountById[project.id] ?? 0,
           requestsCount: pendingRequests,
@@ -128,9 +113,6 @@ class MyProjectsController extends GetxController with UiLoggy {
     }
   }
 
-  /// "Eliminar borrador". Regla: solo borradores (nunca un proyecto
-  /// publicado, que puede tener solicitudes y miembros) y solo los míos.
-  /// Primero se borran sus tareas y luego la fila del proyecto.
   Future<bool> deleteDraft(String id) async {
     final me = session.loggedUser?.userId;
     final project = _userProjects[id];
@@ -151,9 +133,6 @@ class MyProjectsController extends GetxController with UiLoggy {
       return false;
     }
     try {
-      // Primero el proyecto: si Roble no lo deja borrar, sus tareas quedan
-      // intactas. Luego las tareas (si alguna falla, ya no se ve en ningún
-      // lado porque el proyecto no existe).
       await projectRepository.delete(id);
       try {
         await taskRepository.deleteForProject(id);

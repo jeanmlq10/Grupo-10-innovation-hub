@@ -17,6 +17,5 @@ class ActivityEntry {
   final String projectName;
   final DateTime? date;
 
-  /// Rol o tarea (participaciones) o el texto del comentario.
   final String? detail;
 }

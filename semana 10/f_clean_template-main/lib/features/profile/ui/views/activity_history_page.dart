@@ -18,7 +18,6 @@ class ActivityHistoryPage extends StatefulWidget {
 class _ActivityHistoryPageState extends State<ActivityHistoryPage> {
   final ProfileController _controller = Get.find();
 
-  /// null = "Todos".
   Set<ActivityKind>? _kinds;
 
   static const _tabs = <(String, Set<ActivityKind>?)>[

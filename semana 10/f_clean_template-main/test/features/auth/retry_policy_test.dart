@@ -59,7 +59,7 @@ void main() {
         }),
         throwsA(isA<RobleApiTimeoutException>()),
       );
-      expect(calls, 3); // first attempt + 2 retries, never more
+      expect(calls, 3);
     });
 
     for (final status in [400, 401, 403, 404, 409, 429]) {

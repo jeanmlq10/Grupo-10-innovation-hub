@@ -12,12 +12,6 @@ import 'package:f_clean_template/features/projects/domain/models/project.dart';
 import 'package:f_clean_template/features/projects/domain/repositories/i_project_repository.dart';
 
 /// ViewModel de "Notificaciones" (Página 4).
-///
-/// - 4.1: lista cronológica con búsqueda, "Todas / No leídas" y filtros por
-///   tipo ([filters]). Lo que el usuario apagó en "Perfil → Notificaciones"
-///   no se muestra.
-/// - 4.2 / 4.3: abrir una notificación la marca como leída; la vista decide
-///   a qué pantalla de detalle ir según su tipo.
 class NotificationsController extends GetxController with UiLoggy {
   NotificationsController({
     required this.notifications,
@@ -36,16 +30,12 @@ class NotificationsController extends GetxController with UiLoggy {
   final RxString loadError = ''.obs;
   final RxString search = ''.obs;
 
-  /// `true` = pestaña "No leídas".
   final RxBool unreadOnly = false.obs;
 
-  /// Tipos elegidos en "Filtrar notificaciones". Vacío = todos.
   final RxSet<NotificationCategory> filters = <NotificationCategory>{}.obs;
 
-  /// Categorías apagadas en las preferencias del perfil.
   final RxSet<NotificationCategory> _muted = <NotificationCategory>{}.obs;
 
-  /// Lo que se muestra: preferencias + pestaña + filtros + búsqueda.
   List<AppNotification> get visible {
     final query = search.value.trim().toLowerCase();
     return _all.where((n) {
@@ -98,17 +88,14 @@ class NotificationsController extends GetxController with UiLoggy {
 
   void showUnread() => unreadOnly.value = true;
 
-  /// "Aplicar filtros".
   void applyFilters(Set<NotificationCategory> categories) => filters
     ..clear()
     ..addAll(categories);
 
   void removeFilter(NotificationCategory category) => filters.remove(category);
 
-  /// "Limpiar filtros".
   void clearFilters() => filters.clear();
 
-  /// Se abre una notificación: queda leída (aquí y en Roble).
   Future<void> markRead(AppNotification notification) async {
     if (notification.read) return;
     final index = _all.indexWhere((n) => n.id == notification.id);
@@ -116,7 +103,6 @@ class NotificationsController extends GetxController with UiLoggy {
     try {
       await notifications.markRead(notification.id);
     } catch (_) {
-      // No poder marcarla como leída no impide abrirla.
     }
   }
 

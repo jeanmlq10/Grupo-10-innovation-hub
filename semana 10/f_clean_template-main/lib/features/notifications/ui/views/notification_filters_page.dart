@@ -26,7 +26,6 @@ class _NotificationFiltersPageState extends State<NotificationFiltersPage> {
     _draft = _controller.filters.toSet();
   }
 
-  /// "Todas" encendido = ningún filtro.
   bool get _all => _draft.isEmpty;
 
   void _toggle(NotificationCategory category, bool on) => setState(() {

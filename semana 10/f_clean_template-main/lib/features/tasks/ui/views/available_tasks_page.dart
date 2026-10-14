@@ -35,13 +35,11 @@ class _AvailableTasksPageState extends State<AvailableTasksPage> {
     super.initState();
     _tasksFuture = _controller
         .tasksFor(widget.project.id)
-        // Solo las que aún reciben postulaciones (cupo, estado y fecha).
         .then((tasks) => tasks.where((task) => task.canApplyAt()).toList());
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(

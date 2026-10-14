@@ -9,16 +9,6 @@ import 'package:f_clean_template/features/auth/ui/views/login_page.dart';
 /// sin sesión solo se puede explorar y consultar proyectos; cualquier otra
 /// acción (participar, seguir, comentar, crear, ver Mis proyectos...) pide
 /// iniciar sesión.
-///
-/// Uso en cualquier botón de una acción restringida:
-/// ```dart
-/// onTap: () {
-///   if (!requireSession()) return;
-///   ... la acción ...
-/// }
-/// ```
-/// Devuelve `true` si hay sesión. Si no, muestra el aviso
-/// "Necesitas iniciar sesión" y devuelve `false`.
 bool requireSession() {
   final auth = Get.find<AuthenticationController>();
   if (auth.isLogged) return true;
@@ -89,7 +79,7 @@ class LoginRequiredDialog extends StatelessWidget {
               height: 48,
               child: FilledButton(
                 onPressed: () {
-                  Get.back(); // cierra el aviso
+                  Get.back();
                   Get.to(() => const LoginPage());
                 },
                 style: FilledButton.styleFrom(

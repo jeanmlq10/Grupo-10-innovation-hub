@@ -34,7 +34,6 @@ class _ProjectCommentsSheetState extends State<ProjectCommentsSheet> {
   final CommentsController _controller = Get.find();
   final TextEditingController _textController = TextEditingController();
 
-  /// Comments as last read from Roble (null while loading).
   List<ProjectComment>? _comments;
   String? _loadError;
   bool _sending = false;

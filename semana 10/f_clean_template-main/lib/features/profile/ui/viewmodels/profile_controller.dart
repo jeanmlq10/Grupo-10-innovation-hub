@@ -34,18 +34,12 @@ class _UserData {
 
   final List<Project> owned;
 
-  /// Participaciones válidas (registradas por el creador del proyecto).
   final List<ProjectMember> memberships;
   final Map<String, Project> projectsById;
   final Map<String, List<ProjectTask>> tasksByProject;
 }
 
 /// ViewModel de "Mi perfil" (Página 5) y del perfil público de otra persona.
-///
-/// No tiene casos de uso, igual que el resto de la app: junta varias features
-/// a través de sus interfaces `I...Repository` (perfiles, proyectos, tareas,
-/// miembros, comentarios, seguidos y solicitudes) y calcula la trayectoria
-/// con [TrajectorySummary].
 class ProfileController extends GetxController with UiLoggy {
   ProfileController({
     required this.profiles,
@@ -77,7 +71,6 @@ class ProfileController extends GetxController with UiLoggy {
 
   String? get _me => session.loggedUser?.userId;
 
-  /// Subtítulo bajo el nombre ("Creador/a de proyectos"...).
   String get roleLabel {
     final s = summary.value;
     if (s.projectsCreated > 0) return 'Creador/a de proyectos';
@@ -86,17 +79,11 @@ class ProfileController extends GetxController with UiLoggy {
     return career.isNotEmpty ? career : 'Nuevo en Movil';
   }
 
-  // ------------------------------------------------------------ Mi perfil
-
-  /// Carga el perfil, la trayectoria y el historial del usuario logueado.
   Future<void> loadMine() async {
     final user = session.loggedUser;
     if (user == null) return;
     isLoading.value = true;
     loadError.value = '';
-    // 1) Datos del perfil. Si `user_profiles` no se puede leer (por ejemplo
-    // la tabla aún no existe), se usan los datos de la sesión de Roble y el
-    // resto del perfil se carga igual.
     UserProfile? stored;
     try {
       stored = await profiles.byUserId(user.userId);
@@ -112,13 +99,10 @@ class ProfileController extends GetxController with UiLoggy {
                   career: user.career ?? '',
                 ))
             .copyWith(
-              // El correo siempre es el de la sesión (no se edita aquí).
               email: user.email,
               name: (stored?.name ?? '').isEmpty ? user.name : stored!.name,
             );
 
-    // 2) Trayectoria e historial, leídos de proyectos, tareas, miembros,
-    // comentarios, seguidos y solicitudes.
     try {
       final data = await _collect(user.userId, viewerId: user.userId);
       myProjects.assignAll(data.owned);
@@ -135,7 +119,6 @@ class ProfileController extends GetxController with UiLoggy {
     }
   }
 
-  /// "Guardar cambios" de Editar perfil.
   Future<bool> saveBasics({
     required String name,
     required String username,
@@ -160,7 +143,6 @@ class ProfileController extends GetxController with UiLoggy {
     );
   }
 
-  /// Privacidad: visibilidad, contacto y datos de actividad.
   Future<bool> savePrivacy({
     ProfileVisibility? visibility,
     ContactPermission? contact,
@@ -177,7 +159,6 @@ class ProfileController extends GetxController with UiLoggy {
     );
   }
 
-  /// Perfil → Notificaciones.
   Future<bool> saveNotificationPrefs({
     required bool enabled,
     required Set<String> muted,
@@ -207,14 +188,12 @@ class ProfileController extends GetxController with UiLoggy {
     }
   }
 
-  /// "Cambiar contraseña": Roble envía al correo las instrucciones.
   Future<bool> requestPasswordChange() async {
     final email = session.loggedUser?.email ?? '';
     if (email.isEmpty) return false;
     return session.forgotPassword(email);
   }
 
-  /// "Descargar mis datos": un resumen en JSON de lo que la app guarda.
   String exportMyData() {
     final p = profile.value;
     final s = summary.value;
@@ -249,8 +228,6 @@ class ProfileController extends GetxController with UiLoggy {
     });
   }
 
-  /// "Eliminar cuenta": borra los datos del perfil en Roble y cierra la
-  /// sesión. (La cuenta de acceso de Roble la elimina el administrador.)
   Future<bool> deleteProfileData() async {
     final current = profile.value;
     try {
@@ -270,10 +247,6 @@ class ProfileController extends GetxController with UiLoggy {
 
   Future<bool> logOut() => session.logOut();
 
-  // ------------------------------------------------------------ Otros
-
-  /// Perfil de otra persona ("Información del usuario → Perfil"),
-  /// respetando su privacidad.
   Future<PublicProfile> publicProfile(String userId, {String? fallbackName}) async {
     final stored = await profiles
         .byUserId(userId)
@@ -300,7 +273,6 @@ class ProfileController extends GetxController with UiLoggy {
     );
   }
 
-  /// "Proyectos en los que ha participado" de [userId].
   Future<List<Project>> participationsOf(String userId) async {
     final data = await _collect(userId, viewerId: _me);
     final ids = data.memberships.map((m) => m.projectId).toSet();
@@ -310,16 +282,12 @@ class ProfileController extends GetxController with UiLoggy {
     ];
   }
 
-  // ------------------------------------------------------------ Cálculos
-
   Future<_UserData> _collect(String userId, {String? viewerId}) async {
     final isMe = userId == viewerId;
-    // Si una tabla falla, esa parte cuenta como vacía y el resto se muestra.
     final results = await Future.wait([
       projects.ownedBy(userId).catchError((Object _) => <Project>[]),
       members.forUser(userId).catchError((Object _) => <ProjectMember>[]),
     ]);
-    // Otra persona: solo cuentan sus proyectos publicados.
     final owned = (results[0] as List<Project>)
         .where((p) => isMe || p.isPublic)
         .toList();
@@ -341,8 +309,6 @@ class ProfileController extends GetxController with UiLoggy {
       if (project != null) projectsById[project.id] = project;
     }
 
-    // Una participación vale si el proyecto existe, no es suyo y la
-    // registró su creador (no se puede inflar desde otra cuenta).
     final memberships = rawMemberships.where((m) {
       final project = projectsById[m.projectId];
       if (project == null || project.createdBy == userId) return false;
@@ -430,7 +396,6 @@ class ProfileController extends GetxController with UiLoggy {
         .followsOf(userId)
         .catchError((Object _) => <ProjectFollow>[]);
 
-    // Nombres de los proyectos comentados/seguidos que aún no se leyeron.
     final missing = {
       ...myComments.map((c) => c.projectId),
       ...myFollows.map((f) => f.projectId),
@@ -470,7 +435,6 @@ class ProfileController extends GetxController with UiLoggy {
           date: m.joinedAt,
           detail: m.role,
         ),
-      // Solo proyectos que quien mira puede ver.
       for (final c in myComments)
         if (names.containsKey(c.projectId))
           ActivityEntry(

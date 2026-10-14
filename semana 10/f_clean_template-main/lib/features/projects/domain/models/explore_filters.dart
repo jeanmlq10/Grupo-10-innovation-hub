@@ -14,10 +14,6 @@ enum MemberAvailabilityFilter { all, withOpenSpots, withoutOpenSpots }
 enum ProjectRoleFilter { designer, developer, leader, communicator, other }
 
 /// Los filtros de "Explorar proyectos" (requerimiento 1.2).
-///
-/// Dart puro: no sabe de Roble ni de Flutter. Solo responde si un
-/// [Project] cumple los criterios. Los criterios de distintas secciones se
-/// combinan (Y); dentro de "Rol del proyecto" se pueden marcar varios (O).
 class ExploreFilters {
   const ExploreFilters({
     this.creationDate = CreationDateFilter.all,
@@ -26,18 +22,14 @@ class ExploreFilters {
     this.roles = const {},
   });
 
-  /// Sin ningún filtro ("Todos" en cada sección).
   static const none = ExploreFilters();
 
   final CreationDateFilter creationDate;
   final TaskAvailabilityFilter taskAvailability;
   final MemberAvailabilityFilter memberAvailability;
 
-  /// Vacío = "Todos".
   final Set<ProjectRoleFilter> roles;
 
-  /// Nombre exacto de cada rol fijo en `teamRoles` (lo que guarda
-  /// "Equipo necesario" en la fila del proyecto).
   static const Map<ProjectRoleFilter, String> roleNames = {
     ProjectRoleFilter.designer: 'Diseñador/a',
     ProjectRoleFilter.developer: 'Desarrollador/a',
@@ -51,7 +43,6 @@ class ExploreFilters {
       memberAvailability == MemberAvailabilityFilter.all &&
       roles.isEmpty;
 
-  /// Cuántas secciones tienen algo distinto de "Todos" (para el contador).
   int get activeCount =>
       (creationDate != CreationDateFilter.all ? 1 : 0) +
       (taskAvailability != TaskAvailabilityFilter.all ? 1 : 0) +
@@ -70,17 +61,12 @@ class ExploreFilters {
     roles: roles ?? this.roles,
   );
 
-  /// Marca o desmarca un rol (varios a la vez se combinan con O).
   ExploreFilters toggleRole(ProjectRoleFilter role) {
     final next = Set<ProjectRoleFilter>.from(roles);
     if (!next.remove(role)) next.add(role);
     return copyWith(roles: next);
   }
 
-  /// ¿[project] cumple todos los filtros?
-  ///
-  /// [hasOpenTasks]: si el proyecto tiene alguna tarea con cupo (sale de la
-  /// tabla `project_tasks`, lo calcula el repositorio de tareas).
   bool matches(
     Project project, {
     required bool hasOpenTasks,
@@ -103,7 +89,6 @@ class ExploreFilters {
         return createdAt != null &&
             !createdAt.isBefore(now.subtract(const Duration(days: 30)));
       case CreationDateFilter.older:
-        // Más de 30 días, o proyectos creados antes de guardar la fecha.
         return createdAt == null ||
             createdAt.isBefore(now.subtract(const Duration(days: 30)));
     }
@@ -120,18 +105,12 @@ class ExploreFilters {
     }
   }
 
-  /// Rol y disponibilidad de miembros se combinan: con "Con miembros
-  /// disponibles" + "Diseñador", el proyecto debe tener cupo libre
-  /// justamente en Diseñador/a.
   bool _matchesMembersAndRoles(Project project, DateTime now) {
-    // Con la convocatoria vencida ningún rol tiene cupo disponible.
     final callOpen = project.isTeamCallOpenAt(now);
-    // Roles que el proyecto pidió (con al menos 1 persona).
     final requested = {
       for (final entry in project.teamRoles.entries)
         if (entry.value > 0) entry.key,
     };
-    // Roles que todavía tienen cupo (necesarias > aceptadas).
     final open = {
       for (final entry in project.teamRoles.entries)
         if (callOpen && entry.value - (project.acceptedRoleCounts[entry.key] ?? 0) > 0)

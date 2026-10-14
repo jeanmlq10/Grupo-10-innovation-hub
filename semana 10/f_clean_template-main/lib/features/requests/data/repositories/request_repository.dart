@@ -83,8 +83,6 @@ class RequestRepository implements IRequestRepository {
     );
   }
 
-  /// Aplica la ultima decision valida de cada solicitud. Solo vale si la
-  /// escribio el dueno (`_owner`), o si la tabla no expone `_owner`.
   Future<List<ParticipationRequest>> _withStatus(
     List<ParticipationRequest> requests,
     String ownerId,

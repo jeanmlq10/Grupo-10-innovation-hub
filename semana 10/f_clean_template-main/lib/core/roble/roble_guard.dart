@@ -1,9 +1,6 @@
 import 'package:roble/roble.dart';
 
 /// Traduce las excepciones del paquete `roble` al Failure de cada feature.
-///
-/// Es lo unico del paquete que se nombra fuera de `data/datasources/`: los
-/// repositorios lo usan para que `domain/` nunca sepa que existe HTTP.
 Future<T> robleGuard<T>(
   Future<T> Function() action,
   Exception Function(String message) failure, {

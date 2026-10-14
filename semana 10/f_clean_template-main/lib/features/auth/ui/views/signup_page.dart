@@ -24,9 +24,6 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  /// Visual countdown before "Reenviar código" is enabled again. The
-  /// controller keeps its own (shorter) resend guard; this one only drives
-  /// the "(00:45)" label of the design.
   static const _resendWait = 45;
 
   final _formKey = GlobalKey<FormState>();
@@ -114,7 +111,6 @@ class _SignUpPageState extends State<SignUpPage> {
       return;
     }
 
-    // Read before verifying: the controller clears it once verified.
     final email = _auth.pendingVerificationEmail;
     final ok = await _auth.verifyEmail(code);
     if (!ok) {
@@ -123,15 +119,10 @@ class _SignUpPageState extends State<SignUpPage> {
     }
     if (!mounted) return;
     if (_auth.isLogged) {
-      // Signed in automatically: drop the sign-up screens (Central already
-      // shows Home underneath) and offer the first-access choice.
       Navigator.of(context).popUntil((route) => route.isFirst);
       Get.to(() => const WhatToDoPage());
       return;
     }
-    // Verified, but the automatic sign-in did not go through (network, rate
-    // limit): remember that this account still has to see the first-access
-    // choice, and send the user back to log in by hand.
     if (email != null) await FirstAccessStore.markPending(email);
     if (!mounted) return;
     Get.snackbar(
@@ -155,7 +146,6 @@ class _SignUpPageState extends State<SignUpPage> {
 
   void _showError() {
     final message = _auth.error.value;
-    // Empty when a duplicate tap was ignored while a request was running.
     if (message.isEmpty) return;
     Get.snackbar(
       'Registro',
@@ -177,7 +167,6 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  /// "Alta institucional" (reference screen A).
   Widget _buildRegisterForm() {
     return Form(
       key: _formKey,
@@ -256,8 +245,6 @@ class _SignUpPageState extends State<SignUpPage> {
             obscure: true,
             textInputAction: TextInputAction.done,
             autofillHints: const [AutofillHints.newPassword],
-            // Same rule Roble enforces, so a weak password never costs one of
-            // the 5 sign-up requests per hour the server allows.
             validator: (value) => PasswordPolicy.validate(value ?? ''),
             onSubmitted: (_) => _register(),
           ),
@@ -277,7 +264,6 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  /// "Verificación" (reference screen B).
   Widget _buildVerifyForm(BuildContext context) {
     final width = flowWidth(context);
     final contentWidth = width * (1 - 2 * 0.07);

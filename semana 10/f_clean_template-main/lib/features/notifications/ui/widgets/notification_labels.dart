@@ -17,7 +17,6 @@ abstract final class NotificationLabels {
     NotificationCategory.reminders => 'Recordatorios',
   };
 
-  /// Texto corto para la etiqueta del filtro activo ("Solicitudes ×").
   static String shortCategory(NotificationCategory category) =>
       switch (category) {
         NotificationCategory.participationRequests => 'Solicitudes',
@@ -54,7 +53,6 @@ abstract final class NotificationLabels {
     _ => Icons.person_add_alt_1_outlined,
   };
 
-  /// Rechazos en rojo, lo demás en morado.
   static bool isNegative(String type) =>
       type == AppNotificationType.requestRejected ||
       type == AppNotificationType.taskApplicationRejected;

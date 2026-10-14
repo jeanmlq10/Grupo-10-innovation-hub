@@ -8,7 +8,7 @@ import 'package:f_clean_template/features/profile/ui/views/profile_page.dart';
 import 'package:f_clean_template/features/projects/ui/views/my_projects_page.dart';
 import 'package:f_clean_template/routes/app_routes.dart';
 
-/// Las paginas con nombre. /home y /mis-proyectos exigen sesion (AuthGuard).
+/// Las páginas con nombre. Todas menos la central exigen sesión (AuthGuard).
 abstract class AppPages {
   static final routes = <GetPage<dynamic>>[
     GetPage(name: AppRoutes.central, page: () => const Central()),

@@ -5,11 +5,6 @@ import 'package:f_clean_template/core/theme/home_colors.dart';
 /// One row of "Elige cómo participar": icon, title, subtitle and a
 /// chevron — unlike `SelectableOptionTile` (create_project), this
 /// navigates immediately on tap instead of toggling a selection.
-///
-/// [selected] is only used by "Seguir", to reflect that the project is
-/// already followed (purple border + check instead of the chevron) —
-/// the same "selected" visual language already used elsewhere in the
-/// app, per this stage's own instruction to reuse it.
 class ParticipationOptionTile extends StatelessWidget {
   const ParticipationOptionTile({
     super.key,
@@ -27,7 +22,6 @@ class ParticipationOptionTile extends StatelessWidget {
   final VoidCallback onTap;
   final bool selected;
 
-  /// Línea extra con calendario, ej. "Convocatoria hasta: 30 oct 2026".
   final String? footnote;
 
   @override

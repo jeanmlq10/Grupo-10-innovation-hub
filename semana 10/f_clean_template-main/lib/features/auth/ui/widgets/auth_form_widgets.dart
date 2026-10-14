@@ -33,7 +33,6 @@ class FlowScreenBody extends StatelessWidget {
 
   final List<Widget> children;
 
-  /// Side margin as a fraction of the screen width (reference: ~7%).
   final double horizontalFraction;
 
   @override

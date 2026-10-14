@@ -6,9 +6,6 @@ import 'package:f_clean_template/core/theme/home_colors.dart';
 /// Six boxes for the emailed verification code. A single invisible text
 /// field on top receives the keyboard input, so pasting and the system
 /// one-time-code autofill keep working; the boxes only display it.
-///
-/// [width] is the space the row may use; boxes and gaps are sized from it
-/// with the reference proportions (boxes a bit taller than wide).
 class VerificationCodeInput extends StatefulWidget {
   const VerificationCodeInput({
     super.key,
@@ -22,7 +19,6 @@ class VerificationCodeInput extends StatefulWidget {
   final double width;
   final int length;
 
-  /// Key for the underlying text field (used by the widget tests).
   final Key? fieldKey;
 
   @override

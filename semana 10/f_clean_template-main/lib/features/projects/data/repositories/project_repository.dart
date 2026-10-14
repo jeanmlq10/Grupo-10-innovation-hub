@@ -17,8 +17,6 @@ class ProjectRepository implements IProjectRepository {
 
   final IProjectDataSource _source;
 
-  /// Columnas nuevas que pueden no existir todavia en Roble (ver
-  /// [RobleOptionalColumns]): si faltan, el proyecto se guarda sin ellas.
   static const _optionalColumns = {'createdAt', 'teamDeadline'};
 
   Future<T> _guard<T>(Future<T> Function() action, {String? notFound}) =>
@@ -31,8 +29,6 @@ class ProjectRepository implements IProjectRepository {
         {
           ..._toRow(project),
           'createdBy': project.createdBy,
-          // Fecha de creacion: la usa el filtro "Fecha de creacion" de
-          // Explorar. Solo se escribe al crear (nunca en save()).
           'createdAt': RobleRows.nowIso(),
         },
         _source.create,
@@ -61,8 +57,6 @@ class ProjectRepository implements IProjectRepository {
       try {
         await _source.delete(id);
       } on RobleApiHttpException catch (e) {
-        // 403 al borrar = al rol `user` le falta el permiso "Borrar" en la
-        // tabla projects (se activa en la consola de Roble).
         if (e is RobleApiForbiddenException || e.statusCode == 403) {
           throw ProjectFailure(
             'Roble no permite borrar proyectos todavía: en la consola, '
@@ -84,7 +78,6 @@ class ProjectRepository implements IProjectRepository {
     if (id.isEmpty) return null;
     final Map<String, dynamic>? row;
     if (publicAccess) {
-      // Visitante: no hay token, se usa la lectura publica de Roble.
       final rows = await _publicRows();
       row = rows.where((r) => RobleRows.str(r['_id']) == id).firstOrNull;
     } else {
@@ -111,8 +104,6 @@ class ProjectRepository implements IProjectRepository {
     return rows.map(_toProject).where((p) => p.createdBy == userId).toList();
   }
 
-  /// Lectura sin sesion (visitante). Un 403 aqui no es "tu cuenta no tiene
-  /// permiso": significa que la tabla no esta marcada como publica.
   Future<List<Map<String, dynamic>>> _publicRows() => _guard(() async {
     try {
       return await _source.readAllPublic();
@@ -129,7 +120,6 @@ class ProjectRepository implements IProjectRepository {
     for (final entry in project.teamRoles.entries)
       if (entry.value > 0)
         ProjectTeamRole(
-          // El nombre del rol es su identificador dentro del proyecto.
           id: entry.key,
           projectId: project.id,
           role: entry.key,

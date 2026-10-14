@@ -16,16 +16,6 @@ import 'package:f_clean_template/features/requests/ui/views/join_team_page.dart'
 import 'package:f_clean_template/features/auth/ui/widgets/login_required_dialog.dart';
 
 /// "Ver proyecto" — opened by tapping a project in "Explorar proyectos".
-///
-/// The main exploration flow intentionally keeps the important actions close
-/// to the project itself:
-/// - the bell in the top-right follows/unfollows the project;
-/// - the bottom "Comentar" button opens the comments sheet directly;
-/// - tasks and the team can be opened directly from their tabs.
-///
-/// The visual hierarchy follows the updated exploration flow: a larger
-/// project presentation on "Descripción" and a compact project header on
-/// the remaining tabs.
 class ProjectDetailPage extends StatefulWidget {
   const ProjectDetailPage({super.key, required this.project});
 
@@ -40,8 +30,6 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
   late final TabController _tabController;
   final ProjectDetailController _controller = Get.find();
 
-  /// Starts with what the list passed in and is replaced by the fresh
-  /// version from Roble as soon as it arrives.
   late Project _project;
   bool _isFollowing = false;
   bool _followBusy = false;
@@ -55,7 +43,6 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
     _refresh();
   }
 
-  /// Reloads the project and the follow state from Roble.
   Future<void> _refresh() async {
     try {
       final results = await Future.wait([
@@ -69,7 +56,6 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
         _isFollowing = results[1] as bool;
       });
     } catch (_) {
-      // Keep showing what we have; actions will surface real errors.
     }
   }
 
@@ -79,9 +65,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
     }
   }
 
-  /// Follow / unfollow, stored in Roble (`project_follows`).
   Future<void> _toggleFollow() async {
-    // Visitante: seguir requiere cuenta.
     if (!requireSession()) return;
     if (_followBusy) return;
     _followBusy = true;
@@ -312,9 +296,6 @@ class _LargeProjectHeader extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // The current project model has no cover-image field, so the
-          // existing project icon remains the visual identity here instead
-          // of inventing image data that does not belong to the project.
           Container(
             width: double.infinity,
             height: 108,
@@ -505,8 +486,6 @@ class _DescriptionTab extends StatelessWidget {
                   icon: Icons.schedule_outlined,
                   label: project.duration!,
                 ),
-              // "Toda la comunidad" is implied for anyone seeing a public
-              // project; only a private audience ("Solo yo") is shown.
               if (project.audience != null &&
                   project.audience!.isNotEmpty &&
                   project.audience != 'Toda la comunidad')
@@ -577,7 +556,6 @@ class _TasksTabState extends _RobleTabState<_TasksTab, List<ProjectTask>> {
     final canApply = project.canApply && project.isPublic && !isOwner;
     final now = DateTime.now();
 
-    // La convocatoria del equipo vive en la pestaña "Miembros".
     if (tasks.isEmpty) {
       return const _EmptyTab(
         message: 'Este proyecto no especificó tareas todavía.',
@@ -589,7 +567,6 @@ class _TasksTabState extends _RobleTabState<_TasksTab, List<ProjectTask>> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // ---------------- Tareas del proyecto (Cambio 2)
           const Text(
             'Tareas del proyecto',
             style: TextStyle(
@@ -616,7 +593,6 @@ class _TasksTabState extends _RobleTabState<_TasksTab, List<ProjectTask>> {
     );
   }
 
-  /// El dueño cambia el estado de la tarea y se recarga la pestaña.
   Future<void> _changeProgress(ProjectTask task, TaskProgress progress) async {
     try {
       await _controller.setTaskProgress(widget.project, task, progress);
@@ -982,13 +958,11 @@ class _MembersTabState
   @override
   Widget buildWith(BuildContext context, List<ProjectMember> members) {
     final project = widget.project;
-    // Cambio 2: con la convocatoria vencida ya no se puede pedir unirse.
     final canJoin =
         project.canApply &&
         project.isPublic &&
         !_controller.isOwner(project) &&
         project.isTeamCallOpenAt();
-    // Team roles still looking for people (needed − already accepted).
     final openRoles = <MapEntry<String, int>>[
       for (final entry in project.teamRoles.entries)
         if (entry.value - (project.acceptedRoleCounts[entry.key] ?? 0) > 0)
@@ -1015,7 +989,6 @@ class _MembersTabState
               ),
             ),
             const SizedBox(height: 10),
-            // Cambio 2: cada rol con su convocatoria y fecha límite.
             for (final entry in openRoles)
               _RoleCallCard(
                 role: entry.key,
@@ -1052,7 +1025,6 @@ class _MembersTabState
               padding: const EdgeInsets.symmetric(vertical: 16),
               child: Center(
                 child: Text(
-                  // El visitante no puede ver el equipo sin sesión.
                   _controller.isGuest
                       ? 'Inicia sesión para ver quiénes forman el equipo.'
                       : 'Todavía no hay miembros.',

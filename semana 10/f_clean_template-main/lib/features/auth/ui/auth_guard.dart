@@ -10,7 +10,6 @@ class AuthGuard extends GetMiddleware {
     final auth = Get.find<AuthenticationController>();
     if (auth.isLogged || auth.isRestoring) return null;
 
-    // Visitante: solo puede entrar a Explorar proyectos (solo lectura).
     if (auth.isGuest && route == AppRoutes.home) return null;
 
     return const RouteSettings(name: '/');

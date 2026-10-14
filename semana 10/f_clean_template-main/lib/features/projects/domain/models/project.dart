@@ -1,20 +1,6 @@
 import 'package:f_clean_template/core/utils/deadline.dart';
 
 /// A project shown in "Explorar proyectos".
-///
-/// Two very different kinds of [Project] exist:
-/// - **Example/seed projects** (if any are added later) — hardcoded in
-///   `LocalProjectSource`, always [canApply] = false.
-/// - **User-created projects** — the SAME entity that started life in
-///   the "Crear proyecto" wizard and was published from there. These are
-///   the only ones with [canApply] = true, and the only ones carrying a
-///   real [teamRoles]/[duration]/[audience]/[isDraft]/[acceptedMembersCount].
-///
-/// This one class is intentionally shared by both cases (see
-/// the feature folders) instead of inventing a second "user
-/// project" model — the whole point of this stage is that a project
-/// created by the user is the SAME object everywhere it's shown
-/// (Explorar, Mis proyectos, Ver proyecto), never a per-screen copy.
 class Project {
   Project({
     required this.id,
@@ -40,50 +26,27 @@ class Project {
   final String description;
   final List<String> categories;
 
-  /// Whether "Opciones del proyecto" should show on this project's detail
-  /// screen. Always `false` for the hardcoded example projects; always
-  /// `true` for anything that came out of "Crear proyecto".
   final bool canApply;
 
-  /// Role name → how many are needed (e.g. `{'Diseñador/a': 1}`), set by
-  /// the creator in "Equipo necesario". Empty for example projects —
-  /// their "Tareas" tab simply has nothing to show.
   final Map<String, int> teamRoles;
 
   final String? duration;
   final String? audience;
 
-  /// `true` while still being built in the wizard (shows under "Mis
-  /// borradores"); `false` once "Publicar proyecto" was pressed (shows
-  /// in "Mis proyectos" and "Explorar proyectos"). Always `false` for
-  /// example projects.
   final bool isDraft;
 
-  /// How many people have actually joined the team so far (a
-  /// participation request that got accepted) — separate from
-  /// [teamRoles], which is how many the creator is still looking for.
-  /// Starts at 0 and grows only through
-  /// `the feature repositories.acceptRequest`.
   final int acceptedMembersCount;
 
-  /// Role name → people already accepted in that role (Roble column
-  /// `acceptedRoleCounts`). Together with [teamRoles] (people needed) it
-  /// tells which team roles still have free spots.
   final Map<String, int> acceptedRoleCounts;
-  /// Roble userId of the creator (the row's `_owner` for Roble projects).
   final String? createdBy;
   final String? createdByName;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
-  /// "Fecha límite para postularse al equipo" (columna `teamDeadline`).
-  /// null = la convocatoria no tiene fecha límite.
   final DateTime? teamDeadline;
 
-  /// La convocatoria para unirse al equipo sigue abierta (no venció).
   bool isTeamCallOpenAt([DateTime? now]) => isBeforeDeadline(teamDeadline, now);
 
-  /// Visible in "Explorar proyectos": published to the whole community.
   bool get isPublic => !isDraft && audience == 'Toda la comunidad';
 
   Project copyWith({

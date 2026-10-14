@@ -31,8 +31,6 @@ class _ConfettiPainter extends CustomPainter {
     Color(0xFF6A4FC0),
   ];
 
-  // (fractionX, fractionY, sizeFraction, colorIndex, shape)
-  // shape: 0 = dot, 1 = short dash
   static const List<List<double>> _confetti = [
     [0.08, 0.20, 0.035, 0, 0],
     [0.18, 0.05, 0.03, 1, 1],

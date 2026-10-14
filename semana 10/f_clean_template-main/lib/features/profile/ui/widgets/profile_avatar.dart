@@ -14,7 +14,6 @@ class ProfileAvatar extends StatelessWidget {
 
   final String name;
 
-  /// Clave de [AvatarIcons] (`user_profiles.avatarIcon`).
   final String? iconKey;
   final double size;
 

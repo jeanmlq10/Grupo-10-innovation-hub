@@ -48,15 +48,11 @@ class ProjectDetailController extends GetxController {
   final ICommentRepository comments;
   final IFollowRepository follows;
 
-  /// Para avisar "Tarea completada" a quienes trabajaban en ella.
   final INotificationRepository notifications;
   final AuthenticationController session;
 
   String? get currentUserId => session.loggedUser?.userId;
 
-  /// Visitante ("Continuar como visitante"): solo consulta, sin sesion.
-  /// Lee proyectos y tareas con la lectura publica de Roble; miembros,
-  /// comentarios y seguidos piden iniciar sesion.
   bool get isGuest => session.isGuest;
 
   bool isOwner(Project project) =>
@@ -68,8 +64,6 @@ class ProjectDetailController extends GetxController {
   Future<List<ProjectTask>> tasksFor(String projectId) =>
       tasks.forProject(projectId, publicAccess: isGuest);
 
-  /// Solo el dueño: marca la tarea como disponible, en progreso o
-  /// completada (requerimiento 3.1).
   Future<void> setTaskProgress(
     Project project,
     ProjectTask task,
@@ -84,8 +78,6 @@ class ProjectDetailController extends GetxController {
     }
   }
 
-  /// Página 4.3 "Tarea completada": avisa a los miembros asignados a la
-  /// tarea. Si el aviso falla, el cambio de estado ya quedó guardado.
   Future<void> _notifyTaskCompleted(Project project, ProjectTask task) async {
     final me = currentUserId;
     if (me == null) return;
@@ -113,7 +105,6 @@ class ProjectDetailController extends GetxController {
         );
       }
     } catch (_) {
-      // Ignorado a propósito: ver arriba.
     }
   }
 
@@ -123,7 +114,6 @@ class ProjectDetailController extends GetxController {
   }
 
   Future<List<ProjectMember>> membersFor(String projectId) async {
-    // El visitante no ve quienes forman el equipo (la vista lo explica).
     if (isGuest) return const [];
     final project = await projects.getById(projectId, viewerId: currentUserId);
     final owner = project?.createdBy;

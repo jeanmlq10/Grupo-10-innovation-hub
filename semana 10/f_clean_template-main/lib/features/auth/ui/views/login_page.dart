@@ -26,8 +26,6 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordController = TextEditingController();
   final AuthenticationController _auth = Get.find();
 
-  /// True from the tap on "Ingresar" until leaving this screen (or until the
-  /// login fails), so "Iniciando sesión..." does not flicker back to the form.
   bool _signingIn = false;
 
   @override
@@ -38,7 +36,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _login() async {
-    // Enter on the keyboard bypasses the disabled button, so check here too.
     if (_auth.isBusy || _signingIn) return;
     FocusScope.of(context).unfocus();
     if (!_formKey.currentState!.validate()) return;
@@ -89,7 +86,6 @@ class _LoginPageState extends State<LoginPage> {
 
   void _showError() {
     final message = _auth.error.value;
-    // Empty when a duplicate tap was ignored while a request was running.
     if (message.isEmpty) return;
     Get.snackbar(
       'Autenticación',
@@ -158,8 +154,6 @@ class _LoginPageState extends State<LoginPage> {
               obscure: true,
               textInputAction: TextInputAction.done,
               autofillHints: const [AutofillHints.password],
-              // Login only asks for a value: existing passwords must be
-              // sent as typed, the complexity rule applies at sign-up.
               validator: (value) =>
                   (value ?? '').isEmpty ? 'Ingresa tu contraseña.' : null,
               onSubmitted: (_) => _login(),
@@ -178,8 +172,6 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ),
-            // El espacio libre queda entre el formulario y el botón,
-            // que se ubica abajo como en la pantalla de bienvenida.
             const SizedBox(height: 24),
             const Spacer(),
             Obx(

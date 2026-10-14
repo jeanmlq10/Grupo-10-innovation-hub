@@ -5,10 +5,6 @@ import 'package:f_clean_template/features/projects/domain/models/my_project.dart
 
 /// Fully-specified card for a [MyProject] — used for any published
 /// project the user created and its full stats.
-///
-/// The stats row (Miembros / Tareas / Solicitudes) only renders when the
-/// project actually has those counters, since a fresh draft doesn't have
-/// them yet.
 class MyProjectCard extends StatelessWidget {
   const MyProjectCard({
     super.key,
@@ -21,10 +17,8 @@ class MyProjectCard extends StatelessWidget {
   final MyProject project;
   final VoidCallback? onTap;
 
-  /// Muestra el lápiz "Editar proyecto" cuando se pasa.
   final VoidCallback? onEdit;
 
-  /// Muestra la caneca "Eliminar borrador" (solo se pasa para borradores).
   final VoidCallback? onDelete;
 
   bool get _hasStats =>
@@ -89,8 +83,6 @@ class MyProjectCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  // Menos clics: lápiz para editar y caneca para eliminar
-                  // (la caneca solo aparece en borradores).
                   if (onEdit != null)
                     IconButton(
                       tooltip: 'Editar proyecto',

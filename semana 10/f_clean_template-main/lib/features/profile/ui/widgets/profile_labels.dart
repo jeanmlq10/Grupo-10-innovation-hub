@@ -12,7 +12,6 @@ abstract final class ProfileLabels {
     CommitmentLevel.newcomer => 'Nuevo',
   };
 
-  /// "Publicaste un nuevo proyecto" / "Publicó un nuevo proyecto".
   static String activityTitle(ActivityKind kind, {required bool self}) =>
       switch (kind) {
         ActivityKind.publication =>

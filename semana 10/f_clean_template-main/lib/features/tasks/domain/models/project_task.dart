@@ -10,8 +10,6 @@ enum TaskDisplayStatus { available, inProgress, completed, closed }
 /// A concrete task a project needs help with ("Diseñar la interfaz",
 /// "Hacer pruebas"...). Someone can apply to one specific task. Different
 /// from a [ProjectTeamRole], which is a long-term place in the team.
-///
-/// Persisted in the Roble table `project_tasks`.
 class ProjectTask {
   const ProjectTask({
     required this.id,
@@ -26,7 +24,6 @@ class ProjectTask {
     this.progress = TaskProgress.available,
   });
 
-  /// Roble `_id`. Empty while the task only exists in the wizard.
   final String id;
   final String projectId;
   final String title;
@@ -34,26 +31,20 @@ class ProjectTask {
   final int numberNeeded;
   final int numberAccepted;
 
-  /// `open` while there are free spots, `closed` once filled.
   final String status;
   final DateTime? createdAt;
 
-  /// "Disponible hasta": último día para postularse (columna `deadline`).
   final DateTime? deadline;
 
-  /// Estado del trabajo que marcó el dueño (columna `status`).
   final TaskProgress progress;
 
   bool get hasSpots => numberAccepted < numberNeeded;
 
-  /// Se puede postular: está disponible, tiene cupo y no venció la fecha.
   bool canApplyAt([DateTime? now]) =>
       progress == TaskProgress.available &&
       hasSpots &&
       isBeforeDeadline(deadline, now);
 
-  /// Estado para mostrar: Completada > En progreso (marcada o sin cupo) >
-  /// Cerrada (venció la fecha) > Disponible.
   TaskDisplayStatus displayStatusAt([DateTime? now]) {
     if (progress == TaskProgress.completed) return TaskDisplayStatus.completed;
     if (progress == TaskProgress.inProgress || !hasSpots) {

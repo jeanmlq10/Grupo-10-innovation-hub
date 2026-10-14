@@ -72,7 +72,6 @@ class ReviewPublishPage extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // --- Proyecto ---
                         Container(
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
@@ -127,7 +126,6 @@ class ReviewPublishPage extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        // --- Equipo necesario ---
                         const Text(
                           'Equipo necesario',
                           style: TextStyle(
@@ -174,7 +172,6 @@ class ReviewPublishPage extends StatelessWidget {
                             ),
                           ),
                         const SizedBox(height: 20),
-                        // --- Tareas específicas ---
                         const Text(
                           'Tareas específicas',
                           style: TextStyle(
@@ -207,7 +204,6 @@ class ReviewPublishPage extends StatelessWidget {
                             ),
                           ),
                         const SizedBox(height: 20),
-                        // --- Tiempo estimado ---
                         const Text(
                           'Tiempo estimado',
                           style: TextStyle(
@@ -236,7 +232,6 @@ class ReviewPublishPage extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        // --- Audiencia ---
                         const Text(
                           'Audiencia',
                           style: TextStyle(
@@ -285,9 +280,6 @@ class ReviewPublishPage extends StatelessWidget {
     );
   }
 
-  /// Makes sure everything is stored in Roble, then leaves the wizard.
-  /// The audience already decided draft vs published (see
-  /// `CreateProjectController`), so this never creates a second project.
   Future<void> _publish(CreateProjectController controller) async {
     final ok = await controller.finish();
     if (!ok) return;

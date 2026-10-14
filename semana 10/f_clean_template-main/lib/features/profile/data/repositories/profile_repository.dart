@@ -23,14 +23,12 @@ class ProfileRepository implements IProfileRepository {
   Future<UserProfile?> byUserId(String userId) async {
     if (userId.isEmpty) return null;
     final rows = await _guard(() => _source.readForUser(userId));
-    // Solo vale la fila que escribió el propio usuario (`_owner`).
     final own = rows.where((row) => RobleRows.author(row, 'userId') == userId);
     return own.isEmpty ? null : _toProfile(own.first);
   }
 
   @override
   Future<UserProfile> save(UserProfile profile) async {
-    // `avatarIcon` es columna nueva: si aún no existe, se guarda sin ella.
     final row = profile.id.isEmpty
         ? await _guard(
             () => RobleOptionalColumns.write(

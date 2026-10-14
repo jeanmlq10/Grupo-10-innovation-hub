@@ -1,17 +1,6 @@
 import 'package:flutter/material.dart';
 
 /// Draws a dashed rounded-rectangle border around [child].
-///
-/// Flutter has no built-in dashed/dotted border, and the template does not
-/// bring a package for it, so this small painter reproduces the strokes
-/// seen in the Figma prototype without adding a new dependency.
-///
-/// Figma uses two different strokes:
-/// - a dashed one (short segments) around "Crea otra idea";
-/// - a dotted one (round dots) around each category chip.
-///
-/// [dotted] switches between the two: `false` draws dashes with flat caps
-/// (the default), `true` draws round-capped dots.
 class DashedBorder extends StatelessWidget {
   const DashedBorder({
     super.key,
@@ -73,8 +62,6 @@ class _DashedRRectPainter extends CustomPainter {
       ..strokeWidth = strokeWidth
       ..strokeCap = dotted ? StrokeCap.round : StrokeCap.butt;
 
-    // A dotted stroke is just a dashed one with a near-zero dash length and
-    // round caps, so each "dash" renders as a small circle.
     final dashLength = dotted ? 0.01 : gap;
 
     for (final metric in path.computeMetrics()) {

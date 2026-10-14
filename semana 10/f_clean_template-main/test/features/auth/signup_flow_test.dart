@@ -30,8 +30,6 @@ void main() {
     Get.reset();
   });
 
-  // The default 800x600 test screen is too short for the sign-up column,
-  // which would leave the submit button off-screen and untappable.
   void useTallScreen(WidgetTester tester) {
     tester.view.physicalSize = const Size(900, 1800);
     tester.view.devicePixelRatio = 1;
@@ -80,7 +78,6 @@ void main() {
     expect(find.text('¡Bienvenido!'), findsNothing);
     expect(repo.loginPassword, 'Password1!');
 
-    // "Explorar proyectos" closes the choice and reveals Home.
     await tester.tap(find.text('Explorar proyectos'));
     await tester.pumpAndSettle();
     expect(find.text('HOME'), findsOneWidget);

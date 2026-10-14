@@ -23,7 +23,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
   late final TextEditingController _bio;
   late final TextEditingController _career;
 
-  /// Icono elegido (se guarda en Roble al tocar "Guardar cambios").
   String _avatarIcon = '';
 
   @override
@@ -131,7 +130,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
         children: [
-          // Tocar la foto abre el selector de iconos.
           Center(
             child: GestureDetector(
               onTap: _pickIcon,

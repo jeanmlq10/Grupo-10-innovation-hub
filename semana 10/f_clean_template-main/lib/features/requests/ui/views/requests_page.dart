@@ -22,11 +22,8 @@ class _RequestsPageState extends State<RequestsPage>
   late final TabController _tabController;
   late Future<List<ParticipationRequest>> _future;
 
-  /// Request being accepted/rejected right now (its buttons show loading).
   String? _processingId;
 
-  /// Decisions taken in this screen, applied immediately so the request
-  /// leaves "Pendientes" at once and can never be decided twice.
   final Map<String, RequestStatus> _decided = {};
 
   @override
@@ -57,7 +54,6 @@ class _RequestsPageState extends State<RequestsPage>
       );
       return;
     }
-    // Only one decision at a time; extra taps while it loads do nothing.
     if (_processingId != null) return;
     setState(() => _processingId = request.id);
     try {
@@ -206,7 +202,6 @@ class _RequestList extends StatelessWidget {
     this.processingId,
   });
 
-  /// While set, every Aceptar/Rechazar is disabled and this one spins.
   final String? processingId;
 
   final List<ParticipationRequest> requests;
@@ -214,7 +209,6 @@ class _RequestList extends StatelessWidget {
   final ValueChanged<ParticipationRequest>? onAccept;
   final ValueChanged<ParticipationRequest>? onReject;
 
-  /// "Tarea: X · Proyecto" or "Equipo: X · Proyecto".
   static String _subtitle(ParticipationRequest request) {
     final kind = request.type == RequestType.task ? 'Tarea' : 'Equipo';
     final project = request.projectName ?? '';

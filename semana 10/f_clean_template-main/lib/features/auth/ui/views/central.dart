@@ -15,8 +15,6 @@ class Central extends StatelessWidget {
       if (authenticationController.isRestoring) {
         return const Scaffold(body: Center(child: CircularProgressIndicator()));
       }
-      // Con sesión, o como visitante ("Continuar como visitante"), se ve
-      // Explorar proyectos; si no, la bienvenida.
       return authenticationController.canBrowse
           ? const HomePage()
           : const WelcomePage();

@@ -7,7 +7,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 class WelcomeCloudIllustration extends StatelessWidget {
   const WelcomeCloudIllustration({super.key, this.size = 350});
 
-  /// Ancho total de la ilustración, incluyendo el candado.
   final double size;
 
   static const double _viewBoxWidth = 322;

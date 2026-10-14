@@ -21,21 +21,16 @@ class ProjectMember {
   final String id;
   final String projectId;
 
-  /// Roble userId of the member.
   final String userId;
   final String name;
   final String? email;
 
-  /// Task title or team role the member joined for.
   final String role;
   final MemberSourceType sourceType;
 
-  /// `_id` of the task or team role row, when known.
   final String? sourceId;
   final String? requestId;
   final DateTime? joinedAt;
 
-  /// userId de quien escribió la fila (`_owner`). Una participación es
-  /// válida solo si la registró el creador del proyecto.
   final String? recordedBy;
 }

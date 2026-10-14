@@ -8,9 +8,6 @@ enum ContactPermission { everyone, nobody }
 enum ActivityVisibility { onlyMe, everyone }
 
 /// El perfil de un usuario (tabla `user_profiles`, una fila por usuario).
-///
-/// Si el usuario nunca editó su perfil no hay fila: se arma con los datos de
-/// la sesión de Roble ([UserProfile.fromSession]) y [id] queda vacío.
 class UserProfile {
   const UserProfile({
     required this.userId,
@@ -41,7 +38,6 @@ class UserProfile {
     username: email.contains('@') ? email.split('@').first : '',
   );
 
-  /// `_id` de la fila en Roble ('' si todavía no existe).
   final String id;
   final String userId;
   final String name;
@@ -53,16 +49,10 @@ class UserProfile {
   final ContactPermission contact;
   final ActivityVisibility activityVisibility;
 
-  /// "Todas las notificaciones".
   final bool notificationsEnabled;
 
-  /// Claves de las preferencias de notificación apagadas
-  /// (ver `NotificationPreference`).
   final Set<String> mutedNotifications;
 
-  /// Icono elegido como foto de perfil (clave del catálogo de iconos; ''
-  /// = la inicial del nombre). Roble no guarda imágenes, por eso se guarda
-  /// solo la clave del icono.
   final String avatarIcon;
 
   bool get isPublic => visibility == ProfileVisibility.public;

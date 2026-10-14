@@ -27,41 +27,30 @@ class TrajectorySummary {
     requestsAccepted: 0,
   );
 
-  /// Proyectos que creó (y que cuentan para quien mira).
   final int projectsCreated;
 
-  /// Proyectos (creados o en los que participa) con todas sus tareas
-  /// completadas.
   final int projectsCompleted;
 
-  /// Tareas en las que fue aceptado.
   final int tasksAssigned;
 
-  /// De esas, las que el creador marcó como completadas.
   final int tasksCompleted;
 
-  /// Proyectos ajenos en los que es miembro.
   final int participations;
 
   final int comments;
 
-  /// Solicitudes para participar que envió.
   final int requestsSent;
 
-  /// Solicitudes que le aceptaron (participaciones registradas).
   final int requestsAccepted;
 
   static double _clamp(double value) => value < 0 ? 0 : (value > 1 ? 1 : value);
 
-  /// "Colaboración": participa, crea y comenta (10 puntos = 100 %).
   double get collaboration =>
       _clamp((participations * 2 + projectsCreated * 2 + comments) / 10);
 
-  /// "Cumplimiento": tareas completadas de las que le asignaron.
   double get fulfillment =>
       tasksAssigned == 0 ? 0 : _clamp(tasksCompleted / tasksAssigned);
 
-  /// "Calidad de aportes": cuántas de sus solicitudes fueron aceptadas.
   double get quality =>
       requestsSent == 0 ? 0 : _clamp(requestsAccepted / requestsSent);
 

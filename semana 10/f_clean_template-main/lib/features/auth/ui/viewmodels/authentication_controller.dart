@@ -12,8 +12,6 @@ import 'package:f_clean_template/core/utils/error_message.dart';
 class AuthenticationController extends GetxController with UiLoggy {
   AuthenticationController(this.repoAuthentication);
 
-  /// Wait applied on the first `429` when the server sends no `Retry-After`.
-  /// Consecutive `429`s double it, up to [maxRateLimitWait].
   static const defaultRateLimitWait = Duration(seconds: 60);
   static const maxRateLimitWait = Duration(minutes: 15);
   static const _maxServerRetryAfter = Duration(hours: 1);
@@ -25,33 +23,21 @@ class AuthenticationController extends GetxController with UiLoggy {
   final _isLoading = false.obs;
   final _isRestoring = true.obs;
 
-  /// Modo visitante ("Continuar como visitante"): sin sesión, solo puede
-  /// explorar y consultar proyectos. Vive solo en memoria; al cerrar la app
-  /// se vuelve a la bienvenida.
   final _isGuest = false.obs;
 
-  /// Email awaiting a verification code from [register].
-  /// Null when there is no registration in progress.
   final _pendingVerificationEmail = Rxn<String>();
 
-  /// null = not known yet, otherwise whether Roble has Microsoft enabled.
   final _microsoftEnabled = Rxn<bool>();
 
-  /// Seconds left of the temporary block after a `429`. 0 = not blocked.
   final _retrySecondsLeft = 0.obs;
 
   final RxString error = ''.obs;
 
-  // Plain fields, not observables: they must flip synchronously, before any
-  // rebuild could happen, so two taps in the same frame cannot both pass.
   bool _requestInFlight = false;
   bool _loadingProviders = false;
   int _consecutiveRateLimits = 0;
   DateTime? _resendBlockedUntil;
 
-  /// Password typed at sign-up, kept only in memory until the email is
-  /// verified so the app can sign the user straight in. Cleared as soon as it
-  /// is used, and on any failure or logout. Never persisted or logged.
   String? _pendingPassword;
   Timer? _cooldownTimer;
 
@@ -59,45 +45,36 @@ class AuthenticationController extends GetxController with UiLoggy {
   bool get isRestoring => _isRestoring.value;
   bool get isLogged => _logged.value;
 
-  /// Sin sesión, entró con "Continuar como visitante".
   bool get isGuest => _isGuest.value && !_logged.value;
 
-  /// Puede ver Explorar proyectos: con sesión o como visitante.
   bool get canBrowse => isLogged || isGuest;
 
-  /// Observable de la sesión, para que otras pantallas reaccionen cuando
-  /// el visitante inicia sesión (por ejemplo, recargar Explorar).
   RxBool get loggedState => _logged;
   String get loggedEmail => _loggedUser.value?.email ?? '';
   AuthenticationUser? get loggedUser => _loggedUser.value;
   String? get pendingVerificationEmail => _pendingVerificationEmail.value;
   bool? get microsoftEnabled => _microsoftEnabled.value;
 
-  /// True while Roble told us to slow down. Forms must disable submit.
   bool get isBlocked => _retrySecondsLeft.value > 0;
   int get retrySecondsLeft => _retrySecondsLeft.value;
 
-  /// Convenience for the UI: no auth action can be started right now.
   bool get isBusy => isLoading || isBlocked;
 
   @override
   void onInit() {
     super.onInit();
-    // Al iniciar sesión (de cualquier forma) se sale del modo visitante.
     ever<bool>(_logged, (logged) {
       if (logged) _isGuest.value = false;
     });
     _restoreSession();
   }
 
-  /// "Continuar como visitante": entra a Explorar sin sesión.
   void continueAsGuest() {
     if (_logged.value) return;
     error.value = '';
     _isGuest.value = true;
   }
 
-  /// Sale del modo visitante y vuelve a la bienvenida.
   void leaveGuestMode() => _isGuest.value = false;
 
   @override
@@ -128,11 +105,6 @@ class AuthenticationController extends GetxController with UiLoggy {
     }
   }
 
-  /// Runs one authentication request, and only one at a time.
-  ///
-  /// While a request is in flight further calls are ignored (return false),
-  /// and while a `429` block is active they fail without touching the
-  /// network. State is always restored in `finally`, on success and error.
   Future<bool> _guarded(Future<bool> Function() action) async {
     if (_requestInFlight) return false;
     if (isBlocked) {
@@ -160,11 +132,8 @@ class AuthenticationController extends GetxController with UiLoggy {
     }
   }
 
-  /// Wait for the [consecutive]-th `429` in a row when the server gave no
-  /// `Retry-After`: 60s, 120s, 240s... capped at [maxRateLimitWait].
   static Duration rateLimitBackoff(int consecutive) {
     final steps = consecutive < 1 ? 0 : consecutive - 1;
-    // Past 4 doublings the cap is already exceeded; avoid huge shifts.
     if (steps > 4) return maxRateLimitWait;
     final backoff = defaultRateLimitWait * (1 << steps);
     return backoff > maxRateLimitWait ? maxRateLimitWait : backoff;
@@ -174,7 +143,6 @@ class AuthenticationController extends GetxController with UiLoggy {
     _consecutiveRateLimits++;
     final Duration wait;
     if (serverRetryAfter != null) {
-      // Respect what the server asked for.
       wait = serverRetryAfter > _maxServerRetryAfter
           ? _maxServerRetryAfter
           : serverRetryAfter;
@@ -216,8 +184,6 @@ class AuthenticationController extends GetxController with UiLoggy {
     });
   }
 
-  /// Loads which social providers Roble has enabled. Called once from the
-  /// login screen so the sign-in tap itself never has to wait on a request.
   Future<void> loadProviders() async {
     if (_microsoftEnabled.value != null || _loadingProviders) return;
     _loadingProviders = true;
@@ -240,8 +206,6 @@ class AuthenticationController extends GetxController with UiLoggy {
       ).toString();
       return Future.value(false);
     }
-    // No await before this call: the browser only allows the login popup
-    // shortly after the user's tap.
     return _guarded(() async {
       _loggedUser.value = await repoAuthentication.signInWithMicrosoft();
       _logged.value = true;
@@ -278,10 +242,6 @@ class AuthenticationController extends GetxController with UiLoggy {
     });
   }
 
-  /// Verifies the emailed code and, right after, signs the user in with the
-  /// password given at sign-up, so they land in the app without going back to
-  /// the login screen. Returns true when the email was verified; check
-  /// [isLogged] to know whether the automatic sign-in also worked.
   Future<bool> verifyEmail(String code) {
     final email = _pendingVerificationEmail.value;
     if (email == null) {
@@ -294,8 +254,6 @@ class AuthenticationController extends GetxController with UiLoggy {
       final password = _pendingPassword;
       _pendingPassword = null;
       if (password != null) {
-        // The account is verified at this point, so a failure here must not
-        // turn into a "verification failed": the user can still log in by hand.
         try {
           _loggedUser.value = await repoAuthentication.login(email, password);
           _logged.value = true;
@@ -348,7 +306,6 @@ class AuthenticationController extends GetxController with UiLoggy {
     });
   }
 
-  /// Always clears the local session, even if the remote call fails.
   Future<bool> logOut() async {
     error.value = '';
     _pendingPassword = null;

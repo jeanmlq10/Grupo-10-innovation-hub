@@ -12,8 +12,6 @@ class NotificationRepository implements INotificationRepository {
 
   final INotificationDataSource _source;
 
-  /// Columnas nuevas (Página 4): si aún no existen en Roble, el aviso se
-  /// guarda igual sin ellas (ver [RobleOptionalColumns]).
   static const _optionalColumns = {'actorUserId', 'actorName', 'detail'};
 
   Future<T> _guard<T>(Future<T> Function() action) =>

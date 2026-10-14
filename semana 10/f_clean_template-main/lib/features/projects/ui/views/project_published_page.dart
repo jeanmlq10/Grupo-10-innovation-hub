@@ -8,11 +8,6 @@ import 'package:f_clean_template/features/projects/ui/views/create_project_page.
 import 'package:f_clean_template/features/projects/ui/widgets/confetti_check_illustration.dart';
 
 /// "¡Proyecto publicado!" — the final screen of the wizard.
-///
-/// "Ver mi proyecto" opens the actual project that was just published
-/// (looked up by id from the shared repository) — never just a generic
-/// trip to "Mis proyectos". "Volver a mis proyectos" does go there,
-/// where the same project also appears (same object, same id).
 class ProjectPublishedPage extends StatelessWidget {
   const ProjectPublishedPage({
     super.key,
@@ -22,12 +17,10 @@ class ProjectPublishedPage extends StatelessWidget {
 
   final String projectId;
 
-  /// "Solo yo": the project stays in "Mis borradores" (not in Explorar).
   final bool isPrivate;
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -108,7 +101,6 @@ class ProjectPublishedPage extends StatelessWidget {
   }
 
   Future<void> _openMyProject() async {
-    // Always the fresh version stored in Roble.
     final project = await Get.find<ProjectDetailController>()
         .projectById(projectId);
     if (project == null) {

@@ -84,7 +84,6 @@ class CreateProjectPage extends StatelessWidget {
                       return;
                     }
 
-                    // Loads the latest version of the project from Roble.
                     final ok = await controller.loadForEdit(editProjectId!);
                     if (ok) {
                       Get.to(() => const NewIdeaPage());

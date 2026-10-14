@@ -35,7 +35,6 @@ class _NotificationsPageState extends State<NotificationsPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _controller.load());
   }
 
-  /// Cada tipo lleva a su pantalla (4.3).
   Future<void> _open(AppNotification notification) async {
     await _controller.markRead(notification);
     final type = notification.type;
@@ -126,7 +125,6 @@ class _NotificationsPageState extends State<NotificationsPage> {
                 ],
               ),
               const SizedBox(height: 12),
-              // Buscar notificaciones...
               Container(
                 decoration: BoxDecoration(
                   color: HomeColors.flowSearchFill,
@@ -146,7 +144,6 @@ class _NotificationsPageState extends State<NotificationsPage> {
                   ),
                 ),
               ),
-              // Filtros activos ("Solicitudes ×").
               Obx(() {
                 final active = _controller.filters.toList();
                 if (active.isEmpty) return const SizedBox(height: 12);

@@ -17,7 +17,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key, this.bindings});
 
-  /// Se puede reemplazar en tests; por defecto, [AppBindings].
   final Bindings? bindings;
 
   @override
@@ -27,7 +26,6 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       debugShowCheckedModeBanner: false,
-      // Español: el calendario de las fechas límite sale en español.
       locale: const Locale('es'),
       supportedLocales: const [Locale('es'), Locale('en')],
       localizationsDelegates: const [

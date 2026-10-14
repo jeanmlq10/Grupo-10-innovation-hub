@@ -14,11 +14,8 @@ class Conversation {
   final String otherName;
   final DirectMessage lastMessage;
 
-  /// Mensajes que me mandaron y no he leído.
   final int unreadCount;
 
-  /// Agrupa los mensajes de [me] por la otra persona; la más reciente
-  /// primero.
   static List<Conversation> group(String me, List<DirectMessage> messages) {
     final byOther = <String, List<DirectMessage>>{};
     for (final message in messages) {

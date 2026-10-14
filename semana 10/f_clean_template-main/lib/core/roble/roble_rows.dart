@@ -32,7 +32,6 @@ abstract final class RobleRows {
   static DateTime? date(Object? value) =>
       value == null ? null : DateTime.tryParse(value.toString())?.toLocal();
 
-  /// jsonb puede llegar ya decodificado o como texto JSON.
   static Object? json(Object? value) {
     if (value is String && value.isNotEmpty) {
       try {
@@ -58,23 +57,17 @@ abstract final class RobleRows {
     return const {};
   }
 
-  /// Autor de la fila: `_owner` (lo pone Roble con el token; no se puede
-  /// falsificar) o, si la tabla no lo expone, la columna [fallbackColumn].
   static String? author(Map<String, dynamic> row, String fallbackColumn) =>
       robleOwnerOf(row) ?? strOrNull(row[fallbackColumn]);
 
   static String nowIso() => DateTime.now().toUtc().toIso8601String();
 
-  /// Fecha SIN hora (fechas límite): se guarda como texto `AAAA-MM-DD` para
-  /// que la zona horaria no la mueva de día.
   static String? dayIso(DateTime? day) {
     if (day == null) return null;
     String two(int n) => n.toString().padLeft(2, '0');
     return '${day.year.toString().padLeft(4, '0')}-${two(day.month)}-${two(day.day)}';
   }
 
-  /// Lee una fecha límite `AAAA-MM-DD` (o un ISO completo: se toma solo el
-  /// día). Devuelve la fecha local a medianoche, o null.
   static DateTime? day(Object? value) {
     if (value == null) return null;
     final text = value.toString().trim();

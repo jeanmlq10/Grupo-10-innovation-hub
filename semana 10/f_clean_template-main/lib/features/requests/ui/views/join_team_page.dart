@@ -26,7 +26,6 @@ class JoinTeamPage extends StatefulWidget {
   final Project project;
   final ProjectTask? task;
 
-  /// Team role to preselect (when opened from a role in "Miembros").
   final String? initialRoleName;
 
   @override
@@ -43,13 +42,10 @@ class _JoinTeamPageState extends State<JoinTeamPage> {
 
   bool get _isTask => widget.task != null;
 
-  /// Cambio 2: ¿sigue abierta la postulación (tarea) o la convocatoria
-  /// (equipo)? Si no, no se deja enviar.
   bool get _isOpen => _isTask
       ? widget.task!.canApplyAt()
       : widget.project.isTeamCallOpenAt();
 
-  /// "Postulación disponible hasta" / "Convocatoria abierta hasta".
   String? get _deadlineText {
     if (!_isOpen) {
       return _isTask

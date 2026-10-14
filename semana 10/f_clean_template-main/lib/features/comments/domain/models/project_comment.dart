@@ -14,7 +14,6 @@ class ProjectComment {
   final String projectId;
   final String authorName;
 
-  /// Roble user id of whoever was logged in when commenting (may be null).
   final String? authorUserId;
   final String text;
   final DateTime createdAt;

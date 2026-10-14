@@ -6,9 +6,6 @@ import 'package:f_clean_template/core/theme/home_colors.dart';
 /// below the subtitle. Purely presentational — [onSelectPublished] and
 /// [onSelectDrafts] are the only way it reports a tap; tab-switch state
 /// itself lives in `MyProjectsController`.
-///
-/// Reuses [HomeColors] from the home feature (not modified here) so the
-/// purple/lavender palette matches the rest of the app exactly.
 class MyProjectsTabs extends StatelessWidget {
   const MyProjectsTabs({
     super.key,

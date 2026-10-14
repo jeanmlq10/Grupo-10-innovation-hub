@@ -19,7 +19,6 @@ class DirectMessage {
   final String text;
   final DateTime createdAt;
 
-  /// El destinatario ya lo vio.
   final bool read;
 
   bool isFrom(String userId) => fromUserId == userId;

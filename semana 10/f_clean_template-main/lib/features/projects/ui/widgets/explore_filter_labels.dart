@@ -30,7 +30,6 @@ abstract final class ExploreFilterLabels {
     ProjectRoleFilter.other: 'Otros',
   };
 
-  /// Etiquetas cortas de lo que está activo (para la barra bajo el buscador).
   static List<String> activeChips(ExploreFilters filters) => [
     for (final role in ProjectRoleFilter.values)
       if (filters.roles.contains(role)) roles[role]!,

@@ -16,10 +16,6 @@ import 'package:f_clean_template/features/projects/ui/widgets/explore_filter_lab
 import 'package:f_clean_template/features/auth/ui/widgets/login_required_dialog.dart';
 
 /// "Explorar proyectos" — the Home of Movil.
-///
-/// This is the View: it only renders what [HomeController] exposes. All
-/// business logic (fetching projects, filtering, loading state) lives in
-/// the controller/repository/data source, never here.
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -69,8 +65,6 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
-                      // "Filtros" (requerimiento 1.2): abre el panel y
-                      // muestra cuántas secciones están activas.
                       Obx(() {
                         final active = controller.filters.value.activeCount;
                         return Padding(
@@ -102,8 +96,6 @@ class _HomePageState extends State<HomePage> {
                       }),
                       Obx(() {
                         final user = auth.loggedUser;
-                        // Visitante: en vez de "Cerrar sesión", vuelve a la
-                        // bienvenida para iniciar sesión o registrarse.
                         if (auth.isGuest) {
                           return Tooltip(
                             message: 'Iniciar sesión',
@@ -191,7 +183,6 @@ class _HomePageState extends State<HomePage> {
                       showingFollowed: controller.showingFollowed.value,
                       onSelectAll: controller.showAll,
                       onSelectFollowed: () {
-                        // Seguir proyectos requiere cuenta.
                         if (!requireSession()) return;
                         controller.showFollowed();
                       },
@@ -199,7 +190,6 @@ class _HomePageState extends State<HomePage> {
                   ),
                   const SizedBox(height: 14),
                   ProjectSearchBar(onChanged: controller.updateSearch),
-                  // Filtros activos bajo el buscador (solo si hay alguno).
                   Obx(() {
                     final labels = ExploreFilterLabels.activeChips(
                       controller.filters.value,
@@ -226,9 +216,6 @@ class _HomePageState extends State<HomePage> {
 
                 final projects = controller.filteredProjects;
 
-                // No se pudo hablar con Roble (sin internet, tiempo agotado,
-                // tabla no pública para el visitante...): se dice eso, no
-                // "no hay proyectos", y se ofrece reintentar.
                 if (controller.loadError.value.isNotEmpty &&
                     controller.projects.isEmpty) {
                   return _LoadErrorView(
@@ -240,9 +227,6 @@ class _HomePageState extends State<HomePage> {
                     .trim()
                     .isNotEmpty;
 
-                // A search with no matches is its own message and skips
-                // "Crea otra idea" — that's about narrowing an existing
-                // list, not the "nothing published yet" empty state.
                 if (projects.isEmpty && hasSearch) {
                   return const Center(
                     child: Text(
@@ -291,7 +275,6 @@ class _HomePageState extends State<HomePage> {
                           await Get.to(
                             () => ProjectDetailPage(project: project),
                           );
-                          // Follows/comments may have changed: reload.
                           controller.getProjects();
                         },
                       );

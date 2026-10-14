@@ -14,8 +14,6 @@ class TaskRepository implements ITaskRepository {
 
   final ITaskDataSource _source;
 
-  /// Columnas nuevas que pueden no existir todavia en Roble (ver
-  /// [RobleOptionalColumns]): si faltan, la tarea se guarda sin ellas.
   static const _optionalColumns = {'deadline', 'status'};
 
   Future<T> _guard<T>(Future<T> Function() action) =>
@@ -43,7 +41,6 @@ class TaskRepository implements ITaskRepository {
     );
     return rows
         .map(_toTask)
-        // Con cupo, disponible y sin la fecha limite vencida.
         .where((task) => task.canApplyAt())
         .map((task) => task.projectId)
         .toSet();
@@ -95,7 +92,6 @@ class TaskRepository implements ITaskRepository {
       }
     }
 
-    // Quitadas: se borran, salvo que ya haya alguien aceptado (se cierran).
     for (final leftover in existing.values) {
       if (leftover.numberAccepted == 0) {
         await _guard(() async {

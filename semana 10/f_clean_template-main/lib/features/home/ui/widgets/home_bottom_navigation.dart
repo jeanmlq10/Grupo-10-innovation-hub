@@ -6,14 +6,9 @@ import 'package:f_clean_template/features/auth/ui/widgets/login_required_dialog.
 import 'package:f_clean_template/routes/app_routes.dart';
 
 /// Barra inferior "Explorar | Mis proyectos | Notificaciones | Perfil".
-///
-/// Las cuatro son rutas con nombre (`AppRoutes`), protegidas con
-/// `AuthGuard`. Navegar por nombre evita que este widget compartido importe
-/// las páginas que lo contienen. El visitante solo puede usar "Explorar".
 class HomeBottomNavigation extends StatelessWidget {
   const HomeBottomNavigation({super.key, this.currentIndex = 0});
 
-  /// Pestaña activa: 0 Explorar, 1 Mis proyectos, 2 Notificaciones, 3 Perfil.
   final int currentIndex;
 
   static const _tabs = [
@@ -29,7 +24,6 @@ class HomeBottomNavigation extends StatelessWidget {
 
   void _onTabTapped(int index) {
     if (index == currentIndex) return;
-    // Visitante: solo "Explorar"; el resto pide iniciar sesión.
     if (index != 0 && !requireSession()) return;
     switch (index) {
       case 0:
@@ -105,9 +99,6 @@ class _NavIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // In Figma every icon is drawn in the same purple/indigo stroke — only
-    // the selected tab additionally gets the light lavender circle behind
-    // it. Unselected icons are NOT grey.
     return InkWell(
       customBorder: const CircleBorder(),
       onTap: onTap,

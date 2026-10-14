@@ -11,10 +11,6 @@ import 'package:f_clean_template/features/notifications/domain/repositories/i_no
 import 'package:f_clean_template/features/profile/domain/repositories/i_profile_repository.dart';
 
 /// ViewModel de "Mensajes" (lista de conversaciones) y del chat.
-///
-/// Reglas: no se escribe a uno mismo, y se respeta "Quién puede
-/// contactarte" del perfil de la otra persona. Cada mensaje nuevo avisa al
-/// destinatario ("Nuevos mensajes").
 class MessagesController extends GetxController with UiLoggy {
   MessagesController({
     required this.messages,
@@ -35,7 +31,6 @@ class MessagesController extends GetxController with UiLoggy {
 
   String? get me => session.loggedUser?.userId;
 
-  /// Conversaciones filtradas por "Buscar conversaciones...".
   List<Conversation> get conversations {
     final query = search.value.trim().toLowerCase();
     if (query.isEmpty) return _conversations;
@@ -68,7 +63,6 @@ class MessagesController extends GetxController with UiLoggy {
     }
   }
 
-  /// Mensajes con [otherUserId]; los recibidos quedan como leídos.
   Future<List<DirectMessage>> thread(String otherUserId) async {
     final userId = me;
     if (userId == null) return const [];
@@ -76,12 +70,10 @@ class MessagesController extends GetxController with UiLoggy {
     try {
       await messages.markThreadRead(userId, otherUserId);
     } catch (_) {
-      // Si no se pudo marcar como leído, el chat se muestra igual.
     }
     return list;
   }
 
-  /// ¿Se le puede escribir a [otherUserId]? (su privacidad)
   Future<bool> canWriteTo(String otherUserId) async {
     if (otherUserId.isEmpty || otherUserId == me) return false;
     final profile = await profiles
@@ -129,7 +121,6 @@ class MessagesController extends GetxController with UiLoggy {
         detail: clean,
       );
     } catch (_) {
-      // El mensaje ya quedó guardado; el aviso es secundario.
     }
   }
 }

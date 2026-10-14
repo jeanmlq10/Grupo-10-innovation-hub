@@ -16,7 +16,6 @@ class FollowRepository implements IFollowRepository {
   Future<T> _guard<T>(Future<T> Function() action) =>
       robleGuard(action, FollowFailure.new);
 
-  /// Solo cuentan los seguimientos que escribio ese mismo usuario.
   Future<List<Map<String, dynamic>>> _rowsOf(String userId) async {
     final rows = await _guard(() => _source.readForUser(userId));
     return rows.where((r) => RobleRows.author(r, 'userId') == userId).toList();

@@ -25,9 +25,6 @@ class ProjectCard extends StatelessWidget {
       final icon = _categoryIcons[category];
       if (icon != null) return icon;
     }
-    // Every project — example or user-created — gets the same generic
-    // icon treatment already used elsewhere in the app (Mis proyectos,
-    // Ver proyecto) instead of a grey placeholder box.
     return Icons.eco_outlined;
   }
 

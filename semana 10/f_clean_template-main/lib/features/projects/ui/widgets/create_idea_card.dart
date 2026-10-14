@@ -24,7 +24,6 @@ class CreateIdeaCard extends StatelessWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
           onTap: () {
-            // Visitante: crear un proyecto requiere cuenta.
             if (!requireSession()) return;
             Get.to(() => const CreateProjectPage());
           },

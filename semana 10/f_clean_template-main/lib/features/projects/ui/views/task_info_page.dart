@@ -13,9 +13,6 @@ import 'package:f_clean_template/features/tasks/domain/models/project_task.dart'
 /// "Información de tareas" (Cambio 2 · paso 3 del diseño): para cada tarea
 /// específica se escribe la descripción y hasta cuándo se puede postular
 /// ("Disponible hasta"). Va entre "Equipo necesario" y "Tiempo estimado".
-///
-/// Todo se guarda solo en Roble (tabla `project_tasks`) con el mismo
-/// autoguardado del asistente: [CreateProjectController].
 class TaskInfoPage extends StatelessWidget {
   const TaskInfoPage({super.key});
 
@@ -43,8 +40,6 @@ class TaskInfoPage extends StatelessWidget {
         ],
       ),
     );
-    // (El controller del texto no se libera aquí: el diálogo puede seguir
-    // animándose al cerrarse.)
     if (title != null) controller.addTask(title);
   }
 
@@ -72,7 +67,6 @@ class TaskInfoPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  // Sigue siendo parte del paso "Equipo necesario".
                   const Expanded(
                     child: StepProgressBar(currentStep: 2, totalSteps: 4),
                   ),
@@ -224,8 +218,6 @@ class _TaskInfoCardState extends State<_TaskInfoCard> {
   @override
   void didUpdateWidget(covariant _TaskInfoCard oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // Si la lista cambió (se quitó una tarea, o llegó la versión de Roble)
-    // y no se está escribiendo aquí, se muestra el texto actual.
     if (!_focus.hasFocus && _description.text != widget.task.description) {
       _description.text = widget.task.description;
     }
@@ -319,8 +311,6 @@ class _TaskInfoCardState extends State<_TaskInfoCard> {
             ),
           ),
           const SizedBox(height: 12),
-          // Cuántas personas necesita la tarea (antes estaba en "Equipo
-          // necesario").
           Row(
             children: [
               const Expanded(

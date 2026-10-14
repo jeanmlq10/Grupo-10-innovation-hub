@@ -72,7 +72,6 @@ class MessageRepository implements IMessageRepository {
     }
   }
 
-  /// El remitente real es `_owner` (si la tabla lo expone).
   bool _isGenuine(Map<String, dynamic> row) =>
       RobleRows.author(row, 'fromUserId') == RobleRows.str(row['fromUserId']);
 

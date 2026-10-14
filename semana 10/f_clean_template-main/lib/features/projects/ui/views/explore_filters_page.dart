@@ -8,10 +8,6 @@ import 'package:f_clean_template/features/projects/ui/widgets/explore_filter_lab
 import 'package:f_clean_template/features/projects/ui/widgets/filter_option_chip.dart';
 
 /// "Filtros" de Explorar proyectos (requerimiento 1.2).
-///
-/// Se edita una copia local ([_draft]); nada cambia en Explorar hasta tocar
-/// "Aplicar filtros", que se la entrega a [HomeController.applyFilters].
-/// Los filtros aplican tanto en "Todos" como en "Seguidos".
 class ExploreFiltersPage extends StatefulWidget {
   const ExploreFiltersPage({super.key});
 
@@ -121,7 +117,6 @@ class _ExploreFiltersPageState extends State<ExploreFiltersPage> {
                     title: 'Rol del proyecto',
                     icon: Icons.manage_accounts_outlined,
                     children: [
-                      // "Todos" = ningún rol marcado. Se pueden marcar varios.
                       FilterOptionChip(
                         label: 'Todos',
                         selected: _draft.roles.isEmpty,

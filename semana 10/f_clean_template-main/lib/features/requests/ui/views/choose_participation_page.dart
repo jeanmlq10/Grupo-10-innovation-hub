@@ -11,12 +11,7 @@ import 'package:f_clean_template/features/comments/ui/widgets/project_comments_s
 import 'package:f_clean_template/features/tasks/ui/views/available_tasks_page.dart';
 import 'package:f_clean_template/features/requests/ui/views/join_team_page.dart';
 
-/// "Elige cómo participar" — now a secondary menu, reached from the ⋮
-/// button of "Ver proyecto". "Seguir" was removed from here: it lives in
-/// the bell at the top right of "Ver proyecto".
-/// - "Comentar" opens the same comments sheet as the "Comentar" button.
-/// - "Postularme a una tarea" and "Unirme al equipo" open the real
-///   request flow.
+/// "Elige cómo participar": comentar, postularse a una tarea o unirse al equipo.
 class ChooseParticipationPage extends StatefulWidget {
   const ChooseParticipationPage({super.key, required this.project});
 
@@ -30,7 +25,6 @@ class ChooseParticipationPage extends StatefulWidget {
 class _ChooseParticipationPageState extends State<ChooseParticipationPage> {
   final ProjectDetailController _controller = Get.find();
 
-  /// Tareas que aún reciben postulaciones (para mostrar su fecha límite).
   List<ProjectTask>? _openTasks;
 
   @override
@@ -47,8 +41,6 @@ class _ChooseParticipationPageState extends State<ChooseParticipationPage> {
         .catchError((Object _) {});
   }
 
-  /// Cambio 2: "Disponible hasta" de las tareas (la fecha más lejana entre
-  /// las abiertas).
   String? get _tasksFootnote {
     final open = _openTasks;
     if (open == null) return null;
@@ -59,7 +51,6 @@ class _ChooseParticipationPageState extends State<ChooseParticipationPage> {
     return 'Disponible hasta: ${formatShortDate(dates.last)}';
   }
 
-  /// Cambio 2: "Convocatoria hasta" del equipo.
   String? get _teamFootnote {
     final project = widget.project;
     if (!project.isTeamCallOpenAt()) return 'Convocatoria cerrada';

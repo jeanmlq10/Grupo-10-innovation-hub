@@ -12,8 +12,6 @@ enum NotificationCategory {
   platformNews,
   reminders;
 
-  /// La categoría de un tipo de notificación. Las respuestas (aceptada /
-  /// rechazada) van con lo que se pidió: equipo o tarea.
   static NotificationCategory ofType(String type) => switch (type) {
     AppNotificationType.taskApplication ||
     AppNotificationType.taskApplicationAccepted ||
@@ -25,7 +23,6 @@ enum NotificationCategory {
     _ => NotificationCategory.participationRequests,
   };
 
-  /// Clave estable para guardarla en Roble (preferencias del perfil).
   String get key => name;
 
   static NotificationCategory? fromKey(String key) {

@@ -19,7 +19,6 @@ class ProfileMenuTile extends StatelessWidget {
   final String? subtitle;
   final VoidCallback onTap;
 
-  /// En rojo (Eliminar cuenta, Cerrar sesión).
   final bool destructive;
 
   @override
