@@ -1,0 +1,69 @@
+import 'package:f_clean_template/core/storage/i_local_preferences.dart';
+import 'package:f_clean_template/di/app_bindings.dart';
+import 'package:f_clean_template/main.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:get/get.dart';
+
+void main() {
+  setUp(() {
+    Get.testMode = true;
+    Get.reset();
+    Get.put<ILocalPreferences>(_MemoryPreferences(), permanent: true);
+  });
+
+  testWidgets('opens the welcome screen when there is no valid session', (
+    tester,
+  ) async {
+    await tester.pumpWidget(MyApp(bindings: AppBindings()));
+    await tester.pumpAndSettle();
+
+    expect(find.text('¡Bienvenido!'), findsOneWidget);
+    expect(find.text('Iniciar sesión'), findsOneWidget);
+    expect(find.text('¿No tienes cuenta? Regístrate'), findsOneWidget);
+    expect(find.textContaining('Google'), findsNothing);
+  });
+}
+
+class _MemoryPreferences implements ILocalPreferences {
+  final Map<String, Object> _values = <String, Object>{};
+
+  @override
+  Future<void> clear() async => _values.clear();
+
+  @override
+  Future<bool?> getBool(String key) async => _values[key] as bool?;
+
+  @override
+  Future<double?> getDouble(String key) async => _values[key] as double?;
+
+  @override
+  Future<int?> getInt(String key) async => _values[key] as int?;
+
+  @override
+  Future<String?> getString(String key) async => _values[key] as String?;
+
+  @override
+  Future<List<String>?> getStringList(String key) async =>
+      (_values[key] as List<String>?)?.toList();
+
+  @override
+  Future<void> remove(String key) async => _values.remove(key);
+
+  @override
+  Future<void> setBool(String key, bool value) async => _values[key] = value;
+
+  @override
+  Future<void> setDouble(String key, double value) async =>
+      _values[key] = value;
+
+  @override
+  Future<void> setInt(String key, int value) async => _values[key] = value;
+
+  @override
+  Future<void> setString(String key, String value) async =>
+      _values[key] = value;
+
+  @override
+  Future<void> setStringList(String key, List<String> value) async =>
+      _values[key] = value.toList();
+}

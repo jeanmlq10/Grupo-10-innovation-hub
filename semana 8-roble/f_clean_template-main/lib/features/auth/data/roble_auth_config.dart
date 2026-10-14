@@ -19,17 +19,10 @@ class RobleAuthConfig {
       defaultValue: 'https://roble-api.test-openlab.uninorte.edu.co',
     ),
     contractId: String.fromEnvironment('ROBLE_CONTRACT_ID'),
-    // Name of the "destino de retorno" registered in the Roble console under
-    // Usuarios > Proveedores (not a URL). Must match the build: e.g.
-    // "innovation-hub-web-dev" for `flutter run -d chrome --web-port=5001`.
     ssoRedirect: String.fromEnvironment('ROBLE_SSO_REDIRECT'),
-    // Custom URL scheme of the mobile app (Android/iOS), the same one declared
-    // in AndroidManifest.xml / Info.plist and registered as a return target in
-    // Roble. Only needed for Microsoft sign-in outside web.
     nativeCallbackScheme: String.fromEnvironment(
       'ROBLE_NATIVE_CALLBACK_SCHEME',
     ),
-    // Leave empty to allow any email domain to register.
     institutionalEmailDomain: String.fromEnvironment(
       'INSTITUTIONAL_EMAIL_DOMAIN',
       defaultValue: 'uninorte.edu.co',
